@@ -1,0 +1,31 @@
+import { createClient } from '@supabase/supabase-js';
+
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+export type Listing = {
+  airtable_id: string;
+  title: string;
+  type: 'Event' | 'Activity' | 'Camp';
+  recommended: boolean;
+  city: string;
+  state: string;
+  street: string;
+  image: string;
+  latitude?: number;
+  longitude?: number;
+  start_date?: string;
+  place_type?: string;
+  description?: string;
+  location_name?: string;
+  zip?: number;
+  price?: string;
+  age_range?: string;
+  organizer?: string;
+  website?: string;
+  tags?: string;
+  rating?: number;
+  reviews?: number;
+};
