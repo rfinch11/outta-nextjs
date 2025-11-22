@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Outta - Next.js Migration
+
+**Status:** 🚧 Active Development - Phase 1 Complete
+**Original Site:** [outta.events](https://outta.events)
+**GitHub:** [rfinch11/outta-nextjs](https://github.com/rfinch11/outta-nextjs)
+
+This is the Next.js 14 migration of Outta, a kid-friendly adventures discovery platform. We're migrating from a CDN-based React application to a production-ready Next.js platform with TypeScript, Tailwind CSS, and server-side rendering.
+
+## Migration Status
+
+See [MIGRATION_PLAN.md](https://github.com/rfinch11/outta/blob/main/MIGRATION_PLAN.md) in the original repository for the complete migration roadmap.
+
+- ✅ Phase 0: Pre-Migration Prep
+- ✅ Phase 1: Initialize Next.js
+- ⏸️ Phase 2: Migrate Core Components
+- ⏸️ Phase 3: Testing Infrastructure
+- ⏸️ Phase 4: Performance Optimization
+- ⏸️ Phase 5: Production Cutover
+- ⏸️ Phase 6: Authentication & User Accounts
+- ⏸️ Phase 7: Advanced Features
+- ⏸️ Phase 8: Analytics & Monetization
+
+## Tech Stack
+
+- **Framework:** Next.js 14 (App Router)
+- **Language:** TypeScript (strict mode)
+- **Styling:** Tailwind CSS
+- **Database:** Supabase (PostgreSQL)
+- **Deployment:** Vercel
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 20+
+- npm or yarn
+- Supabase account
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone the repository
+git clone https://github.com/rfinch11/outta-nextjs.git
+cd outta-nextjs
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your Supabase credentials
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Run development server
+npm run dev
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Run type checking
+npm run type-check
 
-## Learn More
+# Run linter
+npm run lint
 
-To learn more about Next.js, take a look at the following resources:
+# Format code
+npm run format
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+outta-nextjs/
+├── src/
+│   ├── app/                 # Next.js App Router
+│   │   ├── layout.tsx       # Root layout
+│   │   └── page.tsx         # Homepage
+│   ├── components/          # React components (coming in Phase 2)
+│   └── lib/                 # Utilities
+│       └── supabase.ts      # Supabase client
+├── public/                  # Static assets
+├── .env.local               # Environment variables (not committed)
+├── .env.example             # Environment variables template
+├── next.config.ts           # Next.js config
+├── tailwind.config.ts       # Tailwind config
+└── tsconfig.json            # TypeScript config
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Development Workflow
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+We use Git pre-commit hooks to ensure code quality:
+- TypeScript type checking
+- ESLint linting
+
+All checks must pass before committing.
+
+## Environment Variables
+
+Required environment variables (see `.env.example`):
+
+- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+
+## Deployment
+
+The site will be deployed on Vercel:
+- **Staging:** TBD
+- **Production:** TBD (after Phase 5)
+
+## Contributing
+
+This is a personal project, but feedback and suggestions are welcome! Please open an issue to discuss.
+
+## Related Repositories
+
+- [outta](https://github.com/rfinch11/outta) - Original CDN-based React application (production)
+
+## License
+
+Private - All Rights Reserved
