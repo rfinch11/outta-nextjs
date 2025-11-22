@@ -3,6 +3,13 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Outta Brand Colors */
+  --outta-yellow: #FFF407;
+  --outta-orange: #FF7E08;
+  --outta-blue: #E3F2FD;
+  --outta-green: #3DD68C;
+  --outta-dark: #37474F;
 }
 
 @theme inline {
@@ -10,6 +17,13 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Outta Custom Colors */
+  --color-outta-yellow: var(--outta-yellow);
+  --color-outta-orange: var(--outta-orange);
+  --color-outta-blue: var(--outta-blue);
+  --color-outta-green: var(--outta-green);
+  --color-outta-dark: var(--outta-dark);
 }
 
 @media (prefers-color-scheme: dark) {
