@@ -28,4 +28,5 @@ export type Listing = {
   tags?: string;
   rating?: number;
   reviews?: number;
+  distance?: number; // Calculated client-side
 };
