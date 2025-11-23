@@ -131,7 +131,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.sortBy === 'distance'
                       ? 'bg-white border-2 border-outta-orange'
-                      : 'bg-white border-2 border-transparent'
+                      : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, sortBy: 'distance' }))}
                 >
@@ -141,7 +141,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.sortBy === 'date'
                       ? 'bg-white border-2 border-outta-orange'
-                      : 'bg-white border-2 border-transparent'
+                      : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, sortBy: 'date' }))}
                 >
@@ -160,7 +160,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.dateQuick === option.key
                         ? 'bg-white border-2 border-outta-orange'
-                        : 'bg-white border-2 border-transparent'
+                        : 'bg-gray-100 border-2 border-transparent'
                     }`}
                     onClick={() =>
                       setFilters((prev) => ({
@@ -185,7 +185,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.distance === option.key
                         ? 'bg-white border-2 border-outta-orange'
-                        : 'bg-white border-2 border-transparent'
+                        : 'bg-gray-100 border-2 border-transparent'
                     }`}
                     onClick={() => setFilters((prev) => ({ ...prev, distance: option.key }))}
                   >
@@ -227,7 +227,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.types.includes(type)
                         ? 'bg-white border-2 border-outta-orange'
-                        : 'bg-white border-2 border-transparent'
+                        : 'bg-gray-100 border-2 border-transparent'
                     }`}
                     onClick={() => toggleType(type)}
                   >
@@ -247,7 +247,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.tags.includes(tag)
                         ? 'bg-white border-2 border-outta-orange'
-                        : 'bg-white border-2 border-transparent'
+                        : 'bg-gray-100 border-2 border-transparent'
                     }`}
                     onClick={() => toggleTag(tag)}
                   >
@@ -265,7 +265,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.rating === 'any'
                       ? 'bg-white border-2 border-outta-orange'
-                      : 'bg-white border-2 border-transparent'
+                      : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, rating: 'any' }))}
                 >
@@ -275,7 +275,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.rating === '3+'
                       ? 'bg-white border-2 border-outta-orange'
-                      : 'bg-white border-2 border-transparent'
+                      : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, rating: '3+' }))}
                 >
@@ -285,7 +285,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.rating === '4+'
                       ? 'bg-white border-2 border-outta-orange'
-                      : 'bg-white border-2 border-transparent'
+                      : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, rating: '4+' }))}
                 >
@@ -295,7 +295,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.rating === '4.5+'
                       ? 'bg-white border-2 border-outta-orange'
-                      : 'bg-white border-2 border-transparent'
+                      : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, rating: '4.5+' }))}
                 >
