@@ -1,14 +1,22 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { LuSearch, LuMapPin, LuFilter, LuPlus } from 'react-icons/lu';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
+import type { FilterState } from './FilterModal';
 import ClickableCard from './ClickableCard';
 import Footer from './Footer';
-import FilterModal, { type FilterState } from './FilterModal';
-import SearchModal from './SearchModal';
+
+// Dynamic imports for modals (code splitting)
+const FilterModal = dynamic(() => import('./FilterModal'), {
+  ssr: false,
+});
+const SearchModal = dynamic(() => import('./SearchModal'), {
+  ssr: false,
+});
 
 type TabType = 'Event' | 'Activity' | 'Camp';
 
