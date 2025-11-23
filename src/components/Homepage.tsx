@@ -229,7 +229,7 @@ const Homepage: React.FC = () => {
               className={`px-0 py-[14px] bg-transparent border-none cursor-pointer text-lg font-semibold transition-all ${
                 activeTab === key
                   ? 'text-black font-bold border-b-[3px] border-outta-orange'
-                  : 'text-[#BDBDBD] font-semibold'
+                  : 'text-[#757575] font-semibold'
               }`}
             >
               {label}
