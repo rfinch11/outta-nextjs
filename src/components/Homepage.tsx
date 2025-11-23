@@ -17,6 +17,9 @@ const FilterModal = dynamic(() => import('./FilterModal'), {
 const SearchModal = dynamic(() => import('./SearchModal'), {
   ssr: false,
 });
+const LocationModal = dynamic(() => import('./LocationModal'), {
+  ssr: false,
+});
 
 type TabType = 'Event' | 'Activity' | 'Camp';
 
@@ -51,6 +54,9 @@ const Homepage: React.FC = () => {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Location modal state
+  const [showLocationModal, setShowLocationModal] = useState(false);
+
   // Calculate distance using Haversine formula
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
     const R = 3959; // Earth's radius in miles
@@ -66,10 +72,31 @@ const Homepage: React.FC = () => {
     return Math.round(R * c * 10) / 10;
   };
 
-  // Load location on mount (default to Mountain View, CA)
+  // Save location to state and localStorage
+  const saveLocation = (lat: number, lng: number, zipCode: string) => {
+    const location = { lat, lng, zipCode };
+    setUserLocation(location);
+    localStorage.setItem('userLocation', JSON.stringify(location));
+  };
+
+  // Load location on mount from localStorage or use default
   useEffect(() => {
-    const defaultLocation = { lat: 37.4419, lng: -122.143, zipCode: '94043' };
-    setUserLocation(defaultLocation);
+    const stored = localStorage.getItem('userLocation');
+    if (stored) {
+      try {
+        const location = JSON.parse(stored);
+        setUserLocation(location);
+      } catch (e) {
+        console.error('Error parsing stored location:', e);
+        // Default to Mountain View, CA if parsing fails
+        const defaultLocation = { lat: 37.4419, lng: -122.143, zipCode: '94043' };
+        setUserLocation(defaultLocation);
+      }
+    } else {
+      // No stored location, use default
+      const defaultLocation = { lat: 37.4419, lng: -122.143, zipCode: '94043' };
+      setUserLocation(defaultLocation);
+    }
   }, []);
 
   // Fetch listings when tab or location changes
@@ -166,10 +193,11 @@ const Homepage: React.FC = () => {
             <button
               onMouseEnter={() => setHoveredButton('map')}
               onMouseLeave={() => setHoveredButton(null)}
+              onClick={() => setShowLocationModal(true)}
               className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
                 hoveredButton === 'map' ? 'bg-outta-yellow' : 'bg-transparent hover:bg-gray-100'
               }`}
-              aria-label="Map view"
+              aria-label="Change location"
             >
               <LuMapPin size={17} />
             </button>
@@ -285,6 +313,12 @@ const Homepage: React.FC = () => {
         onClose={() => setShowFilterModal(false)}
         onApply={handleApplyFilters}
         currentFilters={filters}
+      />
+
+      <LocationModal
+        isOpen={showLocationModal}
+        onClose={() => setShowLocationModal(false)}
+        onLocationSet={saveLocation}
       />
     </div>
   );
