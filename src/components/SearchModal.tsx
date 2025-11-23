@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { LuSearch } from 'react-icons/lu';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -53,7 +54,9 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onSearch, cu
           <div className="px-6 pb-[max(24px,env(safe-area-inset-bottom))] pt-6">
             {/* Search Input */}
             <div className="relative mb-6">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xl">🔍</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                <LuSearch size={20} />
+              </span>
               <input
                 type="search"
                 placeholder="Search events, activities, and camps..."
