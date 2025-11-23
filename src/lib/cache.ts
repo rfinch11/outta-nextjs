@@ -4,7 +4,8 @@
 // Uncomment when Vercel KV is set up:
 // import { kv } from '@vercel/kv';
 
-const CACHE_TTL = 300; // 5 minutes in seconds
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const CACHE_TTL = 300; // 5 minutes in seconds (used when caching is enabled)
 const CACHE_ENABLED = false; // Set to true after setting up Vercel KV
 
 /**
@@ -55,6 +56,7 @@ export async function getCachedData<T>(
  * Invalidate cache entries matching a pattern
  * @param pattern - Key pattern to match (e.g., "listings:*")
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function invalidateCache(pattern: string): Promise<void> {
   if (!CACHE_ENABLED) {
     return;
