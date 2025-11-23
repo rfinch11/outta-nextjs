@@ -64,7 +64,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onSearch, cu
                     handleSearch();
                   }
                 }}
-                className="w-full px-4 pl-12 py-4 bg-gray-100 border-2 border-gray-300 rounded-xl text-base outline-none box-border focus:border-outta-yellow"
+                className="w-full px-4 pl-12 py-4 bg-gray-100 border-2 border-gray-300 rounded-xl text-base outline-none box-border focus:border-outta-orange"
                 autoFocus
               />
             </div>
@@ -77,8 +77,8 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onSearch, cu
               onMouseUp={() => setIsButtonPressed(false)}
               onMouseLeave={() => setIsButtonPressed(false)}
               className={`
-                w-full px-8 py-4 bg-outta-yellow border-2 border-black rounded-[53px]
-                text-lg font-bold text-gray-900 cursor-pointer tracking-wide
+                w-full px-8 py-4 bg-outta-orange border-2 border-black rounded-[53px]
+                text-lg font-bold text-white cursor-pointer tracking-wide
                 transition-none relative
                 ${
                   !searchQuery.trim()
