@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { getCachedData, getListingsCacheKey } from '@/lib/cache';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -21,65 +22,80 @@ export async function GET(request: NextRequest) {
     const userLat = searchParams.get('lat') ? parseFloat(searchParams.get('lat')!) : null;
     const userLng = searchParams.get('lng') ? parseFloat(searchParams.get('lng')!) : null;
 
-    let dbQuery = supabase.from('listings').select('*', { count: 'exact' });
+    // Generate cache key
+    const cacheKey = getListingsCacheKey({
+      type: type || undefined,
+      recommended: recommended ? 'true' : undefined,
+      city: city || undefined,
+      lat: userLat?.toString(),
+      lng: userLng?.toString(),
+      limit: limit.toString(),
+      offset: offset.toString(),
+    });
 
-    // Type filter
-    if (type) {
-      dbQuery = dbQuery.eq('type', type);
-    }
+    // Use cache
+    const result = await getCachedData(cacheKey, async () => {
+      let dbQuery = supabase.from('listings').select('*', { count: 'exact' });
 
-    // Recommended filter
-    if (recommended) {
-      dbQuery = dbQuery.eq('recommended', true);
-    }
-
-    // City filter
-    if (city) {
-      dbQuery = dbQuery.eq('city', city);
-    }
-
-    // TODO: After running PostGIS migration, add distance filtering
-    // if (userLat && userLng && maxDistance) {
-    //   dbQuery = dbQuery.rpc('listings_within_distance', {
-    //     lat: userLat,
-    //     lng: userLng,
-    //     distance_meters: maxDistance * 1609.34
-    //   });
-    // }
-
-    // Sorting
-    dbQuery = dbQuery
-      .order('recommended', { ascending: false })
-      .order('start_date', { ascending: true, nullsFirst: false })
-      .range(offset, offset + limit - 1);
-
-    const { data, error, count } = await dbQuery;
-
-    if (error) {
-      console.error('Listings API error:', error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-
-    // Calculate client-side distance if lat/lng provided
-    // TODO: Replace with PostGIS distance calculation after migration
-    const dataWithDistance = data?.map((listing) => {
-      if (userLat && userLng && listing.latitude && listing.longitude) {
-        const distance = calculateDistance(
-          userLat,
-          userLng,
-          listing.latitude,
-          listing.longitude
-        );
-        return { ...listing, distance };
+      // Type filter
+      if (type) {
+        dbQuery = dbQuery.eq('type', type);
       }
-      return listing;
+
+      // Recommended filter
+      if (recommended) {
+        dbQuery = dbQuery.eq('recommended', true);
+      }
+
+      // City filter
+      if (city) {
+        dbQuery = dbQuery.eq('city', city);
+      }
+
+      // TODO: After running PostGIS migration, add distance filtering
+      // if (userLat && userLng && maxDistance) {
+      //   dbQuery = dbQuery.rpc('listings_within_distance', {
+      //     lat: userLat,
+      //     lng: userLng,
+      //     distance_meters: maxDistance * 1609.34
+      //   });
+      // }
+
+      // Sorting
+      dbQuery = dbQuery
+        .order('recommended', { ascending: false })
+        .order('start_date', { ascending: true, nullsFirst: false })
+        .range(offset, offset + limit - 1);
+
+      const { data, error, count } = await dbQuery;
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      // Calculate client-side distance if lat/lng provided
+      // TODO: Replace with PostGIS distance calculation after migration
+      const dataWithDistance = data?.map((listing) => {
+        if (userLat && userLng && listing.latitude && listing.longitude) {
+          const distance = calculateDistance(
+            userLat,
+            userLng,
+            listing.latitude,
+            listing.longitude
+          );
+          return { ...listing, distance };
+        }
+        return listing;
+      });
+
+      return {
+        data: dataWithDistance,
+        count,
+        hasMore: count ? offset + limit < count : false,
+      };
     });
 
-    return NextResponse.json({
-      data: dataWithDistance,
-      count,
-      hasMore: count ? offset + limit < count : false,
-    });
+    return NextResponse.json(result);
   } catch (error) {
     console.error('Listings API unexpected error:', error);
     return NextResponse.json(
