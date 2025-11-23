@@ -16,7 +16,8 @@
 //   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 // });
 
-const CACHE_TTL = 300; // 5 minutes in seconds
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const CACHE_TTL = 300; // 5 minutes in seconds (will be used when caching is enabled)
 const CACHE_ENABLED = false; // DISABLED - see note above
 
 /**
