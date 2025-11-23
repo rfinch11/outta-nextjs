@@ -202,35 +202,44 @@ const Homepage: React.FC = () => {
 
       {/* Hero Section */}
       <div className="px-5 py-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl font-bold text-outta-dark mb-3">
-            Kid-friendly{' '}
-            <span className="bg-outta-yellow px-2 py-1 rounded italic inline-block">
-              adventures
-            </span>{' '}
-            near you
-          </h1>
-          <p className="text-gray-600 flex items-center justify-center gap-1">
-            <LuMapPin size={16} />
+        <div className="max-w-7xl mx-auto">
+          {/* Hero Graphic */}
+          <div className="mb-6">
+            <Image
+              src="/hero.png"
+              alt="Kid-friendly adventures"
+              width={700}
+              height={200}
+              priority
+              className="w-full max-w-[700px] h-auto"
+            />
+          </div>
+
+          <p className="text-gray-600 flex items-center gap-1.5 text-base mt-4">
+            <LuMapPin size={20} color="#FF7E08" />
             {userLocation?.zipCode || 'Loading location...'}
           </p>
         </div>
       </div>
 
       {/* Tab Navigation */}
-      <div className="border-b border-gray-300 px-5">
+      <div className="border-b border-[#E0E0E0] px-5">
         <div className="max-w-7xl mx-auto flex gap-8">
-          {(['Event', 'Activity', 'Camp'] as TabType[]).map((tab) => (
+          {[
+            { key: 'Event', label: 'Events' },
+            { key: 'Activity', label: 'Activities' },
+            { key: 'Camp', label: 'Camps' },
+          ].map(({ key, label }) => (
             <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-0 py-4 bg-transparent border-none cursor-pointer text-base transition-all ${
-                activeTab === tab
+              key={key}
+              onClick={() => setActiveTab(key as TabType)}
+              className={`px-0 py-[14px] bg-transparent border-none cursor-pointer text-lg font-semibold transition-all ${
+                activeTab === key
                   ? 'text-black font-bold border-b-[3px] border-outta-orange'
-                  : 'text-gray-400 font-semibold'
+                  : 'text-[#BDBDBD] font-semibold'
               }`}
             >
-              {tab}s
+              {label}
             </button>
           ))}
         </div>
