@@ -1,39 +1,23 @@
 // Cache utility for Vercel KV (Redis)
-import { Redis } from '@upstash/redis';
+//
+// NOTE: Caching is currently DISABLED
+// The REDIS_URL provided by Vercel uses TCP protocol which doesn't work
+// with serverless functions. To enable caching, we need Upstash Redis REST API.
+//
+// To enable caching in the future:
+// 1. Set up Upstash Redis (https://upstash.com)
+// 2. Add UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN to env vars
+// 3. Uncomment the Redis import and initialization below
+// 4. Set CACHE_ENABLED = true
 
-// Parse REDIS_URL to extract REST API URL and token
-// REDIS_URL format from Vercel: redis://default:PASSWORD@ENDPOINT:PORT
-function getRedisConfig() {
-  const redisUrl = process.env.REDIS_URL;
-
-  if (!redisUrl) {
-    return null;
-  }
-
-  try {
-    // Parse redis://default:password@host:port
-    const url = new URL(redisUrl);
-    const password = url.password;
-    const hostname = url.hostname;
-
-    // Construct Upstash REST API URL
-    const restUrl = `https://${hostname}`;
-
-    return {
-      url: restUrl,
-      token: password,
-    };
-  } catch (error) {
-    console.error('Failed to parse REDIS_URL:', error);
-    return null;
-  }
-}
-
-const redisConfig = getRedisConfig();
-const kv = redisConfig ? new Redis(redisConfig) : null;
+// import { Redis } from '@upstash/redis';
+// const kv = new Redis({
+//   url: process.env.UPSTASH_REDIS_REST_URL!,
+//   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+// });
 
 const CACHE_TTL = 300; // 5 minutes in seconds
-const CACHE_ENABLED = !!kv; // Enable caching only if Redis is configured
+const CACHE_ENABLED = false; // DISABLED - see note above
 
 /**
  * Get cached data or fetch fresh data if cache miss
@@ -45,34 +29,32 @@ export async function getCachedData<T>(
   key: string,
   fetcher: () => Promise<T>
 ): Promise<T> {
-  if (!CACHE_ENABLED || !kv) {
-    // Cache disabled, always fetch fresh
+  // Caching is currently disabled - always fetch fresh data
+  if (!CACHE_ENABLED) {
     return fetcher();
   }
 
-  try {
-    // Try cache first
-    const cached = await kv.get<T>(key);
-    if (cached !== null) {
-      console.log(`✅ Cache HIT: ${key}`);
-      return cached;
-    }
+  // NOTE: Redis caching code removed - uncomment when REST API is available
+  // try {
+  //   const cached = await kv.get<T>(key);
+  //   if (cached !== null) {
+  //     console.log(`✅ Cache HIT: ${key}`);
+  //     return cached;
+  //   }
+  //   console.log(`❌ Cache MISS: ${key}`);
+  // } catch (error) {
+  //   console.error('Cache read error:', error);
+  // }
 
-    console.log(`❌ Cache MISS: ${key}`);
-  } catch (error) {
-    console.error('Cache read error:', error);
-  }
-
-  // Cache miss or error, fetch fresh data
   const data = await fetcher();
 
-  try {
-    // Store in cache for next time
-    await kv.set(key, data, { ex: CACHE_TTL });
-    console.log(`💾 Cache SET: ${key} (TTL: ${CACHE_TTL}s)`);
-  } catch (error) {
-    console.error('Cache write error:', error);
-  }
+  // NOTE: Redis caching code removed - uncomment when REST API is available
+  // try {
+  //   await kv.set(key, data, { ex: CACHE_TTL });
+  //   console.log(`💾 Cache SET: ${key} (TTL: ${CACHE_TTL}s)`);
+  // } catch (error) {
+  //   console.error('Cache write error:', error);
+  // }
 
   return data;
 }
@@ -82,18 +64,13 @@ export async function getCachedData<T>(
  * @param pattern - Key pattern to match (e.g., "listings:*")
  */
 export async function invalidateCache(pattern: string): Promise<void> {
-  if (!CACHE_ENABLED || !kv) {
+  // Caching is currently disabled - nothing to invalidate
+  if (!CACHE_ENABLED) {
     return;
   }
 
-  try {
-    // Note: Upstash Redis doesn't support keys() pattern matching in the same way
-    // For now, we'll skip pattern-based invalidation
-    // TODO: Implement using scan() if needed
-    console.log(`⚠️  Cache invalidation for pattern ${pattern} not yet implemented`);
-  } catch (error) {
-    console.error('Cache invalidation error:', error);
-  }
+  // NOTE: Redis cache invalidation code removed - uncomment when REST API is available
+  console.log(`Cache invalidation skipped (caching disabled): ${pattern}`);
 }
 
 /**
