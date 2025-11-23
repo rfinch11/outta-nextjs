@@ -1,14 +1,39 @@
 // Cache utility for Vercel KV (Redis)
 import { Redis } from '@upstash/redis';
 
-// Create Redis client using REDIS_URL (newer Vercel KV integration)
-// REDIS_URL format: redis://default:password@host:port
-const kv = process.env.REDIS_URL
-  ? Redis.fromEnv()
-  : null;
+// Parse REDIS_URL to extract REST API URL and token
+// REDIS_URL format from Vercel: redis://default:PASSWORD@ENDPOINT:PORT
+function getRedisConfig() {
+  const redisUrl = process.env.REDIS_URL;
+
+  if (!redisUrl) {
+    return null;
+  }
+
+  try {
+    // Parse redis://default:password@host:port
+    const url = new URL(redisUrl);
+    const password = url.password;
+    const hostname = url.hostname;
+
+    // Construct Upstash REST API URL
+    const restUrl = `https://${hostname}`;
+
+    return {
+      url: restUrl,
+      token: password,
+    };
+  } catch (error) {
+    console.error('Failed to parse REDIS_URL:', error);
+    return null;
+  }
+}
+
+const redisConfig = getRedisConfig();
+const kv = redisConfig ? new Redis(redisConfig) : null;
 
 const CACHE_TTL = 300; // 5 minutes in seconds
-const CACHE_ENABLED = !!kv; // Enable caching only if REDIS_URL is available
+const CACHE_ENABLED = !!kv; // Enable caching only if Redis is configured
 
 /**
  * Get cached data or fetch fresh data if cache miss
