@@ -204,21 +204,14 @@ const Homepage: React.FC = () => {
       <div className="px-5 py-8">
         <div className="max-w-7xl mx-auto">
           {/* Hero Graphic */}
-          <div className="mb-6">
-            <Image
-              src="/hero.png"
-              alt="Kid-friendly adventures"
-              width={700}
-              height={200}
-              priority
-              className="w-full max-w-[700px] h-auto"
-            />
-          </div>
-
-          <p className="text-gray-600 flex items-center gap-1.5 text-base mt-4">
-            <LuMapPin size={20} color="#FF7E08" />
-            {userLocation?.zipCode || 'Loading location...'}
-          </p>
+          <Image
+            src="/hero.png"
+            alt="Kid-friendly adventures"
+            width={700}
+            height={200}
+            priority
+            className="w-full max-w-[700px] h-auto"
+          />
         </div>
       </div>
 
