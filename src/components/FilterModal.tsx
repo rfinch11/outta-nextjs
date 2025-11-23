@@ -11,7 +11,7 @@ export interface FilterState {
   priceMax: number;
   types: string[];
   tags: string[];
-  rating: 'any' | '4+';
+  rating: 'any' | '3+' | '4+' | '4.5+';
 }
 
 interface FilterModalProps {
@@ -103,20 +103,6 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
 
           {/* Content */}
           <div className="flex-1 overflow-y-auto px-6 py-6">
-            {/* Search */}
-            <div className="mb-8">
-              <div className="relative">
-                <span className="absolute left-3 top-3 text-xl">🔍</span>
-                <input
-                  type="search"
-                  placeholder="Search"
-                  value={filters.search}
-                  onChange={(e) => setFilters((prev) => ({ ...prev, search: e.target.value }))}
-                  className="w-full px-3 pl-10 py-3 bg-gray-100 border-none rounded-lg text-base"
-                />
-              </div>
-            </div>
-
             {/* Recommended */}
             <div className="mb-8">
               <h3 className="text-lg font-bold mb-4">Recommended</h3>
@@ -144,8 +130,8 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.sortBy === 'distance'
-                      ? 'bg-white border-2 border-[#ff6b47]'
-                      : 'bg-gray-100 border-none'
+                      ? 'bg-white border-2 border-outta-orange'
+                      : 'bg-white border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, sortBy: 'distance' }))}
                 >
@@ -154,8 +140,8 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.sortBy === 'date'
-                      ? 'bg-white border-2 border-[#ff6b47]'
-                      : 'bg-gray-100 border-none'
+                      ? 'bg-white border-2 border-outta-orange'
+                      : 'bg-white border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, sortBy: 'date' }))}
                 >
@@ -173,8 +159,8 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     key={option.key}
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.dateQuick === option.key
-                        ? 'bg-white border-2 border-[#ff6b47]'
-                        : 'bg-gray-100 border-none'
+                        ? 'bg-white border-2 border-outta-orange'
+                        : 'bg-white border-2 border-transparent'
                     }`}
                     onClick={() =>
                       setFilters((prev) => ({
@@ -198,8 +184,8 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     key={option.label}
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.distance === option.key
-                        ? 'bg-white border-2 border-[#ff6b47]'
-                        : 'bg-gray-100 border-none'
+                        ? 'bg-white border-2 border-outta-orange'
+                        : 'bg-white border-2 border-transparent'
                     }`}
                     onClick={() => setFilters((prev) => ({ ...prev, distance: option.key }))}
                   >
@@ -240,8 +226,8 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     key={type}
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.types.includes(type)
-                        ? 'bg-white border-2 border-[#ff6b47]'
-                        : 'bg-gray-100 border-none'
+                        ? 'bg-white border-2 border-outta-orange'
+                        : 'bg-white border-2 border-transparent'
                     }`}
                     onClick={() => toggleType(type)}
                   >
@@ -260,8 +246,8 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     key={tag}
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.tags.includes(tag)
-                        ? 'bg-white border-2 border-[#ff6b47]'
-                        : 'bg-gray-100 border-none'
+                        ? 'bg-white border-2 border-outta-orange'
+                        : 'bg-white border-2 border-transparent'
                     }`}
                     onClick={() => toggleTag(tag)}
                   >
@@ -278,8 +264,8 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.rating === 'any'
-                      ? 'bg-white border-2 border-[#ff6b47]'
-                      : 'bg-gray-100 border-none'
+                      ? 'bg-white border-2 border-outta-orange'
+                      : 'bg-white border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, rating: 'any' }))}
                 >
@@ -287,13 +273,33 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 </button>
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
+                    filters.rating === '3+'
+                      ? 'bg-white border-2 border-outta-orange'
+                      : 'bg-white border-2 border-transparent'
+                  }`}
+                  onClick={() => setFilters((prev) => ({ ...prev, rating: '3+' }))}
+                >
+                  3+ Stars
+                </button>
+                <button
+                  className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.rating === '4+'
-                      ? 'bg-white border-2 border-[#ff6b47]'
-                      : 'bg-gray-100 border-none'
+                      ? 'bg-white border-2 border-outta-orange'
+                      : 'bg-white border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, rating: '4+' }))}
                 >
                   4+ Stars
+                </button>
+                <button
+                  className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
+                    filters.rating === '4.5+'
+                      ? 'bg-white border-2 border-outta-orange'
+                      : 'bg-white border-2 border-transparent'
+                  }`}
+                  onClick={() => setFilters((prev) => ({ ...prev, rating: '4.5+' }))}
+                >
+                  4.5+ Stars
                 </button>
               </div>
             </div>
@@ -303,7 +309,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
           <div className="px-6 py-6 border-t border-gray-200">
             <button
               onClick={handleSave}
-              className="w-full px-4 py-4 bg-[#fde047] border-none rounded-[50px] text-lg font-bold cursor-pointer transition-opacity hover:opacity-90"
+              className="w-full px-4 py-4 bg-outta-yellow border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-none relative shadow-[3px_4px_0px_0px_#000000]"
             >
               Save
             </button>
@@ -330,7 +336,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
           appearance: none;
           width: 20px;
           height: 20px;
-          background: #ff6b47;
+          background: #FF7E08;
           border-radius: 50%;
           cursor: pointer;
         }
@@ -338,7 +344,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
         .range-slider::-moz-range-thumb {
           width: 20px;
           height: 20px;
-          background: #ff6b47;
+          background: #FF7E08;
           border-radius: 50%;
           cursor: pointer;
           border: none;
