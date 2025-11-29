@@ -65,8 +65,8 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
         </div>
       </div>
 
-      {/* Animation */}
-      <style jsx>{`
+      {/* Styles */}
+      <style jsx global>{`
         @keyframes slideUp {
           from {
             transform: translateY(100%);
@@ -77,6 +77,19 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
         }
         .animate-slideUp {
           animation: slideUp 0.3s ease-out;
+        }
+
+        /* Make Typeform iframe fill full height */
+        [data-tf-live] iframe {
+          height: 100% !important;
+          min-height: 100% !important;
+        }
+
+        /* Hide Typeform header/branding */
+        [data-tf-live] .tf-v1-widget-header,
+        [data-tf-live] .tf-v1-sidetab,
+        [data-tf-live] .powered-by {
+          display: none !important;
         }
       `}</style>
     </>
