@@ -27,6 +27,8 @@ const Homepage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('Event');
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
 
   // Location state
@@ -102,16 +104,22 @@ const Homepage: React.FC = () => {
   // Fetch listings when tab or location changes
   useEffect(() => {
     if (userLocation) {
-      fetchListings();
+      fetchListings(true); // Reset to first page
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, userLocation, searchQuery]);
 
-  const fetchListings = async () => {
-    setLoading(true);
+  const fetchListings = async (reset = false) => {
+    if (reset) {
+      setLoading(true);
+    } else {
+      setLoadingMore(true);
+    }
 
     try {
       const now = new Date().toISOString();
+      const currentListings = reset ? [] : listings;
+      const offset = reset ? 0 : currentListings.length;
 
       let query = supabase.from('listings').select('*');
 
@@ -128,11 +136,12 @@ const Homepage: React.FC = () => {
       const { data, error } = await query
         .order('recommended', { ascending: false })
         .order('start_date', { ascending: true })
-        .limit(15);
+        .range(offset, offset + 14); // Fetch 15 items (0-14, 15-29, etc.)
 
       if (error) {
         console.error('Error fetching listings:', error);
         setLoading(false);
+        setLoadingMore(false);
         return;
       }
 
@@ -150,12 +159,21 @@ const Homepage: React.FC = () => {
         return { ...listing, distance };
       });
 
-      setListings(listingsWithDistance);
+      // Check if there are more items to load
+      setHasMore(data && data.length === 15);
+
+      // Append or replace listings
+      setListings(reset ? listingsWithDistance : [...currentListings, ...listingsWithDistance]);
     } catch (error) {
       console.error('Error:', error);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
+  };
+
+  const handleLoadMore = () => {
+    fetchListings(false);
   };
 
   const handleSearch = (query: string) => {
@@ -276,23 +294,38 @@ const Homepage: React.FC = () => {
               No {activeTab.toLowerCase()}s found
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {listings.map((listing) => (
-                <ClickableCard
-                  key={listing.airtable_id}
-                  airtable_id={listing.airtable_id}
-                  title={listing.title}
-                  type={listing.type}
-                  recommended={listing.recommended}
-                  city={listing.city}
-                  distance={listing.distance || 0}
-                  image={listing.image}
-                  start_date={listing.start_date}
-                  place_type={listing.place_type}
-                  description={listing.description}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {listings.map((listing) => (
+                  <ClickableCard
+                    key={listing.airtable_id}
+                    airtable_id={listing.airtable_id}
+                    title={listing.title}
+                    type={listing.type}
+                    recommended={listing.recommended}
+                    city={listing.city}
+                    distance={listing.distance || 0}
+                    image={listing.image}
+                    start_date={listing.start_date}
+                    place_type={listing.place_type}
+                    description={listing.description}
+                  />
+                ))}
+              </div>
+
+              {/* Load More Button */}
+              {hasMore && (
+                <div className="flex justify-center mt-8">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loadingMore}
+                    className="w-full max-w-md px-4 py-4 bg-outta-yellow border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_4px_0px_0px_#000000] disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+                  >
+                    {loadingMore ? 'Loading...' : 'Load more'}
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
