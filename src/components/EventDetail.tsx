@@ -98,14 +98,13 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header with back button */}
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-200 px-5 py-4 flex items-center gap-4">
+      <header className="sticky top-0 z-50 bg-white border-b border-gray-200 px-5 py-4">
         <Link
           href="/"
           className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors no-underline text-gray-900"
         >
           <IoIosArrowBack size={24} />
         </Link>
-        <Image src="/Outta_logo.svg" alt="Outta" width={120} height={32} className="h-8 w-auto" />
       </header>
 
       {/* Hero Image */}
