@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Widget } from '@typeform/embed-react';
 
 interface SubmitModalProps {
   isOpen: boolean;
@@ -8,23 +9,6 @@ interface SubmitModalProps {
 }
 
 const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
-  useEffect(() => {
-    if (isOpen) {
-      // Load Typeform embed script
-      const script = document.createElement('script');
-      script.src = '//embed.typeform.com/next/embed.js';
-      script.async = true;
-      document.body.appendChild(script);
-
-      return () => {
-        // Cleanup script on unmount
-        if (document.body.contains(script)) {
-          document.body.removeChild(script);
-        }
-      };
-    }
-  }, [isOpen]);
-
   if (!isOpen) return null;
 
   return (
@@ -53,14 +37,14 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
 
           {/* Typeform Embed */}
           <div className="flex-1 overflow-hidden relative">
-            <div
-              data-tf-live="01KB8W0MZ1NK6GBGTFA5AWAQ4H"
-              data-tf-opacity="100"
-              data-tf-iframe-props="title=Submit a Listing"
-              data-tf-transitive-search-params
-              data-tf-medium="snippet"
+            <Widget
+              id="kQU0pScO"
+              style={{ width: '100%', height: '100%' }}
               className="w-full h-full"
-            ></div>
+              opacity={0}
+              hideHeaders
+              hideFooter
+            />
           </div>
         </div>
       </div>
@@ -77,19 +61,6 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
         }
         .animate-slideUp {
           animation: slideUp 0.3s ease-out;
-        }
-
-        /* Make Typeform iframe fill full height */
-        [data-tf-live] iframe {
-          height: 100% !important;
-          min-height: 100% !important;
-        }
-
-        /* Hide Typeform header/branding */
-        [data-tf-live] .tf-v1-widget-header,
-        [data-tf-live] .tf-v1-sidetab,
-        [data-tf-live] .powered-by {
-          display: none !important;
         }
       `}</style>
     </>
