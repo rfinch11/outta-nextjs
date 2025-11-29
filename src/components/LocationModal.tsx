@@ -111,18 +111,18 @@ const LocationModal: React.FC<LocationModalProps> = ({ isOpen, onClose, onLocati
         />
         <div className="flex flex-col gap-3">
           <button
-            onClick={handleSubmit}
-            disabled={!zipCodeInput.trim() || loading}
-            className="px-6 py-3 text-base font-semibold bg-outta-orange text-white rounded-lg border-none cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90"
-          >
-            {loading ? 'Finding...' : 'Submit'}
-          </button>
-          <button
             onClick={requestBrowserLocation}
             disabled={loading}
-            className="px-6 py-3 text-base font-semibold bg-outta-blue text-outta-dark rounded-lg border-none cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-90"
+            className="w-full px-4 py-4 bg-outta-yellow border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_4px_0px_0px_#000000] disabled:hover:translate-x-0 disabled:hover:translate-y-0"
           >
-            Use My Location
+            Use my location
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={!zipCodeInput.trim() || loading}
+            className="w-full px-4 py-4 bg-white border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_4px_0px_0px_#000000] disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+          >
+            {loading ? 'Finding...' : 'Set location'}
           </button>
         </div>
       </div>
