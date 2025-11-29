@@ -3,13 +3,13 @@ import EventDetail from '@/components/EventDetail';
 import { notFound } from 'next/navigation';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function ListingPage({ params }: PageProps) {
-  const { id } = params;
+  const { id } = await params;
 
   // Fetch listing from Supabase
   const { data: listing } = await supabase
