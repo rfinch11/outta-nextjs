@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 interface SubmitModalProps {
   isOpen: boolean;
@@ -8,17 +8,38 @@ interface SubmitModalProps {
 }
 
 const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && containerRef.current) {
       // Load Typeform embed script
       const script = document.createElement('script');
       script.src = '//embed.typeform.com/next/embed.js';
       script.async = true;
       document.body.appendChild(script);
 
+      // Wait for script to load then initialize
+      script.onload = () => {
+        if (containerRef.current && window.tf) {
+          // Clear any existing content
+          containerRef.current.innerHTML = '';
+
+          // Create widget
+          window.tf.createWidget('01KB8W0MZ1NK6GBGTFA5AWAQ4H', {
+            container: containerRef.current,
+            width: '100%',
+            height: '100%',
+            hideHeaders: true,
+            hideFooter: true,
+          });
+        }
+      };
+
       return () => {
         // Cleanup script on unmount
-        document.body.removeChild(script);
+        if (document.body.contains(script)) {
+          document.body.removeChild(script);
+        }
       };
     }
   }, [isOpen]);
@@ -51,12 +72,21 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
 
           {/* Typeform Embed */}
           <div className="flex-1 overflow-hidden">
-            <div data-tf-live="01KB8W0MZ1NK6GBGTFA5AWAQ4H" className="w-full h-full"></div>
+            <div ref={containerRef} className="w-full h-full"></div>
           </div>
         </div>
       </div>
     </>
   );
 };
+
+// Extend Window interface for TypeScript
+declare global {
+  interface Window {
+    tf?: {
+      createWidget: (formId: string, options: Record<string, unknown>) => void;
+    };
+  }
+}
 
 export default SubmitModal;
