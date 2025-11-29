@@ -20,6 +20,9 @@ const SearchModal = dynamic(() => import('./SearchModal'), {
 const LocationModal = dynamic(() => import('./LocationModal'), {
   ssr: false,
 });
+const SubmitModal = dynamic(() => import('./SubmitModal'), {
+  ssr: false,
+});
 
 type TabType = 'Event' | 'Activity' | 'Camp';
 
@@ -58,6 +61,9 @@ const Homepage: React.FC = () => {
 
   // Location modal state
   const [showLocationModal, setShowLocationModal] = useState(false);
+
+  // Submit modal state
+  const [showSubmitModal, setShowSubmitModal] = useState(false);
 
   // Calculate distance using Haversine formula
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -235,6 +241,7 @@ const Homepage: React.FC = () => {
             <button
               onMouseEnter={() => setHoveredButton('add')}
               onMouseLeave={() => setHoveredButton(null)}
+              onClick={() => setShowSubmitModal(true)}
               className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
                 hoveredButton === 'add' ? 'bg-outta-yellow' : 'bg-transparent hover:bg-gray-100'
               }`}
@@ -352,6 +359,11 @@ const Homepage: React.FC = () => {
         isOpen={showLocationModal}
         onClose={() => setShowLocationModal(false)}
         onLocationSet={saveLocation}
+      />
+
+      <SubmitModal
+        isOpen={showSubmitModal}
+        onClose={() => setShowSubmitModal(false)}
       />
     </div>
   );
