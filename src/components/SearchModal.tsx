@@ -12,7 +12,6 @@ interface SearchModalProps {
 
 const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onSearch, currentQuery }) => {
   const [searchQuery, setSearchQuery] = useState(currentQuery);
-  const [isButtonPressed, setIsButtonPressed] = useState(false);
 
   if (!isOpen) return null;
 
@@ -76,21 +75,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onSearch, cu
             <button
               onClick={handleSearch}
               disabled={!searchQuery.trim()}
-              onMouseDown={() => setIsButtonPressed(true)}
-              onMouseUp={() => setIsButtonPressed(false)}
-              onMouseLeave={() => setIsButtonPressed(false)}
-              className={`
-                w-full px-8 py-4 bg-outta-yellow border-2 border-black rounded-[53px]
-                text-lg font-bold text-gray-900 cursor-pointer tracking-wide
-                transition-none relative
-                ${
-                  !searchQuery.trim()
-                    ? 'opacity-50 cursor-not-allowed'
-                    : isButtonPressed
-                    ? 'shadow-[1px_2px_0px_0px_#000000] translate-x-0.5 translate-y-0.5'
-                    : 'shadow-[3px_4px_0px_0px_#000000]'
-                }
-              `}
+              className="w-full px-4 py-4 bg-outta-yellow border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_4px_0px_0px_#000000] disabled:hover:translate-x-0 disabled:hover:translate-y-0"
             >
               Let&apos;s go
             </button>
