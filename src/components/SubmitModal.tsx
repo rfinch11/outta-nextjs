@@ -31,6 +31,7 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
             height: '100%',
             hideHeaders: true,
             hideFooter: true,
+            disableTracking: true,
           });
         }
       };
