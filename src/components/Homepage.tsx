@@ -387,7 +387,7 @@ const Homepage: React.FC = () => {
                 </div>
 
                 {/* Map Column (hidden on mobile) */}
-                <div className="hidden md:block sticky top-[140px] h-[calc(100vh-180px)] rounded-2xl overflow-hidden border-2 border-black shadow-lg">
+                <div className="hidden md:block sticky top-[140px] h-[calc(100vh-180px)] rounded-2xl overflow-hidden border border-gray-300 shadow-lg">
                   <MapView listings={listings} userLocation={userLocation} activeTab={activeTab} />
                 </div>
               </div>
