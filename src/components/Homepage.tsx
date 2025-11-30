@@ -325,7 +325,7 @@ const Homepage: React.FC = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="sticky top-[72px] z-40 bg-white border-b border-[#E0E0E0] px-5">
+      <div className="sticky top-[72px] z-40 bg-gradient-to-b from-outta-blue to-white border-b border-[#E0E0E0] px-5">
         <div className="max-w-7xl mx-auto flex gap-8">
           {[
             { key: 'Event', label: 'Events' },
