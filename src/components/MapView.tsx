@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
+import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,6 +10,7 @@ import Link from 'next/link';
 interface MapViewProps {
   listings: Listing[];
   userLocation?: { lat: number; lng: number } | null;
+  activeTab: 'Event' | 'Activity' | 'Camp';
 }
 
 const mapContainerStyle = {
@@ -16,7 +18,7 @@ const mapContainerStyle = {
   height: '100%',
 };
 
-const MapView: React.FC<MapViewProps> = ({ listings, userLocation }) => {
+const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab }) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
@@ -24,9 +26,11 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation }) => {
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+  const [mapListings, setMapListings] = useState<Listing[]>(listings);
+  const [isLoadingMapData, setIsLoadingMapData] = useState(false);
 
-  // Filter listings with valid coordinates
-  const validListings = listings.filter(
+  // Initial listings with valid coordinates
+  const validListings = mapListings.filter(
     (listing) => listing.latitude && listing.longitude
   );
 
@@ -67,18 +71,76 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation }) => {
     setMap(null);
   }, []);
 
-  // Update bounds when listings change
+  // Load listings within map bounds
+  const loadListingsInBounds = useCallback(async () => {
+    if (!map || isLoadingMapData) return;
+
+    const bounds = map.getBounds();
+    if (!bounds) return;
+
+    const ne = bounds.getNorthEast();
+    const sw = bounds.getSouthWest();
+
+    setIsLoadingMapData(true);
+
+    try {
+      const now = new Date().toISOString();
+
+      let query = supabase
+        .from('listings')
+        .select('*')
+        .eq('type', activeTab)
+        .not('latitude', 'is', null)
+        .not('longitude', 'is', null)
+        .gte('latitude', sw.lat())
+        .lte('latitude', ne.lat())
+        .gte('longitude', sw.lng())
+        .lte('longitude', ne.lng());
+
+      // Filter events by future dates
+      if (activeTab === 'Event') {
+        query = query.gte('start_date', now);
+      }
+
+      const { data, error } = await query.limit(500); // Limit to 500 for performance
+
+      if (error) {
+        console.error('Error fetching map listings:', error);
+        return;
+      }
+
+      if (data) {
+        // Merge with existing listings, avoid duplicates
+        setMapListings((prev) => {
+          const existingIds = new Set(prev.map((l) => l.airtable_id));
+          const newListings = data.filter((l) => !existingIds.has(l.airtable_id));
+          return [...prev, ...newListings];
+        });
+      }
+    } catch (error) {
+      console.error('Error loading map data:', error);
+    } finally {
+      setIsLoadingMapData(false);
+    }
+  }, [map, activeTab, isLoadingMapData]);
+
+  // Update bounds when initial listings change
   useEffect(() => {
-    if (map && validListings.length > 0) {
+    if (map && listings.length > 0) {
       const bounds = new window.google.maps.LatLngBounds();
-      validListings.forEach((listing) => {
+      listings.forEach((listing) => {
         if (listing.latitude && listing.longitude) {
           bounds.extend({ lat: listing.latitude, lng: listing.longitude });
         }
       });
       map.fitBounds(bounds);
     }
-  }, [map, validListings]);
+  }, [map, listings]);
+
+  // Update map listings when tab changes
+  useEffect(() => {
+    setMapListings(listings);
+  }, [activeTab, listings]);
 
   if (!isLoaded) {
     return (
@@ -95,6 +157,7 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation }) => {
       zoom={12}
       onLoad={onLoad}
       onUnmount={onUnmount}
+      onIdle={loadListingsInBounds}
       options={{
         zoomControl: true,
         streetViewControl: false,

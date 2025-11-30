@@ -388,7 +388,7 @@ const Homepage: React.FC = () => {
 
                 {/* Map Column (hidden on mobile) */}
                 <div className="hidden md:block sticky top-[140px] h-[calc(100vh-180px)] rounded-2xl overflow-hidden border-2 border-black shadow-lg">
-                  <MapView listings={listings} userLocation={userLocation} />
+                  <MapView listings={listings} userLocation={userLocation} activeTab={activeTab} />
                 </div>
               </div>
 
@@ -461,7 +461,7 @@ const Homepage: React.FC = () => {
             </button>
           </div>
           <div className="flex-1">
-            <MapView listings={listings} userLocation={userLocation} />
+            <MapView listings={listings} userLocation={userLocation} activeTab={activeTab} />
           </div>
         </div>
       )}
