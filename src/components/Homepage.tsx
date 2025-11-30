@@ -311,7 +311,7 @@ const Homepage: React.FC = () => {
 
       {/* Hero Section */}
       <div className="px-5 py-8">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto flex justify-center">
           {/* Hero Graphic */}
           <Image
             src="/hero.png"
