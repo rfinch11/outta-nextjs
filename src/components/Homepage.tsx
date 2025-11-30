@@ -415,7 +415,7 @@ const Homepage: React.FC = () => {
       {/* FAB for Map (Mobile Only) */}
       <button
         onClick={() => setShowMapModal(true)}
-        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-outta-yellow border-2 border-black rounded-full shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center z-40"
+        className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 w-14 h-14 bg-outta-yellow border-2 border-black rounded-full shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center z-40"
         aria-label="View map"
       >
         <LuMap size={24} />
