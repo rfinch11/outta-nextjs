@@ -45,6 +45,7 @@ interface EventDetailProps {
 
 const EventDetail: React.FC<EventDetailProps> = (props) => {
   const {
+    airtable_id,
     title,
     description,
     image,
@@ -90,6 +91,30 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
       hour12: true,
     });
     return `${startTime} - ${endTime}`;
+  };
+
+  // Handle share
+  const handleShare = async () => {
+    const shareData = {
+      title: title,
+      text: description ? description.substring(0, 200) : `Check out this ${props.type.toLowerCase()} on Outta!`,
+      url: `${window.location.origin}/listings/${airtable_id}`,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback: copy link to clipboard
+        await navigator.clipboard.writeText(shareData.url);
+        alert('Link copied to clipboard!');
+      }
+    } catch (error) {
+      // User cancelled or error occurred
+      if (error instanceof Error && error.name !== 'AbortError') {
+        console.error('Error sharing:', error);
+      }
+    }
   };
 
   const fullAddress = `${street}, ${city}, ${state} ${zip}`;
@@ -222,7 +247,10 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
               Website
             </a>
           )}
-          <button className="flex-1 bg-outta-yellow border-2 border-black rounded-[53px] shadow-[3px_4px_0px_0px_#000000] px-7 py-3.5 text-base font-bold text-gray-900 cursor-pointer hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all">
+          <button
+            onClick={handleShare}
+            className="flex-1 bg-outta-yellow border-2 border-black rounded-[53px] shadow-[3px_4px_0px_0px_#000000] px-7 py-3.5 text-base font-bold text-gray-900 cursor-pointer hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
+          >
             Share
           </button>
         </div>
