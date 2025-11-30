@@ -26,11 +26,13 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
   const [filters, setFilters] = useState<FilterState>(currentFilters);
   const [allTags, setAllTags] = useState<string[]>([]);
   const [showAllTags, setShowAllTags] = useState(false);
+  const [allTypes, setAllTypes] = useState<string[]>([]);
+  const [showAllTypes, setShowAllTypes] = useState(false);
 
-  // Fetch unique tags from Supabase
+  // Fetch unique tags and types from Supabase
   useEffect(() => {
-    async function fetchTags() {
-      const { data } = await supabase.from('listings').select('tags');
+    async function fetchFilters() {
+      const { data } = await supabase.from('listings').select('tags, place_type');
 
       if (data) {
         // Extract all unique tags from comma-separated strings
@@ -44,22 +46,34 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
           }
         });
 
+        // Extract all unique place types
+        const typesSet = new Set<string>();
+        data.forEach((listing) => {
+          if (listing.place_type) {
+            typesSet.add(listing.place_type.trim());
+          }
+        });
+
         // Sort alphabetically
         const uniqueTags = Array.from(tagsSet).sort();
+        const uniqueTypes = Array.from(typesSet).sort();
         setAllTags(uniqueTags);
+        setAllTypes(uniqueTypes);
       }
     }
 
     if (isOpen) {
-      fetchTags();
+      fetchFilters();
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  // Show first 15 tags or all if "Show more" is clicked
+  // Show first 15 tags/types or all if "Show more" is clicked
   const displayedTags = showAllTags ? allTags : allTags.slice(0, 15);
   const hasMoreTags = allTags.length > 15;
+  const displayedTypes = showAllTypes ? allTypes : allTypes.slice(0, 15);
+  const hasMoreTypes = allTypes.length > 15;
 
   const handleClearAll = () => {
     setFilters({
@@ -110,7 +124,6 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
     { key: null, label: 'Any' },
   ];
 
-  const typeOptions = ['Kids storytimes', 'Storytimes', 'Babies (under 2)'];
 
   return (
     <>
@@ -255,7 +268,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
             <div className="mb-8">
               <h3 className="text-lg font-bold mb-4">Type</h3>
               <div className="flex gap-3 flex-wrap">
-                {typeOptions.map((type) => (
+                {displayedTypes.map((type) => (
                   <button
                     key={type}
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
@@ -269,6 +282,22 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                   </button>
                 ))}
               </div>
+              {hasMoreTypes && !showAllTypes && (
+                <button
+                  onClick={() => setShowAllTypes(true)}
+                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
+                >
+                  Show more ({allTypes.length - 15} more types)
+                </button>
+              )}
+              {showAllTypes && hasMoreTypes && (
+                <button
+                  onClick={() => setShowAllTypes(false)}
+                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
+                >
+                  Show less
+                </button>
+              )}
             </div>
 
             {/* Rating */}
