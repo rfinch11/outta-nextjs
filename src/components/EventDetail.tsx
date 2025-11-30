@@ -122,19 +122,19 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header with back button */}
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-200 px-5 py-4">
-        <Link
-          href="/"
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors no-underline text-gray-900"
-        >
-          <IoIosArrowBack size={24} />
-        </Link>
-      </header>
-
-      {/* Hero Image */}
-      <div className="relative w-full h-[300px] bg-gray-100">
+      {/* Hero Image with Floating Back Button */}
+      <div className="relative w-full h-[400px] bg-gray-100">
         <Image src={image} alt={title} fill className="object-cover" />
+
+        {/* Floating Back Button */}
+        <div className="absolute top-0 left-0 right-0 z-50 px-5 py-4">
+          <Link
+            href="/"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg transition-all no-underline text-gray-900"
+          >
+            <IoIosArrowBack size={24} />
+          </Link>
+        </div>
       </div>
 
       {/* Content */}
