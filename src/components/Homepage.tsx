@@ -87,7 +87,7 @@ const Homepage: React.FC = () => {
     localStorage.setItem('userLocation', JSON.stringify(location));
   };
 
-  // Load location on mount from localStorage or use default
+  // Load location on mount from localStorage or prompt for location
   useEffect(() => {
     const stored = localStorage.getItem('userLocation');
     if (stored) {
@@ -101,9 +101,43 @@ const Homepage: React.FC = () => {
         setUserLocation(defaultLocation);
       }
     } else {
-      // No stored location, use default
-      const defaultLocation = { lat: 37.4419, lng: -122.143, zipCode: '94043' };
-      setUserLocation(defaultLocation);
+      // First visit - try to get browser location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+
+            // Reverse geocode to get zip code
+            try {
+              const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+              );
+              const data = await response.json();
+              const zipCode = data.address?.postcode || 'Unknown';
+              saveLocation(lat, lng, zipCode);
+            } catch (error) {
+              console.error('Error reverse geocoding:', error);
+              saveLocation(lat, lng, 'Unknown');
+            }
+          },
+          (error) => {
+            console.log('Location access denied or unavailable:', error.message);
+            // User denied or error - use default location
+            const defaultLocation = { lat: 37.4419, lng: -122.143, zipCode: '94043' };
+            setUserLocation(defaultLocation);
+          },
+          {
+            enableHighAccuracy: false,
+            timeout: 5000,
+            maximumAge: 0,
+          }
+        );
+      } else {
+        // Geolocation not supported - use default
+        const defaultLocation = { lat: 37.4419, lng: -122.143, zipCode: '94043' };
+        setUserLocation(defaultLocation);
+      }
     }
   }, []);
 
