@@ -17,6 +17,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.20.7",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.84.0",
     "@typeform/embed-react": "^4.7.0",

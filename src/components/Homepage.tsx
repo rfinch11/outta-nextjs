@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { LuSearch, LuMapPin, LuFilter, LuPlus } from 'react-icons/lu';
+import { LuSearch, LuMapPin, LuFilter, LuPlus, LuMap } from 'react-icons/lu';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
@@ -22,6 +22,9 @@ const LocationModal = dynamic(() => import('./LocationModal'), {
   ssr: false,
 });
 const SubmitModal = dynamic(() => import('./SubmitModal'), {
+  ssr: false,
+});
+const MapView = dynamic(() => import('./MapView'), {
   ssr: false,
 });
 
@@ -65,6 +68,9 @@ const Homepage: React.FC = () => {
 
   // Submit modal state
   const [showSubmitModal, setShowSubmitModal] = useState(false);
+
+  // Map modal state (mobile)
+  const [showMapModal, setShowMapModal] = useState(false);
 
   // Calculate distance using Haversine formula
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -360,22 +366,30 @@ const Homepage: React.FC = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {listings.map((listing) => (
-                  <ClickableCard
-                    key={listing.airtable_id}
-                    airtable_id={listing.airtable_id}
-                    title={listing.title}
-                    type={listing.type}
-                    recommended={listing.recommended}
-                    city={listing.city}
-                    distance={listing.distance || 0}
-                    image={listing.image}
-                    start_date={listing.start_date}
-                    place_type={listing.place_type}
-                    description={listing.description}
-                  />
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
+                {/* Cards Column */}
+                <div className="flex flex-col gap-4">
+                  {listings.map((listing) => (
+                    <ClickableCard
+                      key={listing.airtable_id}
+                      airtable_id={listing.airtable_id}
+                      title={listing.title}
+                      type={listing.type}
+                      recommended={listing.recommended}
+                      city={listing.city}
+                      distance={listing.distance || 0}
+                      image={listing.image}
+                      start_date={listing.start_date}
+                      place_type={listing.place_type}
+                      description={listing.description}
+                    />
+                  ))}
+                </div>
+
+                {/* Map Column (hidden on mobile) */}
+                <div className="hidden md:block sticky top-[140px] h-[calc(100vh-180px)] rounded-2xl overflow-hidden border-2 border-black shadow-lg">
+                  <MapView listings={listings} userLocation={userLocation} />
+                </div>
               </div>
 
               {/* Load More Button */}
@@ -397,6 +411,15 @@ const Homepage: React.FC = () => {
 
       {/* Footer */}
       <Footer />
+
+      {/* FAB for Map (Mobile Only) */}
+      <button
+        onClick={() => setShowMapModal(true)}
+        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-outta-yellow border-2 border-black rounded-full shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center z-40"
+        aria-label="View map"
+      >
+        <LuMap size={24} />
+      </button>
 
       {/* Modals */}
       <SearchModal
@@ -423,6 +446,25 @@ const Homepage: React.FC = () => {
         isOpen={showSubmitModal}
         onClose={() => setShowSubmitModal(false)}
       />
+
+      {/* Map Modal (Mobile Only) */}
+      {showMapModal && (
+        <div className="md:hidden fixed inset-0 bg-white z-[1000] flex flex-col">
+          <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
+            <h2 className="text-xl font-bold">Map View</h2>
+            <button
+              onClick={() => setShowMapModal(false)}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              aria-label="Close map"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="flex-1">
+            <MapView listings={listings} userLocation={userLocation} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
