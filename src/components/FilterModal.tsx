@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export interface FilterState {
   search: string;
@@ -23,8 +24,42 @@ interface FilterModalProps {
 
 const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, currentFilters }) => {
   const [filters, setFilters] = useState<FilterState>(currentFilters);
+  const [allTags, setAllTags] = useState<string[]>([]);
+  const [showAllTags, setShowAllTags] = useState(false);
+
+  // Fetch unique tags from Supabase
+  useEffect(() => {
+    async function fetchTags() {
+      const { data } = await supabase.from('listings').select('tags');
+
+      if (data) {
+        // Extract all unique tags from comma-separated strings
+        const tagsSet = new Set<string>();
+        data.forEach((listing) => {
+          if (listing.tags) {
+            const tags = listing.tags.split(',').map((tag: string) => tag.trim());
+            tags.forEach((tag: string) => {
+              if (tag) tagsSet.add(tag);
+            });
+          }
+        });
+
+        // Sort alphabetically
+        const uniqueTags = Array.from(tagsSet).sort();
+        setAllTags(uniqueTags);
+      }
+    }
+
+    if (isOpen) {
+      fetchTags();
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
+
+  // Show first 15 tags or all if "Show more" is clicked
+  const displayedTags = showAllTags ? allTags : allTags.slice(0, 15);
+  const hasMoreTags = allTags.length > 15;
 
   const handleClearAll = () => {
     setFilters({
@@ -76,7 +111,6 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
   ];
 
   const typeOptions = ['Kids storytimes', 'Storytimes', 'Babies (under 2)'];
-  const tagOptions = ['Kids storytimes', 'Storytimes', 'Babies (under 2)'];
 
   return (
     <>
@@ -241,7 +275,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
             <div className="mb-8">
               <h3 className="text-lg font-bold mb-4">Tags</h3>
               <div className="flex gap-3 flex-wrap">
-                {tagOptions.map((tag) => (
+                {displayedTags.map((tag) => (
                   <button
                     key={tag}
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
@@ -255,6 +289,22 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                   </button>
                 ))}
               </div>
+              {hasMoreTags && !showAllTags && (
+                <button
+                  onClick={() => setShowAllTags(true)}
+                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
+                >
+                  Show more ({allTags.length - 15} more tags)
+                </button>
+              )}
+              {showAllTags && hasMoreTags && (
+                <button
+                  onClick={() => setShowAllTags(false)}
+                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
+                >
+                  Show less
+                </button>
+              )}
             </div>
 
             {/* Rating */}
