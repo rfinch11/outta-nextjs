@@ -450,7 +450,7 @@ const Homepage: React.FC = () => {
 
       {/* Map Modal (Mobile Only) */}
       {showMapModal && (
-        <div className="md:hidden fixed inset-0 bg-white z-[1000] relative">
+        <div className="md:hidden fixed inset-0 bg-white z-[1000]">
           {/* Floating Back Button */}
           <div className="absolute top-0 left-0 right-0 z-50 px-5 py-4">
             <button
