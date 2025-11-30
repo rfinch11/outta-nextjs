@@ -9,7 +9,7 @@ export interface FilterState {
   sortBy: 'distance' | 'date';
   dateQuick: 'today' | 'tomorrow' | 'next-week' | 'next-month' | null;
   distance: 10 | 20 | 40 | null;
-  priceMax: number;
+  price: 'any' | 'free' | 'paid';
   types: string[];
   tags: string[];
   rating: 'any' | '3+' | '4+' | '4.5+';
@@ -82,7 +82,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
       sortBy: 'date',
       dateQuick: null,
       distance: null,
-      priceMax: 1000,
+      price: 'any',
       types: [],
       tags: [],
       rating: 'any',
@@ -244,23 +244,38 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
 
             {/* Price */}
             <div className="mb-8">
-              <h3 className="text-lg font-bold mb-4">Price (up to)</h3>
-              <input
-                type="range"
-                min="0"
-                max="1000"
-                step="10"
-                value={filters.priceMax}
-                onChange={(e) =>
-                  setFilters((prev) => ({ ...prev, priceMax: Number(e.target.value) }))
-                }
-                className="w-full mt-4 h-2 bg-gray-300 rounded appearance-none cursor-pointer range-slider"
-              />
-              <div className="flex justify-between mt-2 text-sm">
-                <span>$0</span>
-                <span className="font-bold">
-                  {filters.priceMax >= 1000 ? 'Max' : `$${filters.priceMax}`}
-                </span>
+              <h3 className="text-lg font-bold mb-4">Price</h3>
+              <div className="flex gap-3 flex-wrap">
+                <button
+                  className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
+                    filters.price === 'any'
+                      ? 'bg-white border-2 border-outta-orange'
+                      : 'bg-gray-100 border-2 border-transparent'
+                  }`}
+                  onClick={() => setFilters((prev) => ({ ...prev, price: 'any' }))}
+                >
+                  Any
+                </button>
+                <button
+                  className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
+                    filters.price === 'free'
+                      ? 'bg-white border-2 border-outta-orange'
+                      : 'bg-gray-100 border-2 border-transparent'
+                  }`}
+                  onClick={() => setFilters((prev) => ({ ...prev, price: 'free' }))}
+                >
+                  Free
+                </button>
+                <button
+                  className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
+                    filters.price === 'paid'
+                      ? 'bg-white border-2 border-outta-orange'
+                      : 'bg-gray-100 border-2 border-transparent'
+                  }`}
+                  onClick={() => setFilters((prev) => ({ ...prev, price: 'paid' }))}
+                >
+                  Paid
+                </button>
               </div>
             </div>
 
@@ -408,25 +423,6 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
         }
         .animate-slideUp {
           animation: slideUp 0.3s ease-out;
-        }
-
-        .range-slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          background: #FF7E08;
-          border-radius: 50%;
-          cursor: pointer;
-        }
-
-        .range-slider::-moz-range-thumb {
-          width: 20px;
-          height: 20px;
-          background: #FF7E08;
-          border-radius: 50%;
-          cursor: pointer;
-          border: none;
         }
       `}</style>
     </>

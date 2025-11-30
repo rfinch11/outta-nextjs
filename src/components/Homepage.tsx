@@ -49,7 +49,7 @@ const Homepage: React.FC = () => {
     sortBy: 'date',
     dateQuick: null,
     distance: null,
-    priceMax: 1000,
+    price: 'any',
     types: [],
     tags: [],
     rating: 'any',
