@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { LuSearch, LuMapPin, LuFilter, LuPlus, LuMap } from 'react-icons/lu';
+import { IoIosArrowBack } from 'react-icons/io';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
@@ -449,20 +450,18 @@ const Homepage: React.FC = () => {
 
       {/* Map Modal (Mobile Only) */}
       {showMapModal && (
-        <div className="md:hidden fixed inset-0 bg-white z-[1000] flex flex-col">
-          <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
-            <h2 className="text-xl font-bold">Map View</h2>
+        <div className="md:hidden fixed inset-0 bg-white z-[1000] relative">
+          {/* Floating Back Button */}
+          <div className="absolute top-0 left-0 right-0 z-50 px-5 py-4">
             <button
               onClick={() => setShowMapModal(false)}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg transition-all"
               aria-label="Close map"
             >
-              ✕
+              <IoIosArrowBack size={24} />
             </button>
           </div>
-          <div className="flex-1">
-            <MapView listings={listings} userLocation={userLocation} activeTab={activeTab} />
-          </div>
+          <MapView listings={listings} userLocation={userLocation} activeTab={activeTab} />
         </div>
       )}
     </div>
