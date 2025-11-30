@@ -1,34 +1,39 @@
-# Outta - Next.js Migration
+# Outta
 
-**Status:** 🚧 Active Development - Phase 1 Complete
-**Original Site:** [outta.events](https://outta.events)
+**Production Site:** [outta.events](https://outta.events) • [www.outta.events](https://www.outta.events)
 **GitHub:** [rfinch11/outta-nextjs](https://github.com/rfinch11/outta-nextjs)
+**Status:** ✅ Live in Production
 
-This is the Next.js 14 migration of Outta, a kid-friendly adventures discovery platform. We're migrating from a CDN-based React application to a production-ready Next.js platform with TypeScript, Tailwind CSS, and server-side rendering.
+Outta is a kid-friendly adventures discovery platform built with Next.js 16, TypeScript, and Tailwind CSS. Find amazing activities, events, and camps for kids near you.
 
-## Migration Status
+## 🚀 Production Status
 
-See [MIGRATION_PLAN.md](https://github.com/rfinch11/outta/blob/main/MIGRATION_PLAN.md) in the original repository for the complete migration roadmap.
+**Migration Complete!** This Next.js application is now the live production site at outta.events.
 
+### Completed Phases:
 - ✅ Phase 0: Pre-Migration Prep
 - ✅ Phase 1: Initialize Next.js
-- ⏸️ Phase 2: Migrate Core Components
+- ✅ Phase 2: Migrate Core Components
+- ✅ Phase 5: Production Cutover (November 30, 2025)
+
+### Future Enhancements:
 - ⏸️ Phase 3: Testing Infrastructure
 - ⏸️ Phase 4: Performance Optimization
-- ⏸️ Phase 5: Production Cutover
 - ⏸️ Phase 6: Authentication & User Accounts
-- ⏸️ Phase 7: Advanced Features
+- ⏸️ Phase 7: Advanced Features (Reviews, Map View, Notifications)
 - ⏸️ Phase 8: Analytics & Monetization
 
-## Tech Stack
+## 🛠 Tech Stack
 
-- **Framework:** Next.js 14 (App Router)
+- **Framework:** Next.js 16 (App Router)
 - **Language:** TypeScript (strict mode)
-- **Styling:** Tailwind CSS
+- **Styling:** Tailwind CSS v4
 - **Database:** Supabase (PostgreSQL)
 - **Deployment:** Vercel
+- **Forms:** Typeform (@typeform/embed-react)
+- **Icons:** React Icons (Lucide)
 
-## Getting Started
+## 📦 Getting Started
 
 ### Prerequisites
 
@@ -63,32 +68,43 @@ npm run type-check
 # Run linter
 npm run lint
 
-# Format code
-npm run format
+# Build for production
+npm run build
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 outta-nextjs/
 ├── src/
-│   ├── app/                 # Next.js App Router
-│   │   ├── layout.tsx       # Root layout
-│   │   └── page.tsx         # Homepage
-│   ├── components/          # React components (coming in Phase 2)
-│   └── lib/                 # Utilities
-│       └── supabase.ts      # Supabase client
-├── public/                  # Static assets
-├── .env.local               # Environment variables (not committed)
-├── .env.example             # Environment variables template
-├── next.config.ts           # Next.js config
-├── tailwind.config.ts       # Tailwind config
-└── tsconfig.json            # TypeScript config
+│   ├── app/                    # Next.js App Router
+│   │   ├── layout.tsx          # Root layout
+│   │   ├── page.tsx            # Homepage
+│   │   └── listings/[id]/      # Dynamic listing detail pages
+│   ├── components/             # React components
+│   │   ├── Homepage.tsx        # Main homepage component
+│   │   ├── ClickableCard.tsx   # Listing card component
+│   │   ├── SearchModal.tsx     # Search modal
+│   │   ├── FilterModal.tsx     # Filter modal
+│   │   ├── LocationModal.tsx   # Location picker
+│   │   ├── SubmitModal.tsx     # Typeform submission modal
+│   │   ├── EventDetail.tsx     # Listing detail page
+│   │   └── Footer.tsx          # Footer component
+│   └── lib/                    # Utilities
+│       └── supabase.ts         # Supabase client
+├── public/                     # Static assets
+│   ├── Outta_logo.svg
+│   ├── hero.png
+│   └── favicon.png
+├── .env.local                  # Environment variables (not committed)
+├── next.config.ts              # Next.js config
+├── tailwind.config.ts          # Tailwind config
+└── tsconfig.json               # TypeScript config
 ```
 
-## Development Workflow
+## 🔧 Development Workflow
 
 We use Git pre-commit hooks to ensure code quality:
 - TypeScript type checking
@@ -96,27 +112,58 @@ We use Git pre-commit hooks to ensure code quality:
 
 All checks must pass before committing.
 
-## Environment Variables
+## 🌍 Environment Variables
 
 Required environment variables (see `.env.example`):
 
-- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-## Deployment
+## 🚀 Deployment
 
-The site will be deployed on Vercel:
-- **Staging:** TBD
-- **Production:** TBD (after Phase 5)
+The site is deployed on Vercel with automatic deployments from the `main` branch:
 
-## Contributing
+- **Production:** [outta.events](https://outta.events) • [www.outta.events](https://www.outta.events)
+- **Staging:** [outta-nextjs.vercel.app](https://outta-nextjs.vercel.app)
 
-This is a personal project, but feedback and suggestions are welcome! Please open an issue to discuss.
+### Production Deployment
 
-## Related Repositories
+Push to `main` branch triggers automatic deployment:
 
-- [outta](https://github.com/rfinch11/outta) - Original CDN-based React application (production)
+```bash
+git push origin main
+```
 
-## License
+Vercel automatically builds and deploys to outta.events with zero downtime.
+
+## ✨ Features
+
+- **Tab Navigation:** Browse Events, Activities, and Camps
+- **Search:** Full-text search across all listings
+- **Filters:** Distance, date, price, type, tags, and rating filters
+- **Location:** Geolocation and zip code-based distance calculations
+- **Listing Details:** Rich detail pages with maps, organizer info, and sharing
+- **Submit Listings:** Integrated Typeform for community submissions
+- **Load More Pagination:** Infinite scroll with 15 items per page
+- **Mobile Responsive:** Bottom sheet modals and mobile-first design
+
+## 🗄 Database Schema
+
+Powered by Supabase PostgreSQL with the following main tables:
+
+- `listings` - Events, activities, and camps with geolocation data
+- Future: `profiles`, `favorites`, `reviews`
+
+## 📝 License
 
 Private - All Rights Reserved
+
+## 🔗 Related Repositories
+
+- [outta](https://github.com/rfinch11/outta) - Legacy CDN-based React application (sunset November 30, 2025)
+
+---
+
+**Built with ❤️ by Ryan Finch**
