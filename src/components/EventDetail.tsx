@@ -204,11 +204,15 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         )}
 
         {/* Location Section */}
-        {location_name && (
+        {(location_name || street || latitude) && (
           <div className="mb-8">
             <h2 className="text-xl font-bold text-gray-900 mb-3">Location</h2>
-            <p className="text-base font-semibold text-gray-900 mb-1">{location_name}</p>
-            <p className="text-sm text-gray-600 mb-4">{fullAddress}</p>
+            {location_name && (
+              <p className="text-base font-semibold text-gray-900 mb-1">{location_name}</p>
+            )}
+            {street && (
+              <p className="text-sm text-gray-600 mb-4">{fullAddress}</p>
+            )}
 
             {/* Embedded Map */}
             {latitude && longitude && (
