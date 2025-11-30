@@ -249,7 +249,7 @@ const Homepage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-outta-blue to-white">
       {/* Header */}
-      <header className="bg-transparent px-5 py-4">
+      <header className="sticky top-0 z-50 bg-outta-blue px-5 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
           <Image src="/Outta_logo.svg" alt="Outta" width={120} height={40} className="h-10 w-auto" />
@@ -325,7 +325,7 @@ const Homepage: React.FC = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="border-b border-[#E0E0E0] px-5">
+      <div className="sticky top-[72px] z-40 bg-white border-b border-[#E0E0E0] px-5">
         <div className="max-w-7xl mx-auto flex gap-8">
           {[
             { key: 'Event', label: 'Events' },
