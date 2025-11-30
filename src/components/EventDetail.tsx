@@ -210,17 +210,19 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
             <p className="text-base font-semibold text-gray-900 mb-1">{location_name}</p>
             <p className="text-sm text-gray-600 mb-4">{fullAddress}</p>
 
-            {/* Map link */}
+            {/* Embedded Map */}
             {latitude && longitude && (
-              <div className="h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-outta-orange font-semibold text-sm no-underline hover:underline"
-                >
-                  View larger map
-                </a>
+              <div className="relative w-full h-64 rounded-lg overflow-hidden">
+                <iframe
+                  src={`https://www.google.com/maps?q=${latitude},${longitude}&hl=en&z=14&output=embed`}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Location map"
+                />
               </div>
             )}
           </div>
