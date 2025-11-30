@@ -219,11 +219,11 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
               className="flex-1 bg-white border-2 border-black rounded-[53px] shadow-[3px_4px_0px_0px_#000000] px-7 py-3.5 text-base font-bold text-gray-900 cursor-pointer no-underline flex items-center justify-center gap-2 hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
             >
               <IoGlobeOutline size={20} />
-              Event website
+              Website
             </a>
           )}
           <button className="flex-1 bg-outta-yellow border-2 border-black rounded-[53px] shadow-[3px_4px_0px_0px_#000000] px-7 py-3.5 text-base font-bold text-gray-900 cursor-pointer hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all">
-            Share event
+            Share
           </button>
         </div>
       </div>
