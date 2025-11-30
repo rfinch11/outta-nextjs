@@ -87,7 +87,7 @@ const Homepage: React.FC = () => {
     localStorage.setItem('userLocation', JSON.stringify(location));
   };
 
-  // Load location on mount from localStorage or prompt for location
+  // Load location on mount from localStorage or detect location
   useEffect(() => {
     const stored = localStorage.getItem('userLocation');
     if (stored) {
@@ -96,12 +96,11 @@ const Homepage: React.FC = () => {
         setUserLocation(location);
       } catch (e) {
         console.error('Error parsing stored location:', e);
-        // Default to Mountain View, CA if parsing fails
-        const defaultLocation = { lat: 37.4419, lng: -122.143, zipCode: '94043' };
-        setUserLocation(defaultLocation);
+        // Try IP geolocation if stored location is invalid
+        getIPLocation();
       }
     } else {
-      // First visit - try to get browser location
+      // First visit - try browser geolocation first, then IP fallback
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           async (position) => {
@@ -122,10 +121,9 @@ const Homepage: React.FC = () => {
             }
           },
           (error) => {
-            console.log('Location access denied or unavailable:', error.message);
-            // User denied or error - use default location
-            const defaultLocation = { lat: 37.4419, lng: -122.143, zipCode: '94043' };
-            setUserLocation(defaultLocation);
+            console.log('Browser location denied or unavailable:', error.message);
+            // Fallback to IP-based geolocation
+            getIPLocation();
           },
           {
             enableHighAccuracy: false,
@@ -134,12 +132,35 @@ const Homepage: React.FC = () => {
           }
         );
       } else {
-        // Geolocation not supported - use default
-        const defaultLocation = { lat: 37.4419, lng: -122.143, zipCode: '94043' };
-        setUserLocation(defaultLocation);
+        // Geolocation not supported - use IP-based location
+        getIPLocation();
       }
     }
   }, []);
+
+  // Get location from IP address
+  const getIPLocation = async () => {
+    try {
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+
+      if (data.latitude && data.longitude) {
+        const lat = data.latitude;
+        const lng = data.longitude;
+        const zipCode = data.postal || data.city || 'Unknown';
+
+        console.log('Using IP-based location:', data.city, data.region);
+        saveLocation(lat, lng, zipCode);
+      } else {
+        throw new Error('No location data from IP service');
+      }
+    } catch (error) {
+      console.error('Error getting IP location:', error);
+      // Final fallback to San Francisco (more central than Mountain View)
+      const defaultLocation = { lat: 37.7749, lng: -122.4194, zipCode: '94102' };
+      setUserLocation(defaultLocation);
+    }
+  };
 
   // Fetch listings when tab or location changes
   useEffect(() => {
