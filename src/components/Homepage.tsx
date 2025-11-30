@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { LuSearch, LuMapPin, LuFilter, LuPlus } from 'react-icons/lu';
 import Image from 'next/image';
@@ -87,6 +87,30 @@ const Homepage: React.FC = () => {
     localStorage.setItem('userLocation', JSON.stringify(location));
   };
 
+  // Get location from IP address
+  const getIPLocation = useCallback(async () => {
+    try {
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+
+      if (data.latitude && data.longitude) {
+        const lat = data.latitude;
+        const lng = data.longitude;
+        const zipCode = data.postal || data.city || 'Unknown';
+
+        console.log('Using IP-based location:', data.city, data.region);
+        saveLocation(lat, lng, zipCode);
+      } else {
+        throw new Error('No location data from IP service');
+      }
+    } catch (error) {
+      console.error('Error getting IP location:', error);
+      // Final fallback to San Francisco (more central than Mountain View)
+      const defaultLocation = { lat: 37.7749, lng: -122.4194, zipCode: '94102' };
+      setUserLocation(defaultLocation);
+    }
+  }, []);
+
   // Load location on mount from localStorage or detect location
   useEffect(() => {
     const stored = localStorage.getItem('userLocation');
@@ -136,31 +160,7 @@ const Homepage: React.FC = () => {
         getIPLocation();
       }
     }
-  }, []);
-
-  // Get location from IP address
-  const getIPLocation = async () => {
-    try {
-      const response = await fetch('https://ipapi.co/json/');
-      const data = await response.json();
-
-      if (data.latitude && data.longitude) {
-        const lat = data.latitude;
-        const lng = data.longitude;
-        const zipCode = data.postal || data.city || 'Unknown';
-
-        console.log('Using IP-based location:', data.city, data.region);
-        saveLocation(lat, lng, zipCode);
-      } else {
-        throw new Error('No location data from IP service');
-      }
-    } catch (error) {
-      console.error('Error getting IP location:', error);
-      // Final fallback to San Francisco (more central than Mountain View)
-      const defaultLocation = { lat: 37.7749, lng: -122.4194, zipCode: '94102' };
-      setUserLocation(defaultLocation);
-    }
-  };
+  }, [getIPLocation]);
 
   // Fetch listings when tab or location changes
   useEffect(() => {
