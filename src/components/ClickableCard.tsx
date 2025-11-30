@@ -60,29 +60,29 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
             </div>
           )}
 
-          <h3 className="text-gray-900 text-base sm:text-lg font-bold leading-normal m-0 break-words">{title}</h3>
+          <h3 className="text-gray-900 text-lg font-bold leading-normal m-0 break-words">{title}</h3>
 
           {type === 'Event' && start_date && (
-            <div className="text-gray-700 text-xs sm:text-sm leading-6 flex items-center gap-1.5">
+            <div className="text-gray-700 text-sm leading-6 flex items-center gap-1.5">
               <IoCalendarOutline size={16} className="flex-shrink-0" />
               <span className="truncate">{formatDate(start_date)}</span>
             </div>
           )}
 
           {type === 'Activity' && place_type && (
-            <div className="text-gray-700 text-xs sm:text-sm leading-6 flex items-center gap-1.5">
+            <div className="text-gray-700 text-sm leading-6 flex items-center gap-1.5">
               <IoBusinessOutline size={16} className="flex-shrink-0" />
               <span className="truncate">{place_type}</span>
             </div>
           )}
 
           {type === 'Camp' && description && (
-            <div className="text-gray-700 text-xs sm:text-sm leading-[18px] overflow-hidden text-ellipsis line-clamp-3">
+            <div className="text-gray-700 text-sm leading-[18px] overflow-hidden text-ellipsis line-clamp-3">
               {description}
             </div>
           )}
 
-          <div className="text-gray-700 text-xs sm:text-sm leading-6 flex items-center gap-1.5">
+          <div className="text-gray-700 text-sm leading-6 flex items-center gap-1.5">
             <IoLocationOutline size={16} className="flex-shrink-0" />
             <span className="truncate">{locationText}</span>
           </div>
