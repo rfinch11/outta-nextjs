@@ -176,7 +176,7 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab }) 
           icon={{
             path: window.google.maps.SymbolPath.CIRCLE,
             scale: 8,
-            fillColor: listing.recommended ? '#FF7E08' : '#FFF407',
+            fillColor: '#FFF407',
             fillOpacity: 1,
             strokeColor: '#000000',
             strokeWeight: 2,
