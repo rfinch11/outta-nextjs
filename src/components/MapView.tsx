@@ -52,8 +52,23 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab }) 
 
   const onLoad = useCallback(
     (map: google.maps.Map) => {
-      // Fit bounds to show all markers
-      if (validListings.length > 0) {
+      // Set initial bounds to 20-mile radius around user location
+      if (userLocation) {
+        const radius = 20; // miles
+        const milesPerLat = 69; // Approximately 69 miles per degree latitude
+        const latOffset = radius / milesPerLat;
+
+        // Longitude offset varies by latitude, use cos(lat) to adjust
+        const latRad = (userLocation.lat * Math.PI) / 180;
+        const lonOffset = radius / (milesPerLat * Math.cos(latRad));
+
+        const bounds = new window.google.maps.LatLngBounds(
+          { lat: userLocation.lat - latOffset, lng: userLocation.lng - lonOffset },
+          { lat: userLocation.lat + latOffset, lng: userLocation.lng + lonOffset }
+        );
+        map.fitBounds(bounds);
+      } else if (validListings.length > 0) {
+        // Fallback: fit bounds to show all markers
         const bounds = new window.google.maps.LatLngBounds();
         validListings.forEach((listing) => {
           if (listing.latitude && listing.longitude) {
@@ -64,7 +79,7 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab }) 
       }
       setMap(map);
     },
-    [validListings]
+    [validListings, userLocation]
   );
 
   const onUnmount = useCallback(() => {
@@ -124,9 +139,23 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab }) 
     }
   }, [map, activeTab, isLoadingMapData]);
 
-  // Update bounds when initial listings change
+  // Update bounds when initial listings change or user location updates
   useEffect(() => {
-    if (map && listings.length > 0) {
+    if (map && userLocation) {
+      // Set bounds to 20-mile radius around user location
+      const radius = 20; // miles
+      const milesPerLat = 69;
+      const latOffset = radius / milesPerLat;
+      const latRad = (userLocation.lat * Math.PI) / 180;
+      const lonOffset = radius / (milesPerLat * Math.cos(latRad));
+
+      const bounds = new window.google.maps.LatLngBounds(
+        { lat: userLocation.lat - latOffset, lng: userLocation.lng - lonOffset },
+        { lat: userLocation.lat + latOffset, lng: userLocation.lng + lonOffset }
+      );
+      map.fitBounds(bounds);
+    } else if (map && listings.length > 0) {
+      // Fallback: fit to listings if no user location
       const bounds = new window.google.maps.LatLngBounds();
       listings.forEach((listing) => {
         if (listing.latitude && listing.longitude) {
@@ -135,7 +164,7 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab }) 
       });
       map.fitBounds(bounds);
     }
-  }, [map, listings]);
+  }, [map, listings, userLocation]);
 
   // Update map listings when tab changes
   useEffect(() => {
