@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Loader from './Loader';
 
 interface LocationModalProps {
   isOpen: boolean;
@@ -122,7 +123,13 @@ const LocationModal: React.FC<LocationModalProps> = ({ isOpen, onClose, onLocati
             disabled={!zipCodeInput.trim() || loading}
             className="w-full px-4 py-4 bg-white border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_4px_0px_0px_#000000] disabled:hover:translate-x-0 disabled:hover:translate-y-0"
           >
-            {loading ? 'Finding...' : 'Set location'}
+            {loading ? (
+              <div className="inline-flex items-center justify-center">
+                <Loader size={24} />
+              </div>
+            ) : (
+              'Set location'
+            )}
           </button>
         </div>
       </div>

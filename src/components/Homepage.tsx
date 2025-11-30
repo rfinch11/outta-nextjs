@@ -9,6 +9,7 @@ import type { Listing } from '@/lib/supabase';
 import type { FilterState } from './FilterModal';
 import ClickableCard from './ClickableCard';
 import Footer from './Footer';
+import Loader from './Loader';
 
 // Dynamic imports for modals (code splitting)
 const FilterModal = dynamic(() => import('./FilterModal'), {
@@ -350,7 +351,9 @@ const Homepage: React.FC = () => {
       <div className="px-5 py-6">
         <div className="max-w-7xl mx-auto">
           {loading ? (
-            <div className="text-center py-12 text-gray-600">Loading...</div>
+            <div className="py-12">
+              <Loader size={120} />
+            </div>
           ) : listings.length === 0 ? (
             <div className="text-center py-12 text-gray-600">
               No {activeTab.toLowerCase()}s found
@@ -383,7 +386,13 @@ const Homepage: React.FC = () => {
                     disabled={loadingMore}
                     className="w-full max-w-md px-4 py-4 bg-outta-yellow border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_4px_0px_0px_#000000] disabled:hover:translate-x-0 disabled:hover:translate-y-0"
                   >
-                    {loadingMore ? 'Loading...' : 'Load more'}
+                    {loadingMore ? (
+                      <div className="inline-flex items-center justify-center">
+                        <Loader size={24} />
+                      </div>
+                    ) : (
+                      'Load more'
+                    )}
                   </button>
                 </div>
               )}
