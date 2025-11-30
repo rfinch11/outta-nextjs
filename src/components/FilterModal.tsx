@@ -271,42 +271,6 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
               </div>
             </div>
 
-            {/* Tags */}
-            <div className="mb-8">
-              <h3 className="text-lg font-bold mb-4">Tags</h3>
-              <div className="flex gap-3 flex-wrap">
-                {displayedTags.map((tag) => (
-                  <button
-                    key={tag}
-                    className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
-                      filters.tags.includes(tag)
-                        ? 'bg-white border-2 border-outta-orange'
-                        : 'bg-gray-100 border-2 border-transparent'
-                    }`}
-                    onClick={() => toggleTag(tag)}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-              {hasMoreTags && !showAllTags && (
-                <button
-                  onClick={() => setShowAllTags(true)}
-                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
-                >
-                  Show more ({allTags.length - 15} more tags)
-                </button>
-              )}
-              {showAllTags && hasMoreTags && (
-                <button
-                  onClick={() => setShowAllTags(false)}
-                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
-                >
-                  Show less
-                </button>
-              )}
-            </div>
-
             {/* Rating */}
             <div className="mb-8">
               <h3 className="text-lg font-bold mb-4">Rating</h3>
@@ -352,6 +316,42 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                   4.5+ Stars
                 </button>
               </div>
+            </div>
+
+            {/* Tags */}
+            <div className="mb-8">
+              <h3 className="text-lg font-bold mb-4">Tags</h3>
+              <div className="flex gap-3 flex-wrap">
+                {displayedTags.map((tag) => (
+                  <button
+                    key={tag}
+                    className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
+                      filters.tags.includes(tag)
+                        ? 'bg-white border-2 border-outta-orange'
+                        : 'bg-gray-100 border-2 border-transparent'
+                    }`}
+                    onClick={() => toggleTag(tag)}
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+              {hasMoreTags && !showAllTags && (
+                <button
+                  onClick={() => setShowAllTags(true)}
+                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
+                >
+                  Show more ({allTags.length - 15} more tags)
+                </button>
+              )}
+              {showAllTags && hasMoreTags && (
+                <button
+                  onClick={() => setShowAllTags(false)}
+                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
+                >
+                  Show less
+                </button>
+              )}
             </div>
           </div>
 
