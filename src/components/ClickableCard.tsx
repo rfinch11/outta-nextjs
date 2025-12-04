@@ -50,12 +50,12 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
       <div
         className={`flex w-full p-2 sm:p-2.5 gap-2 sm:gap-2.5 rounded-2xl bg-white relative cursor-pointer transition-all hover:shadow-lg ${
-          recommended ? 'border border-outta-orange' : 'border border-gray-300'
+          recommended ? 'border-2 border-flamenco-500' : 'border border-gray-300'
         }`}
       >
         <div className="flex flex-col gap-1 flex-1 min-w-0">
           {recommended && (
-            <div className="flex px-1.5 py-1 justify-center items-center gap-2.5 rounded-lg bg-outta-orange text-white text-[10px] font-bold leading-none mb-1 self-start">
+            <div className="flex px-1.5 py-1 justify-center items-center gap-2.5 rounded-lg bg-flamenco-500 text-white text-[10px] font-bold leading-none mb-1 self-start">
               Recommended
             </div>
           )}

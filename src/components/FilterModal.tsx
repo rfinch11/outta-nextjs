@@ -177,7 +177,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.sortBy === 'distance'
-                      ? 'bg-white border-2 border-outta-orange'
+                      ? 'bg-white border-2 border-flamenco-500'
                       : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, sortBy: 'distance' }))}
@@ -187,7 +187,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.sortBy === 'date'
-                      ? 'bg-white border-2 border-outta-orange'
+                      ? 'bg-white border-2 border-flamenco-500'
                       : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, sortBy: 'date' }))}
@@ -206,7 +206,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     key={option.key}
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.dateQuick === option.key
-                        ? 'bg-white border-2 border-outta-orange'
+                        ? 'bg-white border-2 border-flamenco-500'
                         : 'bg-gray-100 border-2 border-transparent'
                     }`}
                     onClick={() =>
@@ -231,7 +231,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     key={option.label}
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.distance === option.key
-                        ? 'bg-white border-2 border-outta-orange'
+                        ? 'bg-white border-2 border-flamenco-500'
                         : 'bg-gray-100 border-2 border-transparent'
                     }`}
                     onClick={() => setFilters((prev) => ({ ...prev, distance: option.key }))}
@@ -249,7 +249,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.price === 'any'
-                      ? 'bg-white border-2 border-outta-orange'
+                      ? 'bg-white border-2 border-flamenco-500'
                       : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, price: 'any' }))}
@@ -259,7 +259,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.price === 'free'
-                      ? 'bg-white border-2 border-outta-orange'
+                      ? 'bg-white border-2 border-flamenco-500'
                       : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, price: 'free' }))}
@@ -269,7 +269,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.price === 'paid'
-                      ? 'bg-white border-2 border-outta-orange'
+                      ? 'bg-white border-2 border-flamenco-500'
                       : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, price: 'paid' }))}
@@ -288,7 +288,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     key={type}
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.types.includes(type)
-                        ? 'bg-white border-2 border-outta-orange'
+                        ? 'bg-white border-2 border-flamenco-500'
                         : 'bg-gray-100 border-2 border-transparent'
                     }`}
                     onClick={() => toggleType(type)}
@@ -300,7 +300,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
               {hasMoreTypes && !showAllTypes && (
                 <button
                   onClick={() => setShowAllTypes(true)}
-                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
+                  className="mt-4 text-flamenco-600 font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
                 >
                   Show more ({allTypes.length - 15} more types)
                 </button>
@@ -308,7 +308,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
               {showAllTypes && hasMoreTypes && (
                 <button
                   onClick={() => setShowAllTypes(false)}
-                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
+                  className="mt-4 text-flamenco-600 font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
                 >
                   Show less
                 </button>
@@ -322,7 +322,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.rating === 'any'
-                      ? 'bg-white border-2 border-outta-orange'
+                      ? 'bg-white border-2 border-flamenco-500'
                       : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, rating: 'any' }))}
@@ -332,7 +332,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.rating === '3+'
-                      ? 'bg-white border-2 border-outta-orange'
+                      ? 'bg-white border-2 border-flamenco-500'
                       : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, rating: '3+' }))}
@@ -342,7 +342,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.rating === '4+'
-                      ? 'bg-white border-2 border-outta-orange'
+                      ? 'bg-white border-2 border-flamenco-500'
                       : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, rating: '4+' }))}
@@ -352,7 +352,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                 <button
                   className={`flex-1 px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                     filters.rating === '4.5+'
-                      ? 'bg-white border-2 border-outta-orange'
+                      ? 'bg-white border-2 border-flamenco-500'
                       : 'bg-gray-100 border-2 border-transparent'
                   }`}
                   onClick={() => setFilters((prev) => ({ ...prev, rating: '4.5+' }))}
@@ -371,7 +371,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
                     key={tag}
                     className={`px-5 py-2.5 rounded-lg text-[15px] cursor-pointer transition-all ${
                       filters.tags.includes(tag)
-                        ? 'bg-white border-2 border-outta-orange'
+                        ? 'bg-white border-2 border-flamenco-500'
                         : 'bg-gray-100 border-2 border-transparent'
                     }`}
                     onClick={() => toggleTag(tag)}
@@ -383,7 +383,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
               {hasMoreTags && !showAllTags && (
                 <button
                   onClick={() => setShowAllTags(true)}
-                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
+                  className="mt-4 text-flamenco-600 font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
                 >
                   Show more ({allTags.length - 15} more tags)
                 </button>
@@ -391,7 +391,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
               {showAllTags && hasMoreTags && (
                 <button
                   onClick={() => setShowAllTags(false)}
-                  className="mt-4 text-outta-orange font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
+                  className="mt-4 text-flamenco-600 font-semibold text-sm underline cursor-pointer bg-transparent border-none p-0"
                 >
                   Show less
                 </button>
@@ -403,7 +403,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
           <div className="px-6 py-6 border-t border-gray-200">
             <button
               onClick={handleSave}
-              className="w-full px-4 py-4 bg-outta-yellow border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-none relative shadow-[3px_4px_0px_0px_#000000]"
+              className="w-full px-4 py-4 bg-broom-400 border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-none relative shadow-[3px_4px_0px_0px_#000000]"
             >
               Save
             </button>

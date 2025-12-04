@@ -25,13 +25,13 @@ const Footer: React.FC = () => {
             <h3 className="text-sm font-bold text-black m-0 mb-2 uppercase tracking-wide">
               Legal
             </h3>
-            <Link href="/privacy" className="text-sm text-gray-600 no-underline hover:text-outta-orange transition-colors">
+            <Link href="/privacy" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-sm text-gray-600 no-underline hover:text-outta-orange transition-colors">
+            <Link href="/terms" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
               Terms of Service
             </Link>
-            <Link href="/cookies" className="text-sm text-gray-600 no-underline hover:text-outta-orange transition-colors">
+            <Link href="/cookies" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
               Cookie Policy
             </Link>
           </div>
@@ -41,13 +41,13 @@ const Footer: React.FC = () => {
             <h3 className="text-sm font-bold text-black m-0 mb-2 uppercase tracking-wide">
               Support
             </h3>
-            <a href="mailto:hello@outta.events" className="text-sm text-gray-600 no-underline hover:text-outta-orange transition-colors">
+            <a href="mailto:hello@outta.events" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
               Contact
             </a>
-            <Link href="/about" className="text-sm text-gray-600 no-underline hover:text-outta-orange transition-colors">
+            <Link href="/about" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
               About
             </Link>
-            <Link href="/help" className="text-sm text-gray-600 no-underline hover:text-outta-orange transition-colors">
+            <Link href="/help" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
               Help
             </Link>
           </div>
@@ -61,7 +61,7 @@ const Footer: React.FC = () => {
               href="https://twitter.com/outta"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-gray-600 no-underline hover:text-outta-orange transition-colors"
+              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
             >
               Twitter
             </a>
@@ -69,7 +69,7 @@ const Footer: React.FC = () => {
               href="https://instagram.com/outta"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-gray-600 no-underline hover:text-outta-orange transition-colors"
+              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
             >
               Instagram
             </a>
@@ -77,7 +77,7 @@ const Footer: React.FC = () => {
               href="https://facebook.com/outta"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-gray-600 no-underline hover:text-outta-orange transition-colors"
+              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
             >
               Facebook
             </a>

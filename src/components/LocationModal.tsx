@@ -95,10 +95,10 @@ const LocationModal: React.FC<LocationModalProps> = ({ isOpen, onClose, onLocati
         className="bg-white rounded-2xl p-8 max-w-[400px] w-[90%] shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-2xl font-bold text-outta-dark mb-2">
+        <h2 className="text-2xl font-bold text-black-800 mb-2">
           Enter Your Location
         </h2>
-        <p className="text-base text-[#757575] mb-6">
+        <p className="text-base text-black-500 mb-6">
           Enter your zip code to find kid-friendly adventures near you
         </p>
         <input
@@ -107,13 +107,13 @@ const LocationModal: React.FC<LocationModalProps> = ({ isOpen, onClose, onLocati
           onChange={(e) => setZipCodeInput(e.target.value)}
           placeholder="Zip code (e.g., 94043)"
           onKeyDown={handleKeyDown}
-          className="w-full px-4 py-3 text-base border-2 border-[#E0E0E0] rounded-lg mb-4 outline-none focus:border-[#E0E0E0]"
+          className="w-full px-4 py-3 text-base border-2 border-black-200 rounded-lg mb-4 outline-none focus:border-black-300"
         />
         <div className="flex flex-col gap-3">
           <button
             onClick={requestBrowserLocation}
             disabled={loading}
-            className="w-full px-4 py-4 bg-outta-yellow border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_4px_0px_0px_#000000] disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+            className="w-full px-4 py-4 bg-broom-400 border-2 border-black-950 rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_4px_0px_0px_#000000] disabled:hover:translate-x-0 disabled:hover:translate-y-0"
           >
             Use my location
           </button>

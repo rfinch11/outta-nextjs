@@ -4,12 +4,90 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  /* Outta Brand Colors */
+  /* Legacy Outta Brand Colors (deprecated - use design system colors) */
   --outta-yellow: #FFF407;
   --outta-orange: #FF7E08;
   --outta-blue: #E3F2FD;
   --outta-green: #3DD68C;
   --outta-dark: #37474F;
+
+  /* Design System Color Scales - Broom (Yellow/Brown) */
+  --color-broom-50: #fdfee8;
+  --color-broom-100: #faffc2;
+  --color-broom-200: #f9ff87;
+  --color-broom-300: #feff43;
+  --color-broom-400: #fff407;
+  --color-broom-500: #efdb03;
+  --color-broom-600: #ceac00;
+  --color-broom-700: #a47c04;
+  --color-broom-800: #88610b;
+  --color-broom-900: #734e10;
+  --color-broom-950: #432a05;
+
+  /* Design System Color Scales - Flamenco (Orange) */
+  --color-flamenco-50: #fff8ed;
+  --color-flamenco-100: #fff0d4;
+  --color-flamenco-200: #ffdda8;
+  --color-flamenco-300: #ffc470;
+  --color-flamenco-400: #ff9f37;
+  --color-flamenco-500: #ff7e08;
+  --color-flamenco-600: #f06606;
+  --color-flamenco-700: #c74c07;
+  --color-flamenco-800: #9e3c0e;
+  --color-flamenco-900: #7f340f;
+  --color-flamenco-950: #451705;
+
+  /* Design System Color Scales - Lavender Magenta (Purple) */
+  --color-lavender-magenta-50: #fef4ff;
+  --color-lavender-magenta-100: #fde7ff;
+  --color-lavender-magenta-200: #fcceff;
+  --color-lavender-magenta-300: #fd9bff;
+  --color-lavender-magenta-400: #fd74fe;
+  --color-lavender-magenta-500: #f540f5;
+  --color-lavender-magenta-600: #d920d5;
+  --color-lavender-magenta-700: #b417ae;
+  --color-lavender-magenta-800: #93158c;
+  --color-lavender-magenta-900: #781771;
+  --color-lavender-magenta-950: #51014c;
+
+  /* Design System Color Scales - Emerald (Green) */
+  --color-emerald-50: #f1fcf5;
+  --color-emerald-100: #dff9ea;
+  --color-emerald-200: #c0f2d4;
+  --color-emerald-300: #8fe6b3;
+  --color-emerald-400: #56d28a;
+  --color-emerald-500: #35cb75;
+  --color-emerald-600: #219854;
+  --color-emerald-700: #1e7744;
+  --color-emerald-800: #1c5f3a;
+  --color-emerald-900: #194e31;
+  --color-emerald-950: #082b19;
+
+  /* Design System Color Scales - Malibu (Blue) */
+  --color-malibu-50: #eff9ff;
+  --color-malibu-100: #dff2ff;
+  --color-malibu-200: #b8e8ff;
+  --color-malibu-300: #78d6ff;
+  --color-malibu-400: #40c6ff;
+  --color-malibu-500: #06aaf1;
+  --color-malibu-600: #0088ce;
+  --color-malibu-700: #006ca7;
+  --color-malibu-800: #025b8a;
+  --color-malibu-900: #084c72;
+  --color-malibu-950: #06304b;
+
+  /* Design System Color Scales - Black (Grayscale) */
+  --color-black-50: #f6f6f6;
+  --color-black-100: #e7e7e7;
+  --color-black-200: #d1d1d1;
+  --color-black-300: #b0b0b0;
+  --color-black-400: #888888;
+  --color-black-500: #6d6d6d;
+  --color-black-600: #5d5d5d;
+  --color-black-700: #4f4f4f;
+  --color-black-800: #454545;
+  --color-black-900: #3d3d3d;
+  --color-black-950: #000000;
 }
 
 @theme inline {
@@ -17,12 +95,30 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-space-grotesk);
 
-  /* Outta Custom Colors */
+  /* Legacy Outta Custom Colors (deprecated) */
   --color-outta-yellow: var(--outta-yellow);
   --color-outta-orange: var(--outta-orange);
   --color-outta-blue: var(--outta-blue);
   --color-outta-green: var(--outta-green);
   --color-outta-dark: var(--outta-dark);
+
+  /* Design System - Broom Scale */
+  --color-broom-*: initial;
+
+  /* Design System - Flamenco Scale */
+  --color-flamenco-*: initial;
+
+  /* Design System - Lavender Magenta Scale */
+  --color-lavender-magenta-*: initial;
+
+  /* Design System - Emerald Scale */
+  --color-emerald-*: initial;
+
+  /* Design System - Malibu Scale */
+  --color-malibu-*: initial;
+
+  /* Design System - Black Scale */
+  --color-black-*: initial;
 }
 
 body {

@@ -622,9 +622,9 @@ const Homepage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-outta-blue">
+    <div className="min-h-screen bg-malibu-100">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-outta-blue px-5 py-4">
+      <header className="sticky top-0 z-50 bg-malibu-100 px-5 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
           <Image src="/Outta_logo.svg" alt="Outta" width={120} height={40} className="h-10 w-auto" />
@@ -637,7 +637,7 @@ const Homepage: React.FC = () => {
               onClick={() => setShowSearchModal(true)}
               className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
                 hoveredButton === 'search' || searchQuery
-                  ? 'bg-outta-yellow'
+                  ? 'bg-broom-400'
                   : 'bg-transparent hover:bg-gray-100'
               }`}
               aria-label="Search"
@@ -650,7 +650,7 @@ const Homepage: React.FC = () => {
               onMouseLeave={() => setHoveredButton(null)}
               onClick={() => setShowLocationModal(true)}
               className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
-                hoveredButton === 'map' ? 'bg-outta-yellow' : 'bg-transparent hover:bg-gray-100'
+                hoveredButton === 'map' ? 'bg-broom-400' : 'bg-transparent hover:bg-gray-100'
               }`}
               aria-label="Change location"
             >
@@ -662,7 +662,7 @@ const Homepage: React.FC = () => {
               onMouseLeave={() => setHoveredButton(null)}
               onClick={() => setShowFilterModal(true)}
               className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
-                hoveredButton === 'filter' ? 'bg-outta-yellow' : 'bg-transparent hover:bg-gray-100'
+                hoveredButton === 'filter' ? 'bg-broom-400' : 'bg-transparent hover:bg-gray-100'
               }`}
               aria-label="Filter"
             >
@@ -674,7 +674,7 @@ const Homepage: React.FC = () => {
               onMouseLeave={() => setHoveredButton(null)}
               onClick={() => setShowSubmitModal(true)}
               className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
-                hoveredButton === 'add' ? 'bg-outta-yellow' : 'bg-transparent hover:bg-gray-100'
+                hoveredButton === 'add' ? 'bg-broom-400' : 'bg-transparent hover:bg-gray-100'
               }`}
               aria-label="Add listing"
             >
@@ -700,7 +700,7 @@ const Homepage: React.FC = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="sticky top-[72px] z-40 bg-outta-blue border-b border-[#E0E0E0] px-5">
+      <div className="sticky top-[72px] z-40 bg-malibu-100 border-b border-[#E0E0E0] px-5">
         <div className="max-w-7xl mx-auto flex gap-8">
           {[
             { key: 'Event', label: 'Events' },
@@ -712,7 +712,7 @@ const Homepage: React.FC = () => {
               onClick={() => setActiveTab(key as TabType)}
               className={`px-0 py-[14px] bg-transparent border-none cursor-pointer text-lg font-semibold transition-all ${
                 activeTab === key
-                  ? 'text-black font-bold border-b-[3px] border-outta-orange'
+                  ? 'text-black font-bold border-b-[3px] border-flamenco-500'
                   : 'text-[#757575] font-semibold'
               }`}
             >
@@ -766,7 +766,7 @@ const Homepage: React.FC = () => {
                 <div className="flex justify-center mt-8">
                   <button
                     onClick={handleLoadMore}
-                    className="w-full max-w-md px-4 py-4 bg-outta-yellow border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5"
+                    className="w-full max-w-md px-4 py-4 bg-broom-400 border-2 border-black-950rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5"
                   >
                     Load more
                   </button>
@@ -784,7 +784,7 @@ const Homepage: React.FC = () => {
       <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
         <button
           onClick={() => setShowMapModal(true)}
-          className="w-14 h-14 bg-outta-yellow border-2 border-black rounded-full shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center"
+          className="w-14 h-14 bg-broom-400 border-2 border-black-950rounded-full shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center"
           aria-label="View map"
         >
           <LuMap size={24} />
