@@ -1,7 +1,15 @@
 import React from 'react';
+import { Metadata } from 'next';
 import { supabase } from '@/lib/supabase';
 import FeaturedCarousel_Prototype1 from '@/components/FeaturedCarousel_Prototype1';
 import FeaturedCarousel_Prototype2 from '@/components/FeaturedCarousel_Prototype2';
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 async function getFeaturedListings() {
   const { data, error } = await supabase
