@@ -622,7 +622,7 @@ const Homepage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-malibu-50">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-white px-5 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
