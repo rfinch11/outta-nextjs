@@ -243,9 +243,22 @@ const Homepage: React.FC = () => {
     // Start with all listings, excluding those with null locations
     let filtered = allListings.filter((listing) => listing.latitude && listing.longitude);
 
-    // Filter by active tab
-    if (!searchQuery) {
-      filtered = filtered.filter((listing) => listing.type === activeTab);
+    // Always filter by active tab
+    filtered = filtered.filter((listing) => listing.type === activeTab);
+
+    // Apply search query if present
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((listing) => {
+        return (
+          listing.title.toLowerCase().includes(query) ||
+          listing.description?.toLowerCase().includes(query) ||
+          listing.city?.toLowerCase().includes(query) ||
+          listing.tags?.toLowerCase().includes(query) ||
+          listing.place_type?.toLowerCase().includes(query) ||
+          listing.organizer?.toLowerCase().includes(query)
+        );
+      });
     }
 
     // Filter out past events (only for Events tab, unless searching)
@@ -366,8 +379,20 @@ const Homepage: React.FC = () => {
     const now = new Date();
     let filtered = allListings.filter((listing) => listing.latitude && listing.longitude);
 
-    if (!searchQuery) {
-      filtered = filtered.filter((listing) => listing.type === activeTab);
+    filtered = filtered.filter((listing) => listing.type === activeTab);
+
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((listing) => {
+        return (
+          listing.title.toLowerCase().includes(query) ||
+          listing.description?.toLowerCase().includes(query) ||
+          listing.city?.toLowerCase().includes(query) ||
+          listing.tags?.toLowerCase().includes(query) ||
+          listing.place_type?.toLowerCase().includes(query) ||
+          listing.organizer?.toLowerCase().includes(query)
+        );
+      });
     }
 
     if (activeTab === 'Event' && !searchQuery && !filters.dateQuick) {
@@ -470,8 +495,20 @@ const Homepage: React.FC = () => {
     const now = new Date();
     let filtered = allListings.filter((listing) => listing.latitude && listing.longitude);
 
-    if (!searchQuery) {
-      filtered = filtered.filter((listing) => listing.type === activeTab);
+    filtered = filtered.filter((listing) => listing.type === activeTab);
+
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((listing) => {
+        return (
+          listing.title.toLowerCase().includes(query) ||
+          listing.description?.toLowerCase().includes(query) ||
+          listing.city?.toLowerCase().includes(query) ||
+          listing.tags?.toLowerCase().includes(query) ||
+          listing.place_type?.toLowerCase().includes(query) ||
+          listing.organizer?.toLowerCase().includes(query)
+        );
+      });
     }
 
     if (activeTab === 'Event' && !searchQuery && !filters.dateQuick) {
