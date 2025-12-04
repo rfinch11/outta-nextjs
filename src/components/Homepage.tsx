@@ -33,10 +33,10 @@ type TabType = 'Event' | 'Activity' | 'Camp';
 
 const Homepage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('Event');
-  const [listings, setListings] = useState<Listing[]>([]);
+  const [allListings, setAllListings] = useState<Listing[]>([]);
+  const [displayedListings, setDisplayedListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [displayCount, setDisplayCount] = useState(15);
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
 
   // Location state
@@ -51,7 +51,7 @@ const Homepage: React.FC = () => {
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     recommended: false,
-    sortBy: 'date',
+    sortBy: activeTab === 'Event' ? 'date' : 'distance',
     dateQuick: null,
     distance: null,
     price: 'any',
@@ -170,52 +170,52 @@ const Homepage: React.FC = () => {
     }
   }, [getIPLocation]);
 
-  // Fetch listings when tab or location changes
+  // Fetch all listings once when component mounts and location is set
   useEffect(() => {
     if (userLocation) {
-      fetchListings(true); // Reset to first page
+      fetchAllListings();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, userLocation, searchQuery]);
+  }, [userLocation]);
 
-  const fetchListings = async (reset = false) => {
-    if (reset) {
-      setLoading(true);
-    } else {
-      setLoadingMore(true);
+  // Update sort preference when tab changes
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      sortBy: activeTab === 'Event' ? 'date' : 'distance',
+    }));
+  }, [activeTab]);
+
+  // Apply filters and sorting whenever dependencies change
+  useEffect(() => {
+    if (allListings.length > 0) {
+      applyFiltersAndSort();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, searchQuery, filters, allListings]);
 
+  // Fetch all listings from database once
+  const fetchAllListings = async () => {
+    setLoading(true);
     try {
-      const now = new Date().toISOString();
-      const currentListings = reset ? [] : listings;
-      const offset = reset ? 0 : currentListings.length;
+      // Fetch ALL listings at once
+      const query = supabase.from('listings').select('*');
 
-      let query = supabase.from('listings').select('*');
-
-      // Filter by type if not searching
-      if (!searchQuery) {
-        query = query.eq('type', activeTab);
-      }
-
-      // Filter events by future dates
-      if (activeTab === 'Event' && !searchQuery) {
-        query = query.gte('start_date', now);
-      }
-
-      const { data, error } = await query
-        .order('recommended', { ascending: false })
-        .order('start_date', { ascending: true })
-        .range(offset, offset + 14); // Fetch 15 items (0-14, 15-29, etc.)
+      const { data, error } = await query;
 
       if (error) {
         console.error('Error fetching listings:', error);
         setLoading(false);
-        setLoadingMore(false);
         return;
       }
 
-      // Calculate distances
-      const listingsWithDistance = (data || []).map((listing) => {
+      if (!data) {
+        setLoading(false);
+        return;
+      }
+
+      // Calculate distances for all listings
+      const listingsWithDistance = data.map((listing) => {
         let distance = 0;
         if (listing.latitude && listing.longitude && userLocation) {
           distance = calculateDistance(
@@ -228,21 +228,352 @@ const Homepage: React.FC = () => {
         return { ...listing, distance };
       });
 
-      // Check if there are more items to load
-      setHasMore(data && data.length === 15);
-
-      // Append or replace listings
-      setListings(reset ? listingsWithDistance : [...currentListings, ...listingsWithDistance]);
+      setAllListings(listingsWithDistance);
+      setLoading(false);
     } catch (error) {
       console.error('Error:', error);
-    } finally {
       setLoading(false);
-      setLoadingMore(false);
     }
   };
 
+  // Apply filters and sorting to all listings
+  const applyFiltersAndSort = () => {
+    const now = new Date();
+
+    // Start with all listings, excluding those with null locations
+    let filtered = allListings.filter((listing) => listing.latitude && listing.longitude);
+
+    // Filter by active tab
+    if (!searchQuery) {
+      filtered = filtered.filter((listing) => listing.type === activeTab);
+    }
+
+    // Filter out past events (only for Events tab, unless searching)
+    if (activeTab === 'Event' && !searchQuery && !filters.dateQuick) {
+      filtered = filtered.filter((listing) => {
+        if (!listing.start_date) return false;
+        return new Date(listing.start_date) >= now;
+      });
+    }
+
+    // Apply recommended filter
+    if (filters.recommended) {
+      filtered = filtered.filter((listing) => listing.recommended);
+    }
+
+    // Apply price filter
+    if (filters.price === 'free') {
+      filtered = filtered.filter((listing) => {
+        if (!listing.price) return true;
+        const priceStr = listing.price.toLowerCase();
+        return priceStr.includes('free') || listing.price === '0';
+      });
+    } else if (filters.price === 'paid') {
+      filtered = filtered.filter((listing) => {
+        if (!listing.price) return false;
+        const priceStr = listing.price.toLowerCase();
+        return !priceStr.includes('free') && listing.price !== '0';
+      });
+    }
+
+    // Apply rating filter
+    if (filters.rating !== 'any') {
+      const minRating = parseFloat(filters.rating.replace('+', ''));
+      filtered = filtered.filter((listing) => listing.rating && listing.rating >= minRating);
+    }
+
+    // Apply date filter
+    if (filters.dateQuick) {
+      filtered = filtered.filter((listing) => {
+        if (!listing.start_date) return false;
+        const listingDate = new Date(listing.start_date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let startDate: Date;
+        let endDate: Date;
+
+        switch (filters.dateQuick) {
+          case 'today':
+            startDate = new Date(today);
+            endDate = new Date(today);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+          case 'tomorrow':
+            startDate = new Date(today);
+            startDate.setDate(startDate.getDate() + 1);
+            endDate = new Date(startDate);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+          case 'next-week':
+            startDate = new Date(today);
+            endDate = new Date(today);
+            endDate.setDate(endDate.getDate() + 7);
+            break;
+          case 'next-month':
+            startDate = new Date(today);
+            endDate = new Date(today);
+            endDate.setMonth(endDate.getMonth() + 1);
+            break;
+          default:
+            return true;
+        }
+
+        return listingDate >= startDate && listingDate <= endDate;
+      });
+    }
+
+    // Apply place type filter
+    if (filters.types.length > 0) {
+      filtered = filtered.filter(
+        (listing) => listing.place_type && filters.types.includes(listing.place_type)
+      );
+    }
+
+    // Apply tags filter
+    if (filters.tags.length > 0) {
+      filtered = filtered.filter((listing) => {
+        if (!listing.tags) return false;
+        const listingTags = listing.tags.split(',').map((tag: string) => tag.trim());
+        return filters.tags.some((filterTag) => listingTags.includes(filterTag));
+      });
+    }
+
+    // Apply distance filter
+    if (filters.distance !== null) {
+      filtered = filtered.filter((listing) => (listing.distance || 0) <= filters.distance!);
+    }
+
+    // Apply sorting
+    if (filters.sortBy === 'distance') {
+      filtered.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+    } else if (filters.sortBy === 'date') {
+      filtered.sort((a, b) => {
+        if (!a.start_date && !b.start_date) return 0;
+        if (!a.start_date) return 1;
+        if (!b.start_date) return -1;
+        return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
+      });
+    }
+
+    // Reset display count when filters change and show first 15
+    setDisplayCount(15);
+    setDisplayedListings(filtered.slice(0, 15));
+  };
+
+  // Calculate if there are more results to show
+  const hasMore = () => {
+    const now = new Date();
+    let filtered = allListings.filter((listing) => listing.latitude && listing.longitude);
+
+    if (!searchQuery) {
+      filtered = filtered.filter((listing) => listing.type === activeTab);
+    }
+
+    if (activeTab === 'Event' && !searchQuery && !filters.dateQuick) {
+      filtered = filtered.filter((listing) => {
+        if (!listing.start_date) return false;
+        return new Date(listing.start_date) >= now;
+      });
+    }
+
+    if (filters.recommended) {
+      filtered = filtered.filter((listing) => listing.recommended);
+    }
+
+    if (filters.price === 'free') {
+      filtered = filtered.filter((listing) => {
+        if (!listing.price) return true;
+        const priceStr = listing.price.toLowerCase();
+        return priceStr.includes('free') || listing.price === '0';
+      });
+    } else if (filters.price === 'paid') {
+      filtered = filtered.filter((listing) => {
+        if (!listing.price) return false;
+        const priceStr = listing.price.toLowerCase();
+        return !priceStr.includes('free') && listing.price !== '0';
+      });
+    }
+
+    if (filters.rating !== 'any') {
+      const minRating = parseFloat(filters.rating.replace('+', ''));
+      filtered = filtered.filter((listing) => listing.rating && listing.rating >= minRating);
+    }
+
+    if (filters.dateQuick) {
+      filtered = filtered.filter((listing) => {
+        if (!listing.start_date) return false;
+        const listingDate = new Date(listing.start_date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let startDate: Date;
+        let endDate: Date;
+
+        switch (filters.dateQuick) {
+          case 'today':
+            startDate = new Date(today);
+            endDate = new Date(today);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+          case 'tomorrow':
+            startDate = new Date(today);
+            startDate.setDate(startDate.getDate() + 1);
+            endDate = new Date(startDate);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+          case 'next-week':
+            startDate = new Date(today);
+            endDate = new Date(today);
+            endDate.setDate(endDate.getDate() + 7);
+            break;
+          case 'next-month':
+            startDate = new Date(today);
+            endDate = new Date(today);
+            endDate.setMonth(endDate.getMonth() + 1);
+            break;
+          default:
+            return true;
+        }
+
+        return listingDate >= startDate && listingDate <= endDate;
+      });
+    }
+
+    if (filters.types.length > 0) {
+      filtered = filtered.filter(
+        (listing) => listing.place_type && filters.types.includes(listing.place_type)
+      );
+    }
+
+    if (filters.tags.length > 0) {
+      filtered = filtered.filter((listing) => {
+        if (!listing.tags) return false;
+        const listingTags = listing.tags.split(',').map((tag: string) => tag.trim());
+        return filters.tags.some((filterTag) => listingTags.includes(filterTag));
+      });
+    }
+
+    if (filters.distance !== null) {
+      filtered = filtered.filter((listing) => (listing.distance || 0) <= filters.distance!);
+    }
+
+    return filtered.length > displayCount;
+  };
+
   const handleLoadMore = () => {
-    fetchListings(false);
+    // Simply show 15 more items from the already filtered results
+    const newCount = displayCount + 15;
+    setDisplayCount(newCount);
+
+    // Get the current filtered results without re-filtering
+    const now = new Date();
+    let filtered = allListings.filter((listing) => listing.latitude && listing.longitude);
+
+    if (!searchQuery) {
+      filtered = filtered.filter((listing) => listing.type === activeTab);
+    }
+
+    if (activeTab === 'Event' && !searchQuery && !filters.dateQuick) {
+      filtered = filtered.filter((listing) => {
+        if (!listing.start_date) return false;
+        return new Date(listing.start_date) >= now;
+      });
+    }
+
+    if (filters.recommended) {
+      filtered = filtered.filter((listing) => listing.recommended);
+    }
+
+    if (filters.price === 'free') {
+      filtered = filtered.filter((listing) => {
+        if (!listing.price) return true;
+        const priceStr = listing.price.toLowerCase();
+        return priceStr.includes('free') || listing.price === '0';
+      });
+    } else if (filters.price === 'paid') {
+      filtered = filtered.filter((listing) => {
+        if (!listing.price) return false;
+        const priceStr = listing.price.toLowerCase();
+        return !priceStr.includes('free') && listing.price !== '0';
+      });
+    }
+
+    if (filters.rating !== 'any') {
+      const minRating = parseFloat(filters.rating.replace('+', ''));
+      filtered = filtered.filter((listing) => listing.rating && listing.rating >= minRating);
+    }
+
+    if (filters.dateQuick) {
+      filtered = filtered.filter((listing) => {
+        if (!listing.start_date) return false;
+        const listingDate = new Date(listing.start_date);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let startDate: Date;
+        let endDate: Date;
+
+        switch (filters.dateQuick) {
+          case 'today':
+            startDate = new Date(today);
+            endDate = new Date(today);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+          case 'tomorrow':
+            startDate = new Date(today);
+            startDate.setDate(startDate.getDate() + 1);
+            endDate = new Date(startDate);
+            endDate.setHours(23, 59, 59, 999);
+            break;
+          case 'next-week':
+            startDate = new Date(today);
+            endDate = new Date(today);
+            endDate.setDate(endDate.getDate() + 7);
+            break;
+          case 'next-month':
+            startDate = new Date(today);
+            endDate = new Date(today);
+            endDate.setMonth(endDate.getMonth() + 1);
+            break;
+          default:
+            return true;
+        }
+
+        return listingDate >= startDate && listingDate <= endDate;
+      });
+    }
+
+    if (filters.types.length > 0) {
+      filtered = filtered.filter(
+        (listing) => listing.place_type && filters.types.includes(listing.place_type)
+      );
+    }
+
+    if (filters.tags.length > 0) {
+      filtered = filtered.filter((listing) => {
+        if (!listing.tags) return false;
+        const listingTags = listing.tags.split(',').map((tag: string) => tag.trim());
+        return filters.tags.some((filterTag) => listingTags.includes(filterTag));
+      });
+    }
+
+    if (filters.distance !== null) {
+      filtered = filtered.filter((listing) => (listing.distance || 0) <= filters.distance!);
+    }
+
+    if (filters.sortBy === 'distance') {
+      filtered.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+    } else if (filters.sortBy === 'date') {
+      filtered.sort((a, b) => {
+        if (!a.start_date && !b.start_date) return 0;
+        if (!a.start_date) return 1;
+        if (!b.start_date) return -1;
+        return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
+      });
+    }
+
+    setDisplayedListings(filtered.slice(0, newCount));
   };
 
   const handleSearch = (query: string) => {
@@ -361,7 +692,7 @@ const Homepage: React.FC = () => {
             <div className="py-12">
               <Loader size={120} />
             </div>
-          ) : listings.length === 0 ? (
+          ) : displayedListings.length === 0 ? (
             <div className="text-center py-12 text-gray-600">
               No {activeTab.toLowerCase()}s found
             </div>
@@ -370,7 +701,7 @@ const Homepage: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
                 {/* Cards Column */}
                 <div className="flex flex-col gap-4">
-                  {listings.map((listing) => (
+                  {displayedListings.map((listing) => (
                     <ClickableCard
                       key={listing.airtable_id}
                       airtable_id={listing.airtable_id}
@@ -389,19 +720,18 @@ const Homepage: React.FC = () => {
 
                 {/* Map Column (hidden on mobile) */}
                 <div className="hidden md:block sticky top-[140px] h-[calc(100vh-180px)] rounded-2xl overflow-hidden border border-gray-300 shadow-lg">
-                  <MapView listings={listings} userLocation={userLocation} activeTab={activeTab} />
+                  <MapView listings={displayedListings} userLocation={userLocation} activeTab={activeTab} />
                 </div>
               </div>
 
               {/* Load More Button */}
-              {hasMore && (
+              {hasMore() && (
                 <div className="flex justify-center mt-8">
                   <button
                     onClick={handleLoadMore}
-                    disabled={loadingMore}
-                    className="w-full max-w-md px-4 py-4 bg-outta-yellow border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_4px_0px_0px_#000000] disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+                    className="w-full max-w-md px-4 py-4 bg-outta-yellow border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5"
                   >
-                    {loadingMore ? 'Loading...' : 'Load more'}
+                    Load more
                   </button>
                 </div>
               )}
@@ -463,7 +793,7 @@ const Homepage: React.FC = () => {
               <IoIosArrowBack size={24} />
             </button>
           </div>
-          <MapView listings={listings} userLocation={userLocation} activeTab={activeTab} />
+          <MapView listings={displayedListings} userLocation={userLocation} activeTab={activeTab} />
         </div>
       )}
     </div>
