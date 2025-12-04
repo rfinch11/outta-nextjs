@@ -37,6 +37,7 @@ const Homepage: React.FC = () => {
   const [displayedListings, setDisplayedListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(15);
+  const [totalFilteredCount, setTotalFilteredCount] = useState(0);
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
 
   // Location state
@@ -371,11 +372,17 @@ const Homepage: React.FC = () => {
 
     // Reset display count when filters change and show first 15
     setDisplayCount(15);
+    setTotalFilteredCount(filtered.length);
     setDisplayedListings(filtered.slice(0, 15));
   };
 
   // Calculate if there are more results to show
   const hasMore = () => {
+    return totalFilteredCount > displayCount;
+  };
+
+  // Old hasMore implementation (replaced with simpler version above)
+  const hasMoreOld = () => {
     const now = new Date();
     let filtered = allListings.filter((listing) => listing.latitude && listing.longitude);
 
@@ -610,6 +617,7 @@ const Homepage: React.FC = () => {
       });
     }
 
+    setTotalFilteredCount(filtered.length);
     setDisplayedListings(filtered.slice(0, newCount));
   };
 
