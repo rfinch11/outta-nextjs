@@ -622,9 +622,9 @@ const Homepage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-malibu-100">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-malibu-100 px-5 py-4">
+      <header className="sticky top-0 z-50 bg-white px-5 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
           <Image src="/Outta_logo.svg" alt="Outta" width={120} height={40} className="h-10 w-auto" />
@@ -700,7 +700,7 @@ const Homepage: React.FC = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="sticky top-[72px] z-40 bg-malibu-100 border-b border-[#E0E0E0] px-5">
+      <div className="sticky top-[72px] z-40 bg-white border-b border-[#E0E0E0] px-5">
         <div className="max-w-7xl mx-auto flex gap-8">
           {[
             { key: 'Event', label: 'Events' },
@@ -766,7 +766,7 @@ const Homepage: React.FC = () => {
                 <div className="flex justify-center mt-8">
                   <button
                     onClick={handleLoadMore}
-                    className="w-full max-w-md px-4 py-4 bg-broom-400 border-2 border-black-950rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5"
+                    className="w-full max-w-md px-4 py-4 bg-broom-400 border-2 border-black-950 rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5"
                   >
                     Load more
                   </button>
@@ -784,7 +784,7 @@ const Homepage: React.FC = () => {
       <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
         <button
           onClick={() => setShowMapModal(true)}
-          className="w-14 h-14 bg-broom-400 border-2 border-black-950rounded-full shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center"
+          className="w-14 h-14 bg-broom-400 border-2 border-black-950 rounded-full shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center"
           aria-label="View map"
         >
           <LuMap size={24} />
