@@ -103,22 +103,82 @@
   --color-outta-dark: var(--outta-dark);
 
   /* Design System - Broom Scale */
-  --color-broom-*: initial;
+  --color-broom-50: var(--color-broom-50);
+  --color-broom-100: var(--color-broom-100);
+  --color-broom-200: var(--color-broom-200);
+  --color-broom-300: var(--color-broom-300);
+  --color-broom-400: var(--color-broom-400);
+  --color-broom-500: var(--color-broom-500);
+  --color-broom-600: var(--color-broom-600);
+  --color-broom-700: var(--color-broom-700);
+  --color-broom-800: var(--color-broom-800);
+  --color-broom-900: var(--color-broom-900);
+  --color-broom-950: var(--color-broom-950);
 
   /* Design System - Flamenco Scale */
-  --color-flamenco-*: initial;
+  --color-flamenco-50: var(--color-flamenco-50);
+  --color-flamenco-100: var(--color-flamenco-100);
+  --color-flamenco-200: var(--color-flamenco-200);
+  --color-flamenco-300: var(--color-flamenco-300);
+  --color-flamenco-400: var(--color-flamenco-400);
+  --color-flamenco-500: var(--color-flamenco-500);
+  --color-flamenco-600: var(--color-flamenco-600);
+  --color-flamenco-700: var(--color-flamenco-700);
+  --color-flamenco-800: var(--color-flamenco-800);
+  --color-flamenco-900: var(--color-flamenco-900);
+  --color-flamenco-950: var(--color-flamenco-950);
 
   /* Design System - Lavender Magenta Scale */
-  --color-lavender-magenta-*: initial;
+  --color-lavender-magenta-50: var(--color-lavender-magenta-50);
+  --color-lavender-magenta-100: var(--color-lavender-magenta-100);
+  --color-lavender-magenta-200: var(--color-lavender-magenta-200);
+  --color-lavender-magenta-300: var(--color-lavender-magenta-300);
+  --color-lavender-magenta-400: var(--color-lavender-magenta-400);
+  --color-lavender-magenta-500: var(--color-lavender-magenta-500);
+  --color-lavender-magenta-600: var(--color-lavender-magenta-600);
+  --color-lavender-magenta-700: var(--color-lavender-magenta-700);
+  --color-lavender-magenta-800: var(--color-lavender-magenta-800);
+  --color-lavender-magenta-900: var(--color-lavender-magenta-900);
+  --color-lavender-magenta-950: var(--color-lavender-magenta-950);
 
   /* Design System - Emerald Scale */
-  --color-emerald-*: initial;
+  --color-emerald-50: var(--color-emerald-50);
+  --color-emerald-100: var(--color-emerald-100);
+  --color-emerald-200: var(--color-emerald-200);
+  --color-emerald-300: var(--color-emerald-300);
+  --color-emerald-400: var(--color-emerald-400);
+  --color-emerald-500: var(--color-emerald-500);
+  --color-emerald-600: var(--color-emerald-600);
+  --color-emerald-700: var(--color-emerald-700);
+  --color-emerald-800: var(--color-emerald-800);
+  --color-emerald-900: var(--color-emerald-900);
+  --color-emerald-950: var(--color-emerald-950);
 
   /* Design System - Malibu Scale */
-  --color-malibu-*: initial;
+  --color-malibu-50: var(--color-malibu-50);
+  --color-malibu-100: var(--color-malibu-100);
+  --color-malibu-200: var(--color-malibu-200);
+  --color-malibu-300: var(--color-malibu-300);
+  --color-malibu-400: var(--color-malibu-400);
+  --color-malibu-500: var(--color-malibu-500);
+  --color-malibu-600: var(--color-malibu-600);
+  --color-malibu-700: var(--color-malibu-700);
+  --color-malibu-800: var(--color-malibu-800);
+  --color-malibu-900: var(--color-malibu-900);
+  --color-malibu-950: var(--color-malibu-950);
 
   /* Design System - Black Scale */
-  --color-black-*: initial;
+  --color-black-50: var(--color-black-50);
+  --color-black-100: var(--color-black-100);
+  --color-black-200: var(--color-black-200);
+  --color-black-300: var(--color-black-300);
+  --color-black-400: var(--color-black-400);
+  --color-black-500: var(--color-black-500);
+  --color-black-600: var(--color-black-600);
+  --color-black-700: var(--color-black-700);
+  --color-black-800: var(--color-black-800);
+  --color-black-900: var(--color-black-900);
+  --color-black-950: var(--color-black-950);
 }
 
 body {
