@@ -93,6 +93,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
           alt={title}
           width={120}
           height={120}
+          unoptimized
           className="w-20 h-20 sm:w-28 sm:h-28 md:w-[120px] md:h-[120px] flex-shrink-0 rounded-lg object-cover aspect-square"
         />
       </div>
