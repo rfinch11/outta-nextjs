@@ -35,36 +35,42 @@ const Chip: React.FC<ChipProps> = ({ variant, label, className = '' }) => {
       case 'scoutpick':
         return {
           container: 'bg-lavender-magenta-100',
+          text: 'text-lavender-magenta-900',
           icon: <MdVerified size={12} className="text-lavender-magenta-900" />,
           defaultLabel: 'Scout Pick',
         };
       case 'deal':
         return {
           container: 'bg-emerald-100',
+          text: 'text-emerald-900',
           icon: <LuTag size={12} className="text-emerald-900" />,
           defaultLabel: 'Deal',
         };
       case 'promoted':
         return {
           container: 'bg-malibu-100',
+          text: 'text-malibu-900',
           icon: <PiMegaphoneBold size={12} className="text-malibu-900" />,
           defaultLabel: 'Promoted',
         };
       case 'new':
         return {
           container: 'bg-broom-100',
+          text: 'text-broom-900',
           icon: null,
           defaultLabel: 'New',
         };
       case 'comingsoon':
         return {
           container: 'bg-black-100',
+          text: 'text-black-900',
           icon: null,
           defaultLabel: 'Coming Soon',
         };
       case 'toprated':
         return {
           container: 'bg-flamenco-100',
+          text: 'text-flamenco-900',
           icon: <PiTrophyBold size={12} className="text-flamenco-900" />,
           defaultLabel: 'Top Rated',
         };
@@ -76,7 +82,7 @@ const Chip: React.FC<ChipProps> = ({ variant, label, className = '' }) => {
 
   return (
     <span
-      className={`inline-flex items-center justify-center gap-0.5 px-[5px] py-[2px] rounded-lg text-[11px] font-semibold leading-none ${styles.container} ${className}`}
+      className={`inline-flex items-center justify-center gap-[2px] px-[5px] py-[2px] rounded-lg text-[11px] font-semibold leading-none ${styles.container} ${styles.text} ${className}`}
     >
       {styles.icon}
       <span>{displayLabel}</span>
