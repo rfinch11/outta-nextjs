@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { IoCalendarOutline, IoLocationOutline, IoBusinessOutline } from 'react-icons/io5';
 
@@ -88,12 +87,9 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
           </div>
         </div>
 
-        <Image
+        <img
           src={image}
           alt={title}
-          width={120}
-          height={120}
-          unoptimized
           className="w-20 h-20 sm:w-28 sm:h-28 md:w-[120px] md:h-[120px] flex-shrink-0 rounded-lg object-cover aspect-square"
         />
       </div>
