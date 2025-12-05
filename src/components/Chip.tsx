@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { VscVerified } from 'react-icons/vsc';
+import { MdVerified } from 'react-icons/md';
 import { LuTag } from 'react-icons/lu';
 import { PiMegaphoneBold, PiTrophyBold } from 'react-icons/pi';
 
@@ -35,7 +35,7 @@ const Chip: React.FC<ChipProps> = ({ variant, label, className = '' }) => {
       case 'scoutpick':
         return {
           container: 'border-lavender-magenta-900 bg-lavender-magenta-100',
-          icon: <VscVerified size={12} className="text-lavender-magenta-900" />,
+          icon: <MdVerified size={12} className="text-lavender-magenta-900" />,
           defaultLabel: 'Scout Pick',
         };
       case 'deal':
