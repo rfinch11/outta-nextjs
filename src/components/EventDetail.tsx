@@ -124,7 +124,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     <div className="min-h-screen bg-white">
       {/* Hero Image with Floating Back Button */}
       <div className="relative w-full h-[400px] bg-gray-100">
-        <Image src={image} alt={title} fill className="object-cover" />
+        <Image src={image} alt={title} fill unoptimized className="object-cover" />
 
         {/* Floating Back Button */}
         <div className="absolute top-0 left-0 right-0 z-50 px-5 py-4">
