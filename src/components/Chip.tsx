@@ -52,7 +52,7 @@ const Chip: React.FC<ChipProps> = ({ variant, label, className = '' }) => {
         };
       case 'new':
         return {
-          container: 'bg-broom-50',
+          container: 'bg-broom-100',
           icon: null,
           defaultLabel: 'New',
         };
