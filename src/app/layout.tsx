@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const bricolageGrotesque = Bricolage_Grotesque({
+  variable: "--font-bricolage-grotesque",
   subsets: ["latin"],
   weight: ["400", "600", "700"],
 });
@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${spaceGrotesk.variable} antialiased`}>
+      <body className={`${bricolageGrotesque.variable} antialiased`}>
         {children}
         <Analytics />
       </body>
