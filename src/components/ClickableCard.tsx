@@ -60,12 +60,12 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
   return (
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
-      <div className="flex w-full p-3 gap-3 rounded-2xl bg-white border border-gray-300 relative cursor-pointer transition-all hover:shadow-lg">
+      <div className="flex w-full p-2 gap-2.5 rounded-2xl bg-white border border-gray-300 relative cursor-pointer transition-all hover:shadow-lg">
         {/* Image on the left */}
         <img
           src={imageUrl}
           alt={title}
-          className="w-[72px] h-[72px] flex-shrink-0 rounded-xl object-cover aspect-square"
+          className="w-[96px] h-[96px] flex-shrink-0 rounded-xl object-cover aspect-square"
         />
 
         {/* Content on the right */}
@@ -80,13 +80,13 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
           )}
 
           {/* Title */}
-          <h3 className="text-black-900 text-base font-bold leading-tight m-0 break-words line-clamp-2">
+          <h3 className="text-malibu-950 text-lg font-bold leading-tight m-0 break-words line-clamp-2">
             {title}
           </h3>
 
           {/* Date for Events */}
           {type === 'Event' && start_date && (
-            <div className="text-black-700 text-sm leading-5 flex items-center gap-1.5">
+            <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
               <IoCalendarOutline size={16} className="flex-shrink-0 text-black-500" />
               <span className="truncate">{formatDate(start_date)}</span>
             </div>
@@ -94,7 +94,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
           {/* Place type for Activities */}
           {type === 'Activity' && place_type && (
-            <div className="text-black-700 text-sm leading-5 flex items-center gap-1.5">
+            <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
               <IoBusinessOutline size={16} className="flex-shrink-0 text-black-500" />
               <span className="truncate">{place_type}</span>
             </div>
@@ -102,13 +102,13 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
           {/* Description for Camps */}
           {type === 'Camp' && description && (
-            <div className="text-black-700 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-2">
+            <div className="text-black-600 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-2">
               {description}
             </div>
           )}
 
           {/* Location */}
-          <div className="text-black-700 text-sm leading-5 flex items-center gap-1.5">
+          <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
             <IoLocationOutline size={16} className="flex-shrink-0 text-black-500" />
             <span className="truncate">{locationText}</span>
           </div>
