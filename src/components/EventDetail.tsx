@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -64,6 +64,9 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     longitude,
   } = props;
 
+  const [imageError, setImageError] = useState(false);
+  const fallbackImage = 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800&auto=format&fit=crop';
+
   // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -124,7 +127,13 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     <div className="min-h-screen bg-white">
       {/* Hero Image with Floating Back Button */}
       <div className="relative w-full h-[400px] bg-gray-100">
-        <Image src={image} alt={title} fill className="object-cover" />
+        <Image
+          src={imageError || !image ? fallbackImage : image}
+          alt={title}
+          fill
+          className="object-cover"
+          onError={() => setImageError(true)}
+        />
 
         {/* Floating Back Button */}
         <div className="absolute top-0 left-0 right-0 z-50 px-5 py-4">
