@@ -82,7 +82,7 @@ const Chip: React.FC<ChipProps> = ({ variant, label, className = '' }) => {
 
   return (
     <span
-      className={`inline-flex items-center justify-center gap-[2px] px-[5px] py-[2px] rounded-md text-[11px] font-semibold leading-none ${styles.container} ${styles.text} ${className}`}
+      className={`inline-flex items-center justify-center gap-[2px] px-[5px] py-[5px] rounded-md text-[11px] font-semibold leading-none ${styles.container} ${styles.text} ${className}`}
     >
       {styles.icon}
       <span>{displayLabel}</span>
