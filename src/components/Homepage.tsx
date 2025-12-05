@@ -270,9 +270,9 @@ const Homepage: React.FC = () => {
       });
     }
 
-    // Apply recommended filter
+    // Apply scout pick filter
     if (filters.recommended) {
-      filtered = filtered.filter((listing) => listing.recommended);
+      filtered = filtered.filter((listing) => listing.scout_pick);
     }
 
     // Apply price filter
@@ -414,7 +414,7 @@ const Homepage: React.FC = () => {
     }
 
     if (filters.recommended) {
-      filtered = filtered.filter((listing) => listing.recommended);
+      filtered = filtered.filter((listing) => listing.scout_pick);
     }
 
     if (filters.price === 'free') {
@@ -640,7 +640,9 @@ const Homepage: React.FC = () => {
                       airtable_id={listing.airtable_id}
                       title={listing.title}
                       type={listing.type}
-                      recommended={listing.recommended}
+                      scout_pick={listing.scout_pick}
+                      deal={listing.deal}
+                      promoted={listing.promoted}
                       city={listing.city}
                       distance={listing.distance || 0}
                       image={listing.image}

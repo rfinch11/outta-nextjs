@@ -3,12 +3,15 @@
 import React from 'react';
 import Link from 'next/link';
 import { IoCalendarOutline, IoLocationOutline, IoBusinessOutline } from 'react-icons/io5';
+import Chip from './Chip';
 
 interface ClickableCardProps {
   airtable_id: string;
   title: string;
   type: 'Event' | 'Activity' | 'Camp';
-  recommended?: boolean | null;
+  scout_pick?: boolean | null;
+  deal?: boolean | null;
+  promoted?: boolean | null;
   city: string;
   distance: string | number;
   image: string;
@@ -22,7 +25,9 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
   airtable_id,
   title,
   type,
-  recommended,
+  scout_pick,
+  deal,
+  promoted,
   city,
   distance,
   image,
@@ -32,7 +37,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
   description,
 }) => {
   // Format location string
-  const locationText = `${city} • ${distance} mi`;
+  const locationText = `${city}, ${distance} mi`;
 
   // Format date for events
   const formatDate = (dateString: string) => {
@@ -55,51 +60,59 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
   return (
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
-      <div
-        className={`flex w-full p-2 sm:p-2.5 gap-2 sm:gap-2.5 rounded-2xl bg-white relative cursor-pointer transition-all hover:shadow-lg ${
-          recommended ? 'border-2 border-flamenco-500' : 'border border-gray-300'
-        }`}
-      >
-        <div className="flex flex-col gap-1 flex-1 min-w-0">
-          {recommended && (
-            <div className="flex px-1.5 py-1 justify-center items-center gap-2.5 rounded-lg bg-flamenco-500 text-white text-[10px] font-bold leading-none mb-1 self-start">
-              Recommended
+      <div className="flex w-full p-3 gap-3 rounded-2xl bg-white border border-gray-300 relative cursor-pointer transition-all hover:shadow-lg">
+        {/* Image on the left */}
+        <img
+          src={imageUrl}
+          alt={title}
+          className="w-[72px] h-[72px] flex-shrink-0 rounded-xl object-cover aspect-square"
+        />
+
+        {/* Content on the right */}
+        <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+          {/* Chips row */}
+          {(scout_pick || deal || promoted) && (
+            <div className="flex gap-1.5 flex-wrap">
+              {scout_pick && <Chip variant="scoutpick" />}
+              {deal && <Chip variant="deal" />}
+              {promoted && <Chip variant="promoted" />}
             </div>
           )}
 
-          <h3 className="text-gray-900 text-lg font-bold leading-normal m-0 break-words">{title}</h3>
+          {/* Title */}
+          <h3 className="text-black-900 text-base font-bold leading-tight m-0 break-words line-clamp-2">
+            {title}
+          </h3>
 
+          {/* Date for Events */}
           {type === 'Event' && start_date && (
-            <div className="text-gray-700 text-sm leading-6 flex items-center gap-1.5">
-              <IoCalendarOutline size={16} className="flex-shrink-0" />
+            <div className="text-black-700 text-sm leading-5 flex items-center gap-1.5">
+              <IoCalendarOutline size={16} className="flex-shrink-0 text-black-500" />
               <span className="truncate">{formatDate(start_date)}</span>
             </div>
           )}
 
+          {/* Place type for Activities */}
           {type === 'Activity' && place_type && (
-            <div className="text-gray-700 text-sm leading-6 flex items-center gap-1.5">
-              <IoBusinessOutline size={16} className="flex-shrink-0" />
+            <div className="text-black-700 text-sm leading-5 flex items-center gap-1.5">
+              <IoBusinessOutline size={16} className="flex-shrink-0 text-black-500" />
               <span className="truncate">{place_type}</span>
             </div>
           )}
 
+          {/* Description for Camps */}
           {type === 'Camp' && description && (
-            <div className="text-gray-700 text-sm leading-[18px] overflow-hidden text-ellipsis line-clamp-3">
+            <div className="text-black-700 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-2">
               {description}
             </div>
           )}
 
-          <div className="text-gray-700 text-sm leading-6 flex items-center gap-1.5">
-            <IoLocationOutline size={16} className="flex-shrink-0" />
+          {/* Location */}
+          <div className="text-black-700 text-sm leading-5 flex items-center gap-1.5">
+            <IoLocationOutline size={16} className="flex-shrink-0 text-black-500" />
             <span className="truncate">{locationText}</span>
           </div>
         </div>
-
-        <img
-          src={imageUrl}
-          alt={title}
-          className="w-20 h-20 sm:w-28 sm:h-28 md:w-[120px] md:h-[120px] flex-shrink-0 rounded-lg object-cover aspect-square"
-        />
       </div>
     </Link>
   );

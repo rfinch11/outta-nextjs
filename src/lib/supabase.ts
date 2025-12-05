@@ -9,7 +9,10 @@ export type Listing = {
   airtable_id: string;
   title: string;
   type: 'Event' | 'Activity' | 'Camp';
-  recommended: boolean;
+  scout_pick: boolean;
+  deal: boolean;
+  promoted: boolean;
+  scout_tip?: string | null;
   city: string;
   state: string;
   street: string;
