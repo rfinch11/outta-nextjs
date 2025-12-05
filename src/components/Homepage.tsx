@@ -644,6 +644,7 @@ const Homepage: React.FC = () => {
                       city={listing.city}
                       distance={listing.distance || 0}
                       image={listing.image}
+                      place_id={listing.place_id}
                       start_date={listing.start_date}
                       place_type={listing.place_type}
                       description={listing.description}

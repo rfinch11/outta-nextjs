@@ -14,6 +14,7 @@ export type Listing = {
   state: string;
   street: string;
   image: string;
+  place_id?: string | null;
   latitude?: number;
   longitude?: number;
   start_date?: string;

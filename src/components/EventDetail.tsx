@@ -19,6 +19,7 @@ interface EventDetailProps {
   type: 'Event' | 'Activity' | 'Camp';
   description?: string;
   image: string;
+  place_id?: string | null;
 
   // Location
   location_name?: string;
@@ -48,6 +49,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     title,
     description,
     image,
+    place_id,
     start_date,
     location_name,
     street,
@@ -119,11 +121,16 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   const fullAddress = `${street}, ${city}, ${state} ${zip}`;
   const tagArray = tags?.split(',').map((t) => t.trim()) || [];
 
+  // Use Google Places API for images if place_id is available
+  const imageUrl = place_id
+    ? `/api/place-photo?place_id=${place_id}&width=800`
+    : image;
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Image with Floating Back Button */}
       <div className="relative w-full h-[400px] bg-gray-100">
-        <img src={image} alt={title} className="w-full h-full object-cover" />
+        <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
 
         {/* Floating Back Button */}
         <div className="absolute top-0 left-0 right-0 z-50 px-5 py-4">

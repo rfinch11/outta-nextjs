@@ -12,6 +12,7 @@ interface ClickableCardProps {
   city: string;
   distance: string | number;
   image: string;
+  place_id?: string | null;
   start_date?: string;
   place_type?: string;
   description?: string;
@@ -25,6 +26,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
   city,
   distance,
   image,
+  place_id,
   start_date,
   place_type,
   description,
@@ -44,6 +46,12 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
     };
     return date.toLocaleDateString('en-US', options);
   };
+
+  // Use Google Places API for images if place_id is available
+  // Otherwise fall back to the stored image URL
+  const imageUrl = place_id
+    ? `/api/place-photo?place_id=${place_id}&width=400`
+    : image;
 
   return (
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
@@ -88,7 +96,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
         </div>
 
         <img
-          src={image}
+          src={imageUrl}
           alt={title}
           className="w-20 h-20 sm:w-28 sm:h-28 md:w-[120px] md:h-[120px] flex-shrink-0 rounded-lg object-cover aspect-square"
         />
