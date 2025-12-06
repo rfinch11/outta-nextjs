@@ -121,12 +121,12 @@ const TabBar: React.FC<TabBarProps> = ({
           {/* Main Menu Dropdown */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center gap-2 px-0 py-0 bg-transparent border-none cursor-pointer text-lg font-bold text-black"
+            className="flex items-center gap-2 px-0 py-0 bg-transparent border-none cursor-pointer text-lg font-bold text-malibu-950"
           >
             {activeMenuLabel}
             <IoChevronDown
               size={20}
-              className={`text-black-900 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`}
+              className={`text-malibu-950 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`}
             />
           </button>
 
