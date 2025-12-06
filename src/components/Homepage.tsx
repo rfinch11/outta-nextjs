@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { LuSearch, LuMapPin, LuFilter, LuPlus, LuMap } from 'react-icons/lu';
+import { LuSearch, LuMapPin, LuPlus, LuMap } from 'react-icons/lu';
 import { IoIosArrowBack } from 'react-icons/io';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
@@ -14,9 +14,6 @@ import Loader from './Loader';
 import TabBar, { TabFilter } from './TabBar';
 
 // Dynamic imports for modals (code splitting)
-const FilterModal = dynamic(() => import('./FilterModal'), {
-  ssr: false,
-});
 const SearchModal = dynamic(() => import('./SearchModal'), {
   ssr: false,
 });
@@ -49,7 +46,6 @@ const Homepage: React.FC = () => {
   } | null>(null);
 
   // Filter state
-  const [showFilterModal, setShowFilterModal] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     recommended: false,
@@ -677,18 +673,6 @@ const Homepage: React.FC = () => {
             </button>
 
             <button
-              onMouseEnter={() => setHoveredButton('filter')}
-              onMouseLeave={() => setHoveredButton(null)}
-              onClick={() => setShowFilterModal(true)}
-              className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
-                hoveredButton === 'filter' ? 'bg-broom-400' : 'bg-transparent hover:bg-gray-100'
-              }`}
-              aria-label="Filter"
-            >
-              <LuFilter size={17} />
-            </button>
-
-            <button
               onMouseEnter={() => setHoveredButton('add')}
               onMouseLeave={() => setHoveredButton(null)}
               onClick={() => setShowSubmitModal(true)}
@@ -812,13 +796,6 @@ const Homepage: React.FC = () => {
         onClose={() => setShowSearchModal(false)}
         onSearch={handleSearch}
         currentQuery={searchQuery}
-      />
-
-      <FilterModal
-        isOpen={showFilterModal}
-        onClose={() => setShowFilterModal(false)}
-        onApply={handleApplyFilters}
-        currentFilters={filters}
       />
 
       <LocationModal
