@@ -114,7 +114,7 @@ const TabBar: React.FC<TabBarProps> = ({
   };
 
   return (
-    <div className="sticky top-[80px] z-40 bg-malibu-50 px-5 pb-1 border-b border-[#E0E0E0]">
+    <div className="sticky top-[80px] z-40 bg-malibu-50 px-5 border-b border-[#E0E0E0]">
       <div className="max-w-7xl mx-auto">
         {/* Primary Menu and Filter Chips Row */}
         <div className="relative py-[14px] flex items-center gap-3" ref={menuRef}>
@@ -158,7 +158,7 @@ const TabBar: React.FC<TabBarProps> = ({
           )}
 
           {/* Filter Chips - Inline with Menu */}
-          <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar flex-1">
+          <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar flex-1 py-1">
             {/* Show active filters as orange chips */}
             {activeFilters.map((filter) => (
               <FilterChip
