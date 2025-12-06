@@ -3,7 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  IoCalendarOutline,
   IoLocationOutline,
   IoTimeOutline,
   IoPricetagOutline,
@@ -11,6 +10,7 @@ import {
   IoGlobeOutline,
 } from 'react-icons/io5';
 import { IoIosArrowBack } from 'react-icons/io';
+import { LuCalendar } from 'react-icons/lu';
 
 interface EventDetailProps {
   // Core fields
@@ -151,7 +151,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         <div className="flex flex-col gap-4 mb-8">
           {start_date && (
             <div className="flex items-center gap-3">
-              <IoCalendarOutline size={20} className="text-gray-600 flex-shrink-0" />
+              <LuCalendar size={20} className="text-gray-600 flex-shrink-0" />
               <span className="text-base text-gray-800">{formatDate(start_date)}</span>
             </div>
           )}

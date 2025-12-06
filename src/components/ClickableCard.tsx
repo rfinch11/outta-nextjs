@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { IoCalendarOutline, IoLocationOutline, IoBusinessOutline } from 'react-icons/io5';
+import { IoLocationOutline, IoBusinessOutline } from 'react-icons/io5';
+import { LuCalendar } from 'react-icons/lu';
 import Chip from './Chip';
 
 interface ClickableCardProps {
@@ -87,7 +88,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
           {/* Date for Events */}
           {type === 'Event' && start_date && (
             <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
-              <IoCalendarOutline size={16} className="flex-shrink-0 text-black-500" />
+              <LuCalendar size={16} className="flex-shrink-0 text-black-500" />
               <span className="truncate">{formatDate(start_date)}</span>
             </div>
           )}
