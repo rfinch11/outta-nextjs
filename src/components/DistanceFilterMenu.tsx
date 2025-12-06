@@ -27,20 +27,25 @@ const DistanceFilterMenu: React.FC<DistanceFilterMenuProps> = ({
   };
 
   // Calculate percentage for gradient
-  const percentage = (sliderValue / maxDistance) * 100;
+  // Add 1 extra step for ">50" option
+  const maxSliderValue = maxDistance + 5;
+  const percentage = (sliderValue / maxSliderValue) * 100;
+
+  // Display text - show ">50" when at max
+  const displayValue = sliderValue > maxDistance ? `>${maxDistance}` : `${sliderValue}`;
 
   return (
     <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 p-4 min-w-[280px] z-50">
       <div className="mb-3">
         <div className="flex items-center justify-between mb-2">
           <span className="text-base font-medium text-malibu-950">Distance</span>
-          <span className="text-sm font-bold text-black">{sliderValue} mi</span>
+          <span className="text-sm font-bold text-black">{displayValue} mi</span>
         </div>
         <div className="relative">
           <input
             type="range"
             min="0"
-            max={maxDistance}
+            max={maxSliderValue}
             step="5"
             value={sliderValue}
             onChange={handleSliderChange}
@@ -52,7 +57,7 @@ const DistanceFilterMenu: React.FC<DistanceFilterMenuProps> = ({
         </div>
         <div className="flex justify-between mt-1">
           <span className="text-xs text-gray-500">0 mi</span>
-          <span className="text-xs text-gray-500">{maxDistance} mi</span>
+          <span className="text-xs text-gray-500">&gt;{maxDistance} mi</span>
         </div>
       </div>
       <button
