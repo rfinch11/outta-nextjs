@@ -525,10 +525,6 @@ const Homepage: React.FC = () => {
     setSearchQuery(query);
   };
 
-  const handleApplyFilters = (newFilters: FilterState) => {
-    setFilters(newFilters);
-  };
-
   // Get available filters based on active tab
   const getAvailableFilters = (): TabFilter[] => {
     const baseFilters: TabFilter[] = [];
