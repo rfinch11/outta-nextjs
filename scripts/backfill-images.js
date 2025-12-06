@@ -57,7 +57,8 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
  */
 async function searchUnsplash(title) {
   const query = encodeURIComponent(`${title} children`);
-  const url = `https://api.unsplash.com/search/photos?query=${query}&per_page=1&orientation=landscape`;
+  // Request 30 results and randomly pick one to ensure variety
+  const url = `https://api.unsplash.com/search/photos?query=${query}&per_page=30&orientation=landscape`;
 
   try {
     const response = await fetch(url, {
@@ -76,9 +77,13 @@ async function searchUnsplash(title) {
       return null;
     }
 
+    // Randomly select one of the results for variety
+    const randomIndex = Math.floor(Math.random() * data.results.length);
+    const selectedImage = data.results[randomIndex];
+
     return {
-      url: data.results[0].urls.regular,
-      photographer: data.results[0].user.name
+      url: selectedImage.urls.regular,
+      photographer: selectedImage.user.name
     };
   } catch (error) {
     console.error(`Error fetching from Unsplash:`, error.message);

@@ -7,8 +7,8 @@ export interface FilterState {
   search: string;
   recommended: boolean;
   sortBy: 'distance' | 'date';
-  dateQuick: 'today' | 'tomorrow' | 'next-week' | 'next-month' | null;
-  distance: 10 | 20 | 40 | null;
+  dateQuick: 'today' | 'tomorrow' | 'this_week' | 'this_month' | null;
+  distance: number | null;
   price: 'any' | 'free' | 'paid';
   types: string[];
   tags: string[];
@@ -113,8 +113,8 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
   const dateOptions = [
     { key: 'today' as const, label: 'Today' },
     { key: 'tomorrow' as const, label: 'Tomorrow' },
-    { key: 'next-week' as const, label: 'Next week' },
-    { key: 'next-month' as const, label: 'Next month' },
+    { key: 'this_week' as const, label: 'This week' },
+    { key: 'this_month' as const, label: 'This month' },
   ];
 
   const distanceOptions: Array<{ key: 10 | 20 | 40 | null; label: string }> = [

@@ -10,7 +10,7 @@ import Link from 'next/link';
 interface MapViewProps {
   listings: Listing[];
   userLocation?: { lat: number; lng: number } | null;
-  activeTab: 'Event' | 'Activity' | 'Camp';
+  activeTab: 'Event' | 'Activity' | 'Camp' | 'Restaurant';
 }
 
 const mapContainerStyle = {
