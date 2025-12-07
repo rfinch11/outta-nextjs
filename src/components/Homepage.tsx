@@ -64,6 +64,7 @@ const Homepage: React.FC = () => {
   // Search state
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchMode, setIsSearchMode] = useState(false);
 
   // Location modal state
   const [showLocationModal, setShowLocationModal] = useState(false);
@@ -701,49 +702,110 @@ const Homepage: React.FC = () => {
     <div className="min-h-screen bg-malibu-50">
       {/* Header */}
       <header className="sticky top-0 z-50 bg-malibu-50 px-5 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
           {/* Logo */}
-          <Image src="/Outta_logo.svg" alt="Outta" width={120} height={40} className="h-10 w-auto" />
+          <div
+            className={`overflow-hidden flex-shrink-0 ${isSearchMode ? 'w-0' : 'w-[120px]'}`}
+            style={{
+              transition: 'width 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+              willChange: isSearchMode ? 'width' : 'auto'
+            }}
+          >
+            <div className={`transition-opacity ${isSearchMode ? 'opacity-0 duration-75' : 'opacity-100 duration-300'}`}>
+              <Image src="/Outta_logo.svg" alt="Outta" width={120} height={40} className="h-10 w-auto" />
+            </div>
+          </div>
 
-          {/* Action Bar */}
-          <div className="flex items-center gap-2 bg-white rounded-[60px] p-2 shadow-sm">
-            <button
-              onMouseEnter={() => setHoveredButton('search')}
-              onMouseLeave={() => setHoveredButton(null)}
-              onClick={() => setShowSearchModal(true)}
-              className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
-                hoveredButton === 'search' || searchQuery
-                  ? 'bg-broom-400'
-                  : 'bg-transparent hover:bg-gray-100'
-              }`}
-              aria-label="Search"
-            >
-              <LuSearch size={17} />
-            </button>
+          {/* Action Bar / Search Bar */}
+          <div
+            className={`flex items-center gap-2 bg-white rounded-[60px] p-2 shadow-sm ${isSearchMode ? 'flex-1' : ''}`}
+            style={{
+              willChange: isSearchMode ? 'flex' : 'auto'
+            }}
+          >
+            {isSearchMode ? (
+              <>
+                {/* Back button */}
+                <button
+                  onClick={() => {
+                    setIsSearchMode(false);
+                    setSearchQuery('');
+                    setFilters({ ...filters, search: '' });
+                  }}
+                  className="w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-transparent hover:bg-gray-100"
+                  aria-label="Close search"
+                >
+                  <IoIosArrowBack size={20} />
+                </button>
 
-            <button
-              onMouseEnter={() => setHoveredButton('map')}
-              onMouseLeave={() => setHoveredButton(null)}
-              onClick={() => setShowLocationModal(true)}
-              className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
-                hoveredButton === 'map' ? 'bg-broom-400' : 'bg-transparent hover:bg-gray-100'
-              }`}
-              aria-label="Change location"
-            >
-              <TbLocation size={17} />
-            </button>
+                {/* Search input */}
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setFilters({ ...filters, search: e.target.value });
+                  }}
+                  placeholder="Search events & activities..."
+                  className="flex-1 bg-transparent border-none outline-none text-base px-2"
+                  autoFocus
+                />
 
-            <button
-              onMouseEnter={() => setHoveredButton('add')}
-              onMouseLeave={() => setHoveredButton(null)}
-              onClick={() => setShowSubmitModal(true)}
-              className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
-                hoveredButton === 'add' ? 'bg-broom-400' : 'bg-transparent hover:bg-gray-100'
-              }`}
-              aria-label="Add listing"
-            >
-              <LuPlus size={17} />
-            </button>
+                {/* Clear button */}
+                {searchQuery && (
+                  <button
+                    onClick={() => {
+                      setSearchQuery('');
+                      setFilters({ ...filters, search: '' });
+                    }}
+                    className="w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-transparent hover:bg-gray-100"
+                    aria-label="Clear search"
+                  >
+                    <LuSearch size={16} className="text-gray-400" />
+                  </button>
+                )}
+              </>
+            ) : (
+              <>
+                <button
+                  onMouseEnter={() => setHoveredButton('search')}
+                  onMouseLeave={() => setHoveredButton(null)}
+                  onClick={() => setIsSearchMode(true)}
+                  className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
+                    hoveredButton === 'search' || searchQuery
+                      ? 'bg-malibu-50'
+                      : 'bg-transparent hover:bg-gray-100'
+                  }`}
+                  aria-label="Search"
+                >
+                  <LuSearch size={17} />
+                </button>
+
+                <button
+                  onMouseEnter={() => setHoveredButton('map')}
+                  onMouseLeave={() => setHoveredButton(null)}
+                  onClick={() => setShowLocationModal(true)}
+                  className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
+                    hoveredButton === 'map' ? 'bg-malibu-50' : 'bg-transparent hover:bg-gray-100'
+                  }`}
+                  aria-label="Change location"
+                >
+                  <TbLocation size={17} />
+                </button>
+
+                <button
+                  onMouseEnter={() => setHoveredButton('add')}
+                  onMouseLeave={() => setHoveredButton(null)}
+                  onClick={() => setShowSubmitModal(true)}
+                  className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
+                    hoveredButton === 'add' ? 'bg-malibu-50' : 'bg-transparent hover:bg-gray-100'
+                  }`}
+                  aria-label="Add listing"
+                >
+                  <LuPlus size={17} />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
