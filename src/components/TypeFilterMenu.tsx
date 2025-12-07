@@ -39,7 +39,7 @@ const TypeFilterMenu: React.FC<TypeFilterMenuProps> = ({
         {availableTypes.map((type) => (
           <label
             key={type}
-            className="flex items-center gap-3 py-2 cursor-pointer hover:bg-gray-50 rounded"
+            className="flex items-center gap-3 py-3 cursor-pointer hover:bg-gray-50 rounded"
           >
             <div className="relative flex items-center justify-center">
               <input
