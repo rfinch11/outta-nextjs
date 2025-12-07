@@ -33,7 +33,7 @@ const TypeFilterMenu: React.FC<TypeFilterMenuProps> = ({
   };
 
   return (
-    <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 py-2 min-w-[200px] max-h-[300px] overflow-y-auto z-50">
+    <div className="absolute top-full left-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-200 py-2 min-w-[280px] max-h-[300px] overflow-y-auto z-50">
       <div className="px-4 py-2">
         <div className="text-base font-medium text-malibu-950 mb-2">Select types</div>
         {availableTypes.map((type) => (
