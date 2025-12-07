@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { LuSearch, LuPlus, LuMap } from 'react-icons/lu';
-import { IoIosArrowBack } from 'react-icons/io';
+import { IoIosArrowBack, IoMdClose } from 'react-icons/io';
 import { TbLocation } from 'react-icons/tb';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
@@ -718,7 +718,7 @@ const Homepage: React.FC = () => {
 
           {/* Action Bar / Search Bar */}
           <div
-            className={`flex items-center gap-2 bg-white rounded-[60px] p-2 shadow-sm ${isSearchMode ? 'flex-1' : ''}`}
+            className={`flex items-center gap-2 bg-white rounded-[60px] shadow-sm ${isSearchMode ? 'flex-1 py-2 pl-2 pr-4' : 'p-2'}`}
             style={{
               willChange: isSearchMode ? 'flex' : 'auto'
             }}
@@ -761,7 +761,7 @@ const Homepage: React.FC = () => {
                     className="w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-transparent hover:bg-gray-100"
                     aria-label="Clear search"
                   >
-                    <LuSearch size={16} className="text-gray-400" />
+                    <IoMdClose size={20} className="text-gray-400" />
                   </button>
                 )}
               </>
