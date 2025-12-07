@@ -782,7 +782,10 @@ const Homepage: React.FC = () => {
                 <button
                   onMouseEnter={() => setHoveredButton('search')}
                   onMouseLeave={() => setHoveredButton(null)}
-                  onClick={() => setIsSearchMode(true)}
+                  onClick={() => {
+                    setHoveredButton(null);
+                    setIsSearchMode(true);
+                  }}
                   className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
                     hoveredButton === 'search' || searchQuery
                       ? 'bg-malibu-50'
@@ -796,7 +799,10 @@ const Homepage: React.FC = () => {
                 <button
                   onMouseEnter={() => setHoveredButton('map')}
                   onMouseLeave={() => setHoveredButton(null)}
-                  onClick={() => setShowLocationModal(true)}
+                  onClick={() => {
+                    setHoveredButton(null);
+                    setShowLocationModal(true);
+                  }}
                   className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
                     hoveredButton === 'map' ? 'bg-malibu-50' : 'bg-transparent hover:bg-gray-100'
                   }`}
@@ -808,7 +814,10 @@ const Homepage: React.FC = () => {
                 <button
                   onMouseEnter={() => setHoveredButton('add')}
                   onMouseLeave={() => setHoveredButton(null)}
-                  onClick={() => setShowSubmitModal(true)}
+                  onClick={() => {
+                    setHoveredButton(null);
+                    setShowSubmitModal(true);
+                  }}
                   className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
                     hoveredButton === 'add' ? 'bg-malibu-50' : 'bg-transparent hover:bg-gray-100'
                   }`}
