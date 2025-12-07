@@ -305,9 +305,8 @@ const Homepage: React.FC = () => {
           return 0;
         });
 
-      // Randomize and take up to 10
-      const shuffled = listingsWithDistance.sort(() => Math.random() - 0.5);
-      const selected = shuffled.slice(0, 10);
+      // Take up to 10 (sorted by start date)
+      const selected = listingsWithDistance.slice(0, 10);
 
       setFeaturedListings(selected);
     } catch (error) {
