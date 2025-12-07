@@ -3,7 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  IoLocationOutline,
   IoTimeOutline,
   IoPricetagOutline,
   IoPeopleOutline,
@@ -11,6 +10,7 @@ import {
 } from 'react-icons/io5';
 import { IoIosArrowBack } from 'react-icons/io';
 import { LuCalendar } from 'react-icons/lu';
+import { HiOutlineLocationMarker } from 'react-icons/hi';
 
 interface EventDetailProps {
   // Core fields
@@ -165,7 +165,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
 
           {street && (
             <div className="flex items-center gap-3">
-              <IoLocationOutline size={20} className="text-gray-600 flex-shrink-0" />
+              <HiOutlineLocationMarker size={20} className="text-gray-600 flex-shrink-0" />
               <span className="text-base text-gray-800">{fullAddress}</span>
             </div>
           )}
