@@ -13,6 +13,7 @@ import ClickableCard from './ClickableCard';
 import Footer from './Footer';
 import Loader from './Loader';
 import TabBar, { TabFilter } from './TabBar';
+import FeaturedCarousel from './FeaturedCarousel';
 
 // Dynamic imports for modals (code splitting)
 const SearchModal = dynamic(() => import('./SearchModal'), {
@@ -34,6 +35,7 @@ const Homepage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('Event');
   const [allListings, setAllListings] = useState<Listing[]>([]);
   const [displayedListings, setDisplayedListings] = useState<Listing[]>([]);
+  const [featuredListings, setFeaturedListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(15);
   const [totalFilteredCount, setTotalFilteredCount] = useState(0);
@@ -177,6 +179,7 @@ const Homepage: React.FC = () => {
   useEffect(() => {
     if (userLocation) {
       fetchAllListings();
+      fetchFeaturedListings();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLocation]);
@@ -247,6 +250,68 @@ const Homepage: React.FC = () => {
     } catch (error) {
       console.error('Error:', error);
       setLoading(false);
+    }
+  };
+
+  // Fetch featured listings
+  const fetchFeaturedListings = async () => {
+    if (!userLocation) return;
+
+    try {
+      const now = new Date().toISOString();
+
+      // Fetch featured listings
+      const { data, error } = await supabase
+        .from('listings')
+        .select('*')
+        .eq('featured', true)
+        .not('latitude', 'is', null)
+        .not('longitude', 'is', null);
+
+      if (error) {
+        console.error('Error fetching featured listings:', error);
+        return;
+      }
+
+      if (!data) return;
+
+      // Calculate distances and filter
+      const listingsWithDistance = data
+        .map((listing) => {
+          const distance = calculateDistance(
+            userLocation.lat,
+            userLocation.lng,
+            listing.latitude!,
+            listing.longitude!
+          );
+          return { ...listing, distance };
+        })
+        .filter((listing) => {
+          // Filter by 40 mile radius
+          if (listing.distance > 40) return false;
+
+          // Filter out past events
+          if (listing.type === 'Event' && listing.start_date) {
+            return new Date(listing.start_date) >= new Date(now);
+          }
+
+          return true;
+        })
+        // Sort by start date (earliest first)
+        .sort((a, b) => {
+          if (a.start_date && b.start_date) {
+            return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
+          }
+          return 0;
+        });
+
+      // Randomize and take up to 10
+      const shuffled = listingsWithDistance.sort(() => Math.random() - 0.5);
+      const selected = shuffled.slice(0, 10);
+
+      setFeaturedListings(selected);
+    } catch (error) {
+      console.error('Error fetching featured listings:', error);
     }
   };
 
@@ -684,20 +749,15 @@ const Homepage: React.FC = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <div className="px-5 py-8">
-        <div className="max-w-7xl mx-auto flex justify-center">
-          {/* Hero Graphic */}
-          <Image
-            src="/hero.png"
-            alt="Kid-friendly adventures"
-            width={700}
-            height={200}
-            priority
-            className="w-full max-w-[700px] h-auto"
-          />
+      {/* Hero Section - Featured Events */}
+      {!loading && featuredListings.length > 0 && (
+        <div className="px-5 py-3 bg-malibu-50">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-xl font-bold text-malibu-950 mb-6">Featured events</h2>
+            <FeaturedCarousel listings={featuredListings} />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Tab Navigation with Filters */}
       <TabBar
