@@ -62,7 +62,7 @@ const DistanceFilterMenu: React.FC<DistanceFilterMenuProps> = ({
       </div>
       <button
         onClick={handleApply}
-        className="w-full px-4 py-3 bg-malibu-950 text-malibu-50 rounded-lg text-base font-semibold cursor-pointer transition-colors hover:bg-malibu-900"
+        className="w-full px-4 py-3 mt-3 bg-malibu-950 text-malibu-50 rounded-lg text-base font-semibold cursor-pointer transition-colors hover:bg-malibu-900"
       >
         Apply
       </button>
