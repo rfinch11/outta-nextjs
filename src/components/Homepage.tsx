@@ -876,7 +876,7 @@ const Homepage: React.FC = () => {
 
                 {/* Map Column (hidden on mobile) */}
                 <div className="hidden md:block sticky top-[140px] h-[calc(100vh-180px)] rounded-2xl overflow-hidden border border-gray-300 shadow-lg">
-                  <MapView listings={displayedListings} userLocation={userLocation} activeTab={activeTab} />
+                  <MapView listings={displayedListings} userLocation={userLocation} activeTab={activeTab} filters={filters} />
                 </div>
               </div>
 
@@ -942,7 +942,7 @@ const Homepage: React.FC = () => {
               <IoIosArrowBack size={24} />
             </button>
           </div>
-          <MapView listings={displayedListings} userLocation={userLocation} activeTab={activeTab} />
+          <MapView listings={displayedListings} userLocation={userLocation} activeTab={activeTab} filters={filters} />
         </div>
       )}
     </div>

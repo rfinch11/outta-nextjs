@@ -6,11 +6,13 @@ import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
 import Image from 'next/image';
 import Link from 'next/link';
+import type { FilterState } from './FilterModal';
 
 interface MapViewProps {
   listings: Listing[];
   userLocation?: { lat: number; lng: number } | null;
   activeTab: 'Event' | 'Activity' | 'Camp' | 'Restaurant';
+  filters: FilterState;
 }
 
 const mapContainerStyle = {
@@ -18,7 +20,7 @@ const mapContainerStyle = {
   height: '100%',
 };
 
-const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab }) => {
+const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab, filters }) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
@@ -29,10 +31,32 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab }) 
   const [mapListings, setMapListings] = useState<Listing[]>(listings);
   const [isLoadingMapData, setIsLoadingMapData] = useState(false);
 
-  // Initial listings with valid coordinates
-  const validListings = mapListings.filter(
-    (listing) => listing.latitude && listing.longitude
-  );
+  // Calculate distance using Haversine formula
+  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const R = 3959; // Earth's radius in miles
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLon = ((lon2 - lon1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return Math.round(R * c * 10) / 10;
+  };
+
+  // Filter listings with valid coordinates and apply distance filter
+  const validListings = mapListings.filter((listing) => {
+    if (!listing.latitude || !listing.longitude) return false;
+
+    // Apply distance filter if set
+    if (filters.distance !== null) {
+      return (listing.distance || 0) <= filters.distance;
+    }
+
+    return true;
+  });
 
   // Calculate center and zoom based on listings
   const getMapCenter = useCallback(() => {
@@ -115,6 +139,56 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab }) 
       // Filter events by future dates
       if (activeTab === 'Event') {
         query = query.gte('start_date', now);
+
+        // Apply date quick filter for events
+        if (filters.dateQuick) {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+
+          let startDate: Date;
+          let endDate: Date;
+
+          switch (filters.dateQuick) {
+            case 'today':
+              startDate = new Date(today);
+              endDate = new Date(today);
+              endDate.setHours(23, 59, 59, 999);
+              break;
+            case 'tomorrow':
+              startDate = new Date(today);
+              startDate.setDate(startDate.getDate() + 1);
+              endDate = new Date(startDate);
+              endDate.setHours(23, 59, 59, 999);
+              break;
+            case 'this_week':
+              startDate = new Date(today);
+              endDate = new Date(today);
+              endDate.setDate(endDate.getDate() + 7);
+              break;
+            case 'this_month':
+              startDate = new Date(today);
+              endDate = new Date(today);
+              endDate.setMonth(endDate.getMonth() + 1);
+              break;
+            default:
+              startDate = new Date(today);
+              endDate = new Date('2100-01-01');
+          }
+
+          query = query
+            .gte('start_date', startDate.toISOString())
+            .lte('start_date', endDate.toISOString());
+        }
+      }
+
+      // Apply place type filter
+      if (filters.types.length > 0) {
+        query = query.in('place_type', filters.types);
+      }
+
+      // Apply tags filter
+      if (filters.tags.length > 0) {
+        query = query.contains('tags', filters.tags);
       }
 
       const { data, error } = await query.limit(500); // Limit to 500 for performance
@@ -125,10 +199,30 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab }) 
       }
 
       if (data) {
+        // Calculate distances for fetched listings
+        const listingsWithDistance = data.map((listing) => {
+          let distance = 0;
+          if (listing.latitude && listing.longitude && userLocation) {
+            distance = calculateDistance(
+              userLocation.lat,
+              userLocation.lng,
+              listing.latitude,
+              listing.longitude
+            );
+          }
+          return { ...listing, distance };
+        });
+
+        // Apply distance filter client-side
+        let filteredData = listingsWithDistance;
+        if (filters.distance !== null) {
+          filteredData = listingsWithDistance.filter((l) => (l.distance || 0) <= filters.distance!);
+        }
+
         // Merge with existing listings, avoid duplicates
         setMapListings((prev) => {
           const existingIds = new Set(prev.map((l) => l.airtable_id));
-          const newListings = data.filter((l) => !existingIds.has(l.airtable_id));
+          const newListings = filteredData.filter((l) => !existingIds.has(l.airtable_id));
           return [...prev, ...newListings];
         });
       }
@@ -137,7 +231,7 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab }) 
     } finally {
       setIsLoadingMapData(false);
     }
-  }, [map, activeTab, isLoadingMapData]);
+  }, [map, activeTab, filters, isLoadingMapData]);
 
   // Update bounds when initial listings change or user location updates
   useEffect(() => {
