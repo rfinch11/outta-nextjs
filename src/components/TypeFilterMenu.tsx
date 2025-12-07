@@ -72,7 +72,7 @@ const TypeFilterMenu: React.FC<TypeFilterMenuProps> = ({
       <div className="px-4 pb-2 pt-1 border-t border-gray-200 mt-2">
         <button
           onClick={handleApply}
-          className="w-full px-4 py-3 bg-broom-400 border-2 border-black rounded-[53px] text-base font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5"
+          className="w-full px-4 py-3 bg-malibu-950 text-malibu-50 rounded-lg text-base font-bold cursor-pointer transition-colors hover:bg-malibu-900"
         >
           Apply
         </button>
