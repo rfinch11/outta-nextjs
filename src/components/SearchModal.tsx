@@ -75,7 +75,7 @@ const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose, onSearch, cu
             <button
               onClick={handleSearch}
               disabled={!searchQuery.trim()}
-              className="w-full px-4 py-4 bg-broom-400 border-2 border-black-950 rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#000000] hover:shadow-[1px_2px_0px_0px_#000000] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_4px_0px_0px_#000000] disabled:hover:translate-x-0 disabled:hover:translate-y-0"
+              className="w-full px-4 py-4 bg-broom-400 border-2 border-malibu-950 rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#06304b] hover:shadow-[1px_2px_0px_0px_#06304b] hover:translate-x-0.5 hover:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-[3px_4px_0px_0px_#06304b] disabled:hover:translate-x-0 disabled:hover:translate-y-0"
             >
               Let&apos;s go
             </button>

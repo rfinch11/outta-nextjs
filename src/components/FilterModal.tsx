@@ -403,7 +403,7 @@ const FilterModal: React.FC<FilterModalProps> = ({ isOpen, onClose, onApply, cur
           <div className="px-6 py-6 border-t border-gray-200">
             <button
               onClick={handleSave}
-              className="w-full px-4 py-4 bg-broom-400 border-2 border-black rounded-[53px] text-lg font-bold cursor-pointer transition-none relative shadow-[3px_4px_0px_0px_#000000]"
+              className="w-full px-4 py-4 bg-broom-400 border-2 border-malibu-950 rounded-[53px] text-lg font-bold cursor-pointer transition-none relative shadow-[3px_4px_0px_0px_#06304b]"
             >
               Save
             </button>
