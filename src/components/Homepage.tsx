@@ -734,22 +734,33 @@ const Homepage: React.FC = () => {
                   }}
                   className="w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-transparent hover:bg-gray-100"
                   aria-label="Close search"
+                  type="button"
                 >
                   <IoIosArrowBack size={20} />
                 </button>
 
-                {/* Search input */}
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setFilters({ ...filters, search: e.target.value });
+                {/* Search form */}
+                <form
+                  className="flex-1 flex items-center"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    // The search is already applied via onChange, just blur the input
+                    (e.target as HTMLFormElement).querySelector('input')?.blur();
                   }}
-                  placeholder="Search events & activities..."
-                  className="flex-1 bg-transparent border-none outline-none text-base px-2"
-                  autoFocus
-                />
+                >
+                  <input
+                    type="text"
+                    inputMode="search"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setFilters({ ...filters, search: e.target.value });
+                    }}
+                    placeholder="Find something amazing"
+                    className="flex-1 bg-transparent border-none outline-none text-base px-2"
+                    autoFocus
+                  />
+                </form>
 
                 {/* Clear button */}
                 {searchQuery && (
@@ -760,6 +771,7 @@ const Homepage: React.FC = () => {
                     }}
                     className="w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-transparent hover:bg-gray-100"
                     aria-label="Clear search"
+                    type="button"
                   >
                     <IoMdClose size={20} className="text-gray-400" />
                   </button>
