@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { LuSearch, LuMapPin, LuPlus, LuMap } from 'react-icons/lu';
+import { LuSearch, LuPlus, LuMap } from 'react-icons/lu';
 import { IoIosArrowBack } from 'react-icons/io';
+import { TbLocation } from 'react-icons/tb';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
@@ -665,7 +666,7 @@ const Homepage: React.FC = () => {
               }`}
               aria-label="Change location"
             >
-              <LuMapPin size={17} />
+              <TbLocation size={17} />
             </button>
 
             <button
