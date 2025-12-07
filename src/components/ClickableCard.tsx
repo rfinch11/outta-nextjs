@@ -2,9 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { IoBusinessOutline } from 'react-icons/io5';
 import { LuCalendar } from 'react-icons/lu';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
+import { getPlaceTypeIcon } from '@/lib/placeTypeIcons';
 import Chip from './Chip';
 
 interface ClickableCardProps {
@@ -97,7 +97,10 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
           {/* Place type for Activities */}
           {type === 'Activity' && place_type && (
             <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
-              <IoBusinessOutline size={16} className="flex-shrink-0 text-black-500" />
+              {React.createElement(getPlaceTypeIcon(place_type), {
+                size: 16,
+                className: 'flex-shrink-0 text-black-500'
+              })}
               <span className="truncate">{place_type}</span>
             </div>
           )}
