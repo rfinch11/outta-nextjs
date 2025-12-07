@@ -85,10 +85,13 @@ async function fixDuplicateImages() {
     process.exit(1);
   }
 
-  // Find duplicates
+  // Find duplicates - ONLY for Unsplash images
   const imageGroups = {};
   listings.forEach(listing => {
     if (!listing.image) return;
+
+    // ONLY process Unsplash images - never touch library or other provider images
+    if (!listing.image.includes('images.unsplash.com')) return;
 
     if (!imageGroups[listing.image]) {
       imageGroups[listing.image] = [];
