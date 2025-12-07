@@ -22,14 +22,17 @@ const FilterChip: React.FC<FilterChipProps> = ({
   onRemove,
   className = '',
 }) => {
+  // Truncate label to 12 characters with ellipsis
+  const truncatedLabel = label.length > 12 ? `${label.substring(0, 12)}…` : label;
+
   if (active && onRemove) {
     // Active filter chip with close button
     return (
       <button
         onClick={onRemove}
-        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full shadow-sm transition-all cursor-pointer bg-malibu-900 text-malibu-50 font-semibold ${className}`}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full shadow-sm transition-all cursor-pointer bg-malibu-900 text-malibu-50 font-semibold whitespace-nowrap ${className}`}
       >
-        <span className="text-sm">{label}</span>
+        <span className="text-sm">{truncatedLabel}</span>
         <IoClose size={14} className="flex-shrink-0" />
       </button>
     );
@@ -39,9 +42,9 @@ const FilterChip: React.FC<FilterChipProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`inline-flex items-center px-3 py-1.5 rounded-full shadow-sm transition-all cursor-pointer bg-white text-gray-700 font-medium hover:bg-gray-50 ${className}`}
+      className={`inline-flex items-center px-3 py-1.5 rounded-full shadow-sm transition-all cursor-pointer bg-white text-gray-700 font-medium hover:bg-gray-50 whitespace-nowrap ${className}`}
     >
-      <span className="text-sm">{label}</span>
+      <span className="text-sm">{truncatedLabel}</span>
     </button>
   );
 };
