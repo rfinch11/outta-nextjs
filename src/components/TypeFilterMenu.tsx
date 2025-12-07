@@ -46,11 +46,11 @@ const TypeFilterMenu: React.FC<TypeFilterMenuProps> = ({
                 type="checkbox"
                 checked={selectedTypes.includes(type)}
                 onChange={() => handleToggle(type)}
-                className="w-5 h-5 appearance-none border-2 border-flamenco-500 rounded cursor-pointer checked:bg-flamenco-100 checked:border-flamenco-500 focus:outline-none focus:ring-2 focus:ring-flamenco-500 focus:ring-offset-1"
+                className="w-5 h-5 appearance-none border-2 border-malibu-100 rounded cursor-pointer checked:bg-malibu-950 checked:border-malibu-950 focus:outline-none focus:ring-2 focus:ring-malibu-950 focus:ring-offset-1"
               />
               {selectedTypes.includes(type) && (
                 <svg
-                  className="absolute w-3 h-3 pointer-events-none text-flamenco-700"
+                  className="absolute w-3 h-3 pointer-events-none text-malibu-50"
                   viewBox="0 0 16 16"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
