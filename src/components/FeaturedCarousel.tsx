@@ -69,7 +69,7 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ listings }) => {
       {/* Scroll container */}
       <div
         ref={scrollContainerRef}
-        className="flex gap-4 overflow-x-auto hide-scrollbar scroll-smooth snap-x snap-mandatory pb-2"
+        className="flex gap-4 overflow-x-auto hide-scrollbar scroll-smooth snap-x snap-mandatory pb-2 pr-5"
         style={{
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
@@ -78,7 +78,7 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ listings }) => {
         {listings.map((listing) => (
           <div
             key={listing.airtable_id}
-            className="flex-none snap-start w-[85%] sm:w-[calc(50%-8px)] md:w-[calc(33.333%-11px)] lg:w-[calc(25%-12px)] xl:w-[calc(20%-13px)] h-[400px]"
+            className="flex-none snap-start w-[300px]"
           >
             <FeaturedCard
               airtable_id={listing.airtable_id}
@@ -115,7 +115,7 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ listings }) => {
       {canScrollRight && (
         <button
           onClick={() => scroll('right')}
-          className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-10 h-10 bg-white rounded-full shadow-lg items-center justify-center hover:bg-gray-50 transition-colors z-10 border border-gray-200"
+          className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg items-center justify-center hover:bg-gray-50 transition-colors z-10 border border-gray-200"
           aria-label="Scroll right"
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

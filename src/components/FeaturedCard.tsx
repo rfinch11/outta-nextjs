@@ -64,28 +64,27 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
     : image;
 
   return (
-    <Link href={`/listings/${airtable_id}`} className="block no-underline h-full">
-      <div className="flex flex-col h-full rounded-2xl bg-white border border-gray-300 overflow-hidden cursor-pointer transition-all hover:shadow-lg">
-        {/* Image on top - fills remaining space */}
-        <div className="relative w-full flex-1 min-h-0">
+    <Link href={`/listings/${airtable_id}`} className="block no-underline">
+      <div className="flex flex-col cursor-pointer">
+        {/* Image with rounded corners and chips overlay */}
+        <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-3">
           <img
             src={imageUrl}
             alt={title}
             className="w-full h-full object-cover"
           />
-        </div>
-
-        {/* Content below - aligned to bottom with fixed height */}
-        <div className="flex flex-col gap-2 p-4 flex-shrink-0">
-          {/* Chips row */}
+          {/* Chips overlaid on top left of image */}
           {(scout_pick || deal || promoted) && (
-            <div className="flex gap-1.5 flex-wrap">
+            <div className="absolute top-3 left-3 flex gap-1.5 flex-wrap">
               {scout_pick && <Chip variant="scoutpick" />}
               {deal && <Chip variant="deal" />}
               {promoted && <Chip variant="promoted" />}
             </div>
           )}
+        </div>
 
+        {/* Content below - no background */}
+        <div className="flex flex-col gap-1.5">
           {/* Title - max 2 lines with ellipsis */}
           <h3 className="text-malibu-950 text-lg font-bold leading-tight m-0 break-words line-clamp-2">
             {title}
