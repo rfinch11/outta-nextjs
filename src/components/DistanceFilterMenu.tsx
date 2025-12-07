@@ -39,7 +39,7 @@ const DistanceFilterMenu: React.FC<DistanceFilterMenuProps> = ({
       <div className="mb-3">
         <div className="flex items-center justify-between mb-2">
           <span className="text-base font-medium text-malibu-950">Distance</span>
-          <span className="text-sm font-bold text-black">{displayValue} mi</span>
+          <span className="text-sm font-bold text-malibu-950">{displayValue} mi</span>
         </div>
         <div className="relative">
           <input
