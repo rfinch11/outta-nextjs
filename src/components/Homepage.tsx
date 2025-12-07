@@ -750,10 +750,12 @@ const Homepage: React.FC = () => {
 
       {/* Hero Section - Featured Events */}
       {!loading && featuredListings.length > 0 && (
-        <div className="px-5 py-3 bg-malibu-50">
+        <div className="py-3 bg-malibu-50">
           <div className="max-w-7xl mx-auto">
-            <h2 className="text-xl font-bold text-malibu-950 mb-6">Featured events</h2>
-            <FeaturedCarousel listings={featuredListings} />
+            <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Featured events</h2>
+            <div className="pl-5">
+              <FeaturedCarousel listings={featuredListings} />
+            </div>
           </div>
         </div>
       )}
