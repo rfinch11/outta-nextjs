@@ -4,6 +4,11 @@
  * This script fetches all listings from Supabase with missing images,
  * searches Unsplash for relevant images, and updates Airtable records.
  *
+ * Key features:
+ * - Prevents duplicate images by tracking all existing Unsplash URLs
+ * - Filters out already-used images when selecting from search results
+ * - Ensures each event gets a unique image from the start
+ *
  * Usage: node scripts/backfill-images.js
  *
  * Required environment variables:
@@ -53,9 +58,9 @@ const airtable = new Airtable({ apiKey: AIRTABLE_TOKEN }).base(AIRTABLE_BASE_ID)
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
- * Search Unsplash for an image based on title
+ * Search Unsplash for an image based on title, ensuring uniqueness
  */
-async function searchUnsplash(title) {
+async function searchUnsplash(title, usedImages) {
   const query = encodeURIComponent(`${title} children`);
   // Request 30 results and randomly pick one to ensure variety
   const url = `https://api.unsplash.com/search/photos?query=${query}&per_page=30&orientation=landscape`;
@@ -77,13 +82,29 @@ async function searchUnsplash(title) {
       return null;
     }
 
-    // Randomly select one of the results for variety
-    const randomIndex = Math.floor(Math.random() * data.results.length);
-    const selectedImage = data.results[randomIndex];
+    // Filter out images that are already in use
+    const availableImages = data.results.filter(img => {
+      const imageUrl = img.urls.regular;
+      // Extract base URL without query parameters for comparison
+      const baseUrl = imageUrl.split('?')[0];
+      return !usedImages.has(baseUrl);
+    });
+
+    // If all images are already used, fall back to all results
+    const imagesToChooseFrom = availableImages.length > 0 ? availableImages : data.results;
+
+    // Randomly select one of the available results
+    const randomIndex = Math.floor(Math.random() * imagesToChooseFrom.length);
+    const selectedImage = imagesToChooseFrom[randomIndex];
+
+    const imageUrl = selectedImage.urls.regular;
+    const baseUrl = imageUrl.split('?')[0];
 
     return {
-      url: selectedImage.urls.regular,
-      photographer: selectedImage.user.name
+      url: imageUrl,
+      baseUrl: baseUrl,
+      photographer: selectedImage.user.name,
+      wasUnique: availableImages.length > 0
     };
   } catch (error) {
     console.error(`Error fetching from Unsplash:`, error.message);
@@ -113,7 +134,31 @@ async function updateAirtableImage(airtableId, imageUrl) {
 async function backfillImages() {
   console.log('🚀 Starting image backfill process...\n');
 
-  // Fetch all listings with missing images from Supabase
+  // Step 1: Fetch all existing Unsplash images to avoid duplicates
+  console.log('📋 Fetching existing images from database...');
+  const { data: existingListings, error: existingError } = await supabase
+    .from('listings')
+    .select('image')
+    .not('image', 'is', null)
+    .like('image', '%images.unsplash.com%');
+
+  if (existingError) {
+    console.error('❌ Error fetching existing images:', existingError);
+    process.exit(1);
+  }
+
+  // Build a Set of used image base URLs (without query parameters)
+  const usedImages = new Set();
+  existingListings.forEach(listing => {
+    if (listing.image) {
+      const baseUrl = listing.image.split('?')[0];
+      usedImages.add(baseUrl);
+    }
+  });
+
+  console.log(`   Found ${usedImages.size} unique Unsplash images already in use\n`);
+
+  // Step 2: Fetch all listings with missing images from Supabase
   const { data: listings, error } = await supabase
     .from('listings')
     .select('airtable_id, title, image')
@@ -134,6 +179,7 @@ async function backfillImages() {
   let successCount = 0;
   let skipCount = 0;
   let errorCount = 0;
+  let duplicateWarnings = 0;
 
   // Process each listing
   for (let i = 0; i < listings.length; i++) {
@@ -142,8 +188,8 @@ async function backfillImages() {
 
     console.log(`${progress} Processing: ${listing.title}`);
 
-    // Search Unsplash for image
-    const image = await searchUnsplash(listing.title);
+    // Search Unsplash for image, passing the set of used images
+    const image = await searchUnsplash(listing.title, usedImages);
 
     if (!image) {
       console.log(`  ⚠️  No image found on Unsplash`);
@@ -151,11 +197,18 @@ async function backfillImages() {
     } else {
       console.log(`  📸 Found image by ${image.photographer}`);
 
+      if (!image.wasUnique) {
+        console.log(`  ⚠️  Warning: All available images were already in use, may create duplicate`);
+        duplicateWarnings++;
+      }
+
       // Update Airtable
       const success = await updateAirtableImage(listing.airtable_id, image.url);
 
       if (success) {
         console.log(`  ✅ Updated Airtable record`);
+        // Add this image to the used set to prevent duplicates within this run
+        usedImages.add(image.baseUrl);
         successCount++;
       } else {
         console.log(`  ❌ Failed to update Airtable`);
@@ -179,6 +232,9 @@ async function backfillImages() {
   console.log(`  ✅ Successfully updated: ${successCount}`);
   console.log(`  ⚠️  Skipped (no image found): ${skipCount}`);
   console.log(`  ❌ Errors: ${errorCount}`);
+  if (duplicateWarnings > 0) {
+    console.log(`  ⚠️  Duplicate warnings: ${duplicateWarnings}`);
+  }
   console.log('━'.repeat(50));
 
   if (successCount > 0) {

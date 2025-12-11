@@ -1,8 +1,13 @@
 /**
  * Fix Duplicate Images Script
  *
- * This script finds listings that share the same image URL and re-fetches
- * new random images from Unsplash to ensure variety.
+ * This script finds listings that share the same Unsplash image URL and
+ * re-fetches new unique images to ensure variety.
+ *
+ * Key features:
+ * - Only processes Unsplash images (never touches library or provider images)
+ * - Tracks all existing images to prevent creating new duplicates
+ * - Keeps the first occurrence, replaces all duplicates with unique images
  *
  * Usage: node scripts/fix-duplicate-images.js
  */
@@ -24,7 +29,7 @@ const airtable = new Airtable({ apiKey: AIRTABLE_TOKEN }).base(AIRTABLE_BASE_ID)
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-async function searchUnsplash(title) {
+async function searchUnsplash(title, usedImages) {
   const query = encodeURIComponent(`${title} children`);
   const url = `https://api.unsplash.com/search/photos?query=${query}&per_page=30&orientation=landscape`;
 
@@ -45,13 +50,28 @@ async function searchUnsplash(title) {
       return null;
     }
 
-    // Randomly select one of the results for variety
-    const randomIndex = Math.floor(Math.random() * data.results.length);
-    const selectedImage = data.results[randomIndex];
+    // Filter out images that are already in use
+    const availableImages = data.results.filter(img => {
+      const imageUrl = img.urls.regular;
+      const baseUrl = imageUrl.split('?')[0];
+      return !usedImages.has(baseUrl);
+    });
+
+    // If all images are already used, fall back to all results
+    const imagesToChooseFrom = availableImages.length > 0 ? availableImages : data.results;
+
+    // Randomly select one of the available results
+    const randomIndex = Math.floor(Math.random() * imagesToChooseFrom.length);
+    const selectedImage = imagesToChooseFrom[randomIndex];
+
+    const imageUrl = selectedImage.urls.regular;
+    const baseUrl = imageUrl.split('?')[0];
 
     return {
-      url: selectedImage.urls.regular,
-      photographer: selectedImage.user.name
+      url: imageUrl,
+      baseUrl: baseUrl,
+      photographer: selectedImage.user.name,
+      wasUnique: availableImages.length > 0
     };
   } catch (error) {
     console.error(`Error fetching from Unsplash:`, error.message);
@@ -85,6 +105,17 @@ async function fixDuplicateImages() {
     process.exit(1);
   }
 
+  // Build a set of all used images (for uniqueness checking)
+  const usedImages = new Set();
+  listings.forEach(listing => {
+    if (listing.image && listing.image.includes('images.unsplash.com')) {
+      const baseUrl = listing.image.split('?')[0];
+      usedImages.add(baseUrl);
+    }
+  });
+
+  console.log(`📋 Found ${usedImages.size} unique Unsplash images in database\n`);
+
   // Find duplicates - ONLY for Unsplash images
   const imageGroups = {};
   listings.forEach(listing => {
@@ -112,6 +143,7 @@ async function fixDuplicateImages() {
   console.log(`📊 Found ${duplicates.length} images used by multiple listings:\n`);
 
   let totalFixed = 0;
+  let duplicateWarnings = 0;
 
   for (const group of duplicates) {
     console.log(`\n🖼️  Image used by ${group.listings.length} listings:`);
@@ -122,22 +154,17 @@ async function fixDuplicateImages() {
       const listing = group.listings[i];
       console.log(`\n   [${i}/${group.listings.length - 1}] ${listing.title}`);
 
-      // Search for new image
-      const newImage = await searchUnsplash(listing.title);
+      // Search for new image, passing the set of used images
+      const newImage = await searchUnsplash(listing.title, usedImages);
 
       if (!newImage) {
         console.log(`      ⚠️  No alternative image found`);
         continue;
       }
 
-      if (newImage.url === group.url) {
-        console.log(`      ⚠️  Got same image, trying again...`);
-        await delay(1000);
-        const retryImage = await searchUnsplash(listing.title);
-        if (retryImage && retryImage.url !== group.url) {
-          newImage.url = retryImage.url;
-          newImage.photographer = retryImage.photographer;
-        }
+      if (!newImage.wasUnique) {
+        console.log(`      ⚠️  Warning: All available images were already in use`);
+        duplicateWarnings++;
       }
 
       console.log(`      📸 New image by ${newImage.photographer}`);
@@ -146,6 +173,8 @@ async function fixDuplicateImages() {
 
       if (success) {
         console.log(`      ✅ Updated`);
+        // Add to used images set to prevent duplicates within this run
+        usedImages.add(newImage.baseUrl);
         totalFixed++;
       } else {
         console.log(`      ❌ Failed to update`);
@@ -161,6 +190,9 @@ async function fixDuplicateImages() {
 
   console.log('\n━'.repeat(50));
   console.log(`✅ Fixed ${totalFixed} duplicate images`);
+  if (duplicateWarnings > 0) {
+    console.log(`⚠️  Duplicate warnings: ${duplicateWarnings}`);
+  }
   console.log('━'.repeat(50));
 }
 
