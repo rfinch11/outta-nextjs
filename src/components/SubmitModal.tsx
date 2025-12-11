@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { IoMdClose } from 'react-icons/io';
 
 interface SubmitModalProps {
   isOpen: boolean;
@@ -23,14 +24,17 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center flex-shrink-0">
-            <h2 className="text-xl font-bold m-0">Submit a Listing</h2>
+          <div className="flex items-center justify-between px-6 pt-6 pb-4 flex-shrink-0">
+            <h2 className="text-lg font-bold text-malibu-950 m-0">
+              Submit a Listing
+            </h2>
             <button
               onClick={onClose}
-              className="text-gray-600 hover:text-gray-900 bg-transparent border-none text-2xl font-normal cursor-pointer p-2 leading-none"
+              className="w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-transparent hover:bg-gray-100"
               aria-label="Close"
+              type="button"
             >
-              ×
+              <IoMdClose size={20} className="text-gray-600" />
             </button>
           </div>
 
