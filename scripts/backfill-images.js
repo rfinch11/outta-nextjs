@@ -7,7 +7,13 @@
  * Key features:
  * - Prevents duplicate images by tracking all existing Unsplash URLs
  * - Filters out already-used images when selecting from search results
+ * - Uses event tags to create more varied and relevant search queries
  * - Ensures each event gets a unique image from the start
+ *
+ * Search strategy:
+ * - If event has relevant tags: searches for "title + tags"
+ * - If only generic tags (Kids, Free, Eventbrite): searches for "title + children"
+ * - Filters generic tags to get more specific, varied results
  *
  * Usage: node scripts/backfill-images.js
  *
@@ -58,10 +64,30 @@ const airtable = new Airtable({ apiKey: AIRTABLE_TOKEN }).base(AIRTABLE_BASE_ID)
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
- * Search Unsplash for an image based on title, ensuring uniqueness
+ * Search Unsplash for an image based on title and tags, ensuring uniqueness
  */
-async function searchUnsplash(title, usedImages) {
-  const query = encodeURIComponent(`${title} children`);
+async function searchUnsplash(title, usedImages, tags = null) {
+  // Build search query from title and tags
+  let searchTerms = title;
+
+  if (tags) {
+    // Parse tags (comma-separated) and use relevant ones for search
+    const tagList = tags.split(',').map(t => t.trim()).filter(t => t.length > 0);
+    // Pick 1-2 relevant tags to add variety (avoid generic tags like "Kids")
+    const relevantTags = tagList
+      .filter(tag => !['Kids', 'Eventbrite', 'Free'].includes(tag))
+      .slice(0, 2);
+
+    if (relevantTags.length > 0) {
+      searchTerms = `${title} ${relevantTags.join(' ')}`;
+    } else {
+      searchTerms = `${title} children`;
+    }
+  } else {
+    searchTerms = `${title} children`;
+  }
+
+  const query = encodeURIComponent(searchTerms);
   // Request 30 results and randomly pick one to ensure variety
   const url = `https://api.unsplash.com/search/photos?query=${query}&per_page=30&orientation=landscape`;
 
@@ -104,7 +130,8 @@ async function searchUnsplash(title, usedImages) {
       url: imageUrl,
       baseUrl: baseUrl,
       photographer: selectedImage.user.name,
-      wasUnique: availableImages.length > 0
+      wasUnique: availableImages.length > 0,
+      searchTerms: searchTerms // Include for debugging
     };
   } catch (error) {
     console.error(`Error fetching from Unsplash:`, error.message);
@@ -161,7 +188,7 @@ async function backfillImages() {
   // Step 2: Fetch all listings with missing images from Supabase
   const { data: listings, error } = await supabase
     .from('listings')
-    .select('airtable_id, title, image')
+    .select('airtable_id, title, image, tags')
     .or('image.is.null,image.eq.');
 
   if (error) {
@@ -188,14 +215,17 @@ async function backfillImages() {
 
     console.log(`${progress} Processing: ${listing.title}`);
 
-    // Search Unsplash for image, passing the set of used images
-    const image = await searchUnsplash(listing.title, usedImages);
+    // Search Unsplash for image, passing the set of used images and tags
+    const image = await searchUnsplash(listing.title, usedImages, listing.tags);
 
     if (!image) {
       console.log(`  ⚠️  No image found on Unsplash`);
       skipCount++;
     } else {
       console.log(`  📸 Found image by ${image.photographer}`);
+      if (image.searchTerms !== `${listing.title} children`) {
+        console.log(`  🔍 Search: "${image.searchTerms}"`);
+      }
 
       if (!image.wasUnique) {
         console.log(`  ⚠️  Warning: All available images were already in use, may create duplicate`);
