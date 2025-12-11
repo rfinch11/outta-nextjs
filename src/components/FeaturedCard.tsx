@@ -42,6 +42,11 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
   deal,
   promoted,
 }) => {
+  // State to track if we should use the fallback image
+  const [imgSrc, setImgSrc] = React.useState<string>(
+    place_id ? `/api/place-photo?place_id=${place_id}&width=600` : (image || '')
+  );
+
   // Format location string
   const locationText = distance ? `${city}, ${distance} mi` : city;
 
@@ -58,10 +63,12 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
     return date.toLocaleDateString('en-US', options);
   };
 
-  // Use Google Places API for images if place_id is available
-  const imageUrl = place_id
-    ? `/api/place-photo?place_id=${place_id}&width=600`
-    : image;
+  // Handle image load error by falling back to the original image
+  const handleImageError = () => {
+    if (image && imgSrc !== image) {
+      setImgSrc(image);
+    }
+  };
 
   return (
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
@@ -69,9 +76,10 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
         {/* Image with rounded corners and chips overlay */}
         <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-3">
           <img
-            src={imageUrl}
+            src={imgSrc}
             alt={title}
             className="w-full h-full object-cover"
+            onError={handleImageError}
           />
           {/* Chips overlaid on top left of image */}
           {(scout_pick || deal || promoted) && (

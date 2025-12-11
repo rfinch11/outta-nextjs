@@ -65,6 +65,11 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     longitude,
   } = props;
 
+  // State to track if we should use the fallback image
+  const [imgSrc, setImgSrc] = React.useState<string>(
+    place_id ? `/api/place-photo?place_id=${place_id}&width=800` : image
+  );
+
   // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -94,6 +99,13 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     return `${startTime} - ${endTime}`;
   };
 
+  // Handle image load error by falling back to the original image
+  const handleImageError = () => {
+    if (imgSrc !== image) {
+      setImgSrc(image);
+    }
+  };
+
   // Handle share
   const handleShare = async () => {
     const shareData = {
@@ -121,16 +133,16 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   const fullAddress = `${street}, ${city}, ${state} ${zip}`;
   const tagArray = tags?.split(',').map((t) => t.trim()) || [];
 
-  // Use Google Places API for images if place_id is available
-  const imageUrl = place_id
-    ? `/api/place-photo?place_id=${place_id}&width=800`
-    : image;
-
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Image with Floating Back Button */}
       <div className="relative w-full h-[400px] bg-gray-100">
-        <img src={imageUrl} alt={title} className="w-full h-full object-cover" />
+        <img
+          src={imgSrc}
+          alt={title}
+          className="w-full h-full object-cover"
+          onError={handleImageError}
+        />
 
         {/* Floating Back Button */}
         <div className="absolute top-0 left-0 right-0 z-50 px-5 py-4">

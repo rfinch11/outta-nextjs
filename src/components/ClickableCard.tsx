@@ -38,6 +38,11 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
   place_type,
   description,
 }) => {
+  // State to track if we should use the fallback image
+  const [imgSrc, setImgSrc] = React.useState<string>(
+    place_id ? `/api/place-photo?place_id=${place_id}&width=400` : image
+  );
+
   // Format location string
   const locationText = `${city}, ${distance} mi`;
 
@@ -54,20 +59,22 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
     return date.toLocaleDateString('en-US', options);
   };
 
-  // Use Google Places API for images if place_id is available
-  // Otherwise fall back to the stored image URL
-  const imageUrl = place_id
-    ? `/api/place-photo?place_id=${place_id}&width=400`
-    : image;
+  // Handle image load error by falling back to the original image
+  const handleImageError = () => {
+    if (imgSrc !== image) {
+      setImgSrc(image);
+    }
+  };
 
   return (
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
       <div className="flex w-full p-2 gap-2.5 rounded-2xl bg-white border border-gray-300 relative cursor-pointer transition-all hover:shadow-lg">
         {/* Image on the left */}
         <img
-          src={imageUrl}
+          src={imgSrc}
           alt={title}
           className="w-[96px] h-[96px] flex-shrink-0 rounded-xl object-cover aspect-square"
+          onError={handleImageError}
         />
 
         {/* Content on the right */}
