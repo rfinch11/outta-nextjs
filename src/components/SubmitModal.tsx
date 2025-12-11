@@ -24,10 +24,10 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-end px-6 pt-6 pb-4 flex-shrink-0">
+          <div className="absolute top-0 right-0 z-10 px-6 pt-6 pb-4">
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-transparent hover:bg-gray-100"
+              className="w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-white/90 backdrop-blur-sm hover:bg-white shadow-md"
               aria-label="Close"
               type="button"
             >
@@ -36,7 +36,7 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Airtable Form Embed */}
-          <div className="flex-1 overflow-hidden relative">
+          <div className="w-full h-full overflow-hidden relative">
             <iframe
               className="airtable-embed w-full h-full border-0"
               src="https://airtable.com/embed/appNEwC9kmw1NTshd/pagOOlOxjijSp6rln/form"
