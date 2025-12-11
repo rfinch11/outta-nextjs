@@ -133,15 +133,43 @@ async function scrapeEventDescription(eventUrl) {
     const html = await response.text();
     const $ = cheerio.load(html);
 
-    // Extract full description
-    let description = $('.event-description, [class*="description"]').first().text().trim();
+    // Extract full description preserving paragraph structure
+    const descContainer = $('.event-description, [class*="description"]').first();
 
-    // Clean up the description
+    if (descContainer.length === 0) {
+      return null;
+    }
+
+    // Convert HTML to text while preserving paragraph breaks
+    let description = '';
+
+    // Process each paragraph, div, or line break
+    descContainer.find('p, div, br, ul, ol, li').each((i, elem) => {
+      const $elem = $(elem);
+      const text = $elem.text().trim();
+
+      if (text) {
+        // Add bullet for list items
+        if (elem.name === 'li') {
+          description += '• ' + text + '\n';
+        } else {
+          description += text + '\n\n';
+        }
+      } else if (elem.name === 'br') {
+        description += '\n';
+      }
+    });
+
+    // If no structured content found, fallback to plain text
+    if (!description) {
+      description = descContainer.text().trim();
+    }
+
     if (description) {
-      // Remove extra whitespace
-      description = description.replace(/\s+/g, ' ').trim();
+      // Clean up excessive newlines (more than 2)
+      description = description.replace(/\n{3,}/g, '\n\n');
 
-      // Remove hashtags at the end
+      // Remove hashtags
       description = description.replace(/#\w+\s*/g, '').trim();
 
       return description;

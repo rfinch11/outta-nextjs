@@ -60,10 +60,33 @@ async function scrapeEventDescription(eventUrl) {
     const html = await response.text();
     const $ = cheerio.load(html);
 
-    let description = $('.event-description, [class*="description"]').first().text().trim();
+    const descContainer = $('.event-description, [class*="description"]').first();
+
+    if (descContainer.length === 0) return null;
+
+    let description = '';
+
+    descContainer.find('p, div, br, ul, ol, li').each((i, elem) => {
+      const $elem = $(elem);
+      const text = $elem.text().trim();
+
+      if (text) {
+        if (elem.name === 'li') {
+          description += '• ' + text + '\n';
+        } else {
+          description += text + '\n\n';
+        }
+      } else if (elem.name === 'br') {
+        description += '\n';
+      }
+    });
+
+    if (!description) {
+      description = descContainer.text().trim();
+    }
 
     if (description) {
-      description = description.replace(/\s+/g, ' ').trim();
+      description = description.replace(/\n{3,}/g, '\n\n');
       description = description.replace(/#\w+\s*/g, '').trim();
       return description;
     }
