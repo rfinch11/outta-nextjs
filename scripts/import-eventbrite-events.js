@@ -15,6 +15,7 @@
 
 require('dotenv').config({ path: '.env.local' });
 const Airtable = require('airtable');
+const cheerio = require('cheerio');
 
 // Configuration
 const AIRTABLE_TOKEN = process.env.AIRTABLE_ACCESS_TOKEN;
@@ -115,9 +116,48 @@ async function fetchEventbriteEvents(city, maxPages = 5) {
 }
 
 /**
+ * Scrape individual event page for full description
+ */
+async function scrapeEventDescription(eventUrl) {
+  try {
+    const response = await fetch(eventUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const html = await response.text();
+    const $ = cheerio.load(html);
+
+    // Extract full description
+    let description = $('.event-description, [class*="description"]').first().text().trim();
+
+    // Clean up the description
+    if (description) {
+      // Remove extra whitespace
+      description = description.replace(/\s+/g, ' ').trim();
+
+      // Remove hashtags at the end
+      description = description.replace(/#\w+\s*/g, '').trim();
+
+      return description;
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`    ⚠️  Error scraping description:`, error.message);
+    return null;
+  }
+}
+
+/**
  * Map Eventbrite event to Airtable fields
  */
-function mapEventToAirtable(event) {
+function mapEventToAirtable(event, fullDescription = null) {
   const venue = event.primary_venue || {};
   const address = venue.address || {};
 
@@ -189,7 +229,7 @@ function mapEventToAirtable(event) {
   return {
     title: event.name,
     type: 'Event',
-    description: event.summary || event.full_description || null,
+    description: fullDescription || event.summary || null,
     start_date: startDate,
     location_name: venue.name || null,
     city: address.city || null,
@@ -336,8 +376,12 @@ async function importEvents() {
       continue;
     }
 
+    // Scrape full description from event page
+    console.log(`  🔍 Fetching full description...`);
+    const fullDescription = await scrapeEventDescription(event.url);
+
     // Map to Airtable format
-    const eventData = mapEventToAirtable(event);
+    const eventData = mapEventToAirtable(event, fullDescription);
 
     // Create or update in Airtable
     const result = await createOrUpdateEvent(eventData);

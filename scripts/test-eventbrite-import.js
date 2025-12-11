@@ -9,6 +9,7 @@
 
 require('dotenv').config({ path: '.env.local' });
 const Airtable = require('airtable');
+const cheerio = require('cheerio');
 
 const AIRTABLE_TOKEN = process.env.AIRTABLE_ACCESS_TOKEN;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
@@ -48,7 +49,33 @@ async function fetchEventbriteEvents() {
   return events.slice(0, TEST_LIMIT);
 }
 
-function mapEventToAirtable(event) {
+async function scrapeEventDescription(eventUrl) {
+  try {
+    const response = await fetch(eventUrl, {
+      headers: { 'User-Agent': 'Mozilla/5.0' }
+    });
+
+    if (!response.ok) return null;
+
+    const html = await response.text();
+    const $ = cheerio.load(html);
+
+    let description = $('.event-description, [class*="description"]').first().text().trim();
+
+    if (description) {
+      description = description.replace(/\s+/g, ' ').trim();
+      description = description.replace(/#\w+\s*/g, '').trim();
+      return description;
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`    ⚠️  Error scraping description:`, error.message);
+    return null;
+  }
+}
+
+function mapEventToAirtable(event, fullDescription = null) {
   const venue = event.primary_venue || {};
   const address = venue.address || {};
 
@@ -89,7 +116,7 @@ function mapEventToAirtable(event) {
   return {
     title: event.name,
     type: 'Event',
-    description: event.summary || null,
+    description: fullDescription || event.summary || null,
     start_date: startDate,
     location_name: venue.name || null,
     city: address.city || null,
@@ -179,8 +206,11 @@ async function testImport() {
     console.log(`[${i + 1}/${events.length}] ${event.name}`);
     console.log(`   📅 ${event.start_date} at ${event.start_time}`);
     console.log(`   📍 ${event.primary_venue?.name || 'TBD'}`);
+    console.log(`   🔍 Fetching full description...`);
 
-    const eventData = mapEventToAirtable(event);
+    const fullDescription = await scrapeEventDescription(event.url);
+
+    const eventData = mapEventToAirtable(event, fullDescription);
     const result = await createOrUpdateEvent(eventData);
 
     if (result.action === 'created') {
