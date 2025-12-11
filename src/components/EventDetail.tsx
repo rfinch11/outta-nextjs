@@ -133,8 +133,8 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
           onError={handleImageError}
         />
 
-        {/* Sticky Back Button - Positioned over hero */}
-        <div className="sticky top-0 left-0 right-0 z-50 px-5 py-4 pointer-events-none absolute">
+        {/* Back Button - Positioned over hero */}
+        <div className="absolute top-0 left-0 right-0 z-50 px-5 py-4 pointer-events-none">
           <Link
             href="/"
             className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg transition-all no-underline text-gray-900 pointer-events-auto"
