@@ -24,14 +24,14 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="absolute top-0 right-0 z-10 px-6 pt-6 pb-4">
+          <div className="absolute top-0 right-0 z-10 px-5 py-4">
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-white/90 backdrop-blur-sm hover:bg-white shadow-md"
+              className="w-10 h-10 rounded-full flex items-center justify-center border-none cursor-pointer transition-all bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg"
               aria-label="Close"
               type="button"
             >
-              <IoMdClose size={20} className="text-gray-600" />
+              <IoMdClose size={24} className="text-gray-900" />
             </button>
           </div>
 
