@@ -6,7 +6,7 @@ import {
   IoGlobeOutline,
 } from 'react-icons/io5';
 import { IoIosArrowBack } from 'react-icons/io';
-import { LuCalendar, LuClock3, LuTag, LuUsers } from 'react-icons/lu';
+import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag } from 'react-icons/lu';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 
 interface EventDetailProps {
@@ -279,9 +279,10 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         <div className="text-center mt-6 mb-8">
           <a
             href={`mailto:ryan@outta.events?subject=Report listing ${currentUrl || `https://outta.events/listings/${airtable_id}`}`}
-            className="text-sm text-gray-500 hover:text-gray-700 underline"
+            className="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-1.5"
           >
-            Report this listing
+            <LuFlag size={16} />
+            Report listing
           </a>
         </div>
       </div>
