@@ -18,6 +18,7 @@ interface MapViewProps {
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
+  borderRadius: '12px', // Matches rounded-xl (0.75rem = 12px)
 };
 
 const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab, filters }) => {
@@ -274,20 +275,21 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab, fi
   }
 
   return (
-    <GoogleMap
-      mapContainerStyle={mapContainerStyle}
-      center={getMapCenter()}
-      zoom={12}
-      onLoad={onLoad}
-      onUnmount={onUnmount}
-      onIdle={loadListingsInBounds}
-      options={{
-        zoomControl: true,
-        streetViewControl: false,
-        mapTypeControl: false,
-        fullscreenControl: true,
-      }}
-    >
+    <div className="w-full h-full bg-white p-2">
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        center={getMapCenter()}
+        zoom={12}
+        onLoad={onLoad}
+        onUnmount={onUnmount}
+        onIdle={loadListingsInBounds}
+        options={{
+          zoomControl: true,
+          streetViewControl: false,
+          mapTypeControl: false,
+          fullscreenControl: true,
+        }}
+      >
       {validListings.map((listing) => (
         <Marker
           key={listing.airtable_id}
@@ -342,7 +344,8 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab, fi
           </Link>
         </InfoWindow>
       )}
-    </GoogleMap>
+      </GoogleMap>
+    </div>
   );
 };
 
