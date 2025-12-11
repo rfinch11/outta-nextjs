@@ -67,6 +67,13 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     place_id ? `/api/place-photo?place_id=${place_id}&width=800` : image
   );
 
+  // State to track current page URL
+  const [currentUrl, setCurrentUrl] = React.useState<string>('');
+
+  React.useEffect(() => {
+    setCurrentUrl(window.location.href);
+  }, []);
+
   // Format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -271,7 +278,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         {/* Report Listing */}
         <div className="text-center mt-6 mb-8">
           <a
-            href={`mailto:ryan@outta.events?subject=Report listing ${typeof window !== 'undefined' ? window.location.href : `https://outta.events/listings/${airtable_id}`}`}
+            href={`mailto:ryan@outta.events?subject=Report listing ${currentUrl || `https://outta.events/listings/${airtable_id}`}`}
             className="text-sm text-gray-500 hover:text-gray-700 underline"
           >
             Report this listing
