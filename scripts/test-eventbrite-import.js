@@ -58,36 +58,50 @@ async function scrapeEventDescription(eventUrl) {
     if (!response.ok) return null;
 
     const html = await response.text();
-    const $ = cheerio.load(html);
 
-    const descContainer = $('.event-description, [class*="description"]').first();
+    // Extract __SERVER_DATA__ JSON
+    const match = html.match(/__SERVER_DATA__ = ({.*?});/s);
+    if (!match) return null;
 
-    if (descContainer.length === 0) return null;
+    const serverData = JSON.parse(match[1]);
+    const modules = serverData.components?.eventDescription?.structuredContent?.modules || [];
 
-    let description = '';
-
-    descContainer.find('p, div, br, ul, ol, li').each((i, elem) => {
-      const $elem = $(elem);
-      const text = $elem.text().trim();
-
-      if (text) {
-        if (elem.name === 'li') {
-          description += '• ' + text + '\n';
-        } else {
-          description += text + '\n\n';
-        }
-      } else if (elem.name === 'br') {
-        description += '\n';
+    // Combine all text modules
+    let fullHtml = '';
+    modules.forEach(module => {
+      if (module.type === 'text' && module.text) {
+        fullHtml += module.text + '\n\n';
       }
     });
 
-    if (!description) {
-      description = descContainer.text().trim();
+    if (!fullHtml) {
+      return serverData.components?.eventDescription?.summary || null;
     }
 
+    // Convert HTML to formatted text
+    let description = fullHtml
+      .replace(/<\/p>/gi, '\n\n')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<\/div>/gi, '\n\n')
+      .replace(/<\/h[1-6]>/gi, '\n\n')
+      .replace(/<li>/gi, '• ')
+      .replace(/<\/li>/gi, '\n')
+      .replace(/<\/ul>/gi, '\n')
+      .replace(/<\/ol>/gi, '\n')
+      .replace(/<strong>/gi, '')
+      .replace(/<\/strong>/gi, '')
+      .replace(/<em>/gi, '')
+      .replace(/<\/em>/gi, '')
+      .replace(/<[^>]+>/g, '');
+
     if (description) {
-      description = description.replace(/\n{3,}/g, '\n\n');
-      description = description.replace(/#\w+\s*/g, '').trim();
+      description = description
+        .replace(/\n{3,}/g, '\n\n')
+        .replace(/[ \t]+/g, ' ')
+        .replace(/\n /g, '\n')
+        .trim();
+
+      description = description.replace(/#\w+/g, '').trim();
       return description;
     }
 

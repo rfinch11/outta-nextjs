@@ -131,46 +131,56 @@ async function scrapeEventDescription(eventUrl) {
     }
 
     const html = await response.text();
-    const $ = cheerio.load(html);
 
-    // Extract full description preserving paragraph structure
-    const descContainer = $('.event-description, [class*="description"]').first();
+    // Extract __SERVER_DATA__ JSON which has the complete description
+    const match = html.match(/__SERVER_DATA__ = ({.*?});/s);
 
-    if (descContainer.length === 0) {
+    if (!match) {
       return null;
     }
 
-    // Convert HTML to text while preserving paragraph breaks
-    let description = '';
+    const serverData = JSON.parse(match[1]);
+    const modules = serverData.components?.eventDescription?.structuredContent?.modules || [];
 
-    // Process each paragraph, div, or line break
-    descContainer.find('p, div, br, ul, ol, li').each((i, elem) => {
-      const $elem = $(elem);
-      const text = $elem.text().trim();
-
-      if (text) {
-        // Add bullet for list items
-        if (elem.name === 'li') {
-          description += '• ' + text + '\n';
-        } else {
-          description += text + '\n\n';
-        }
-      } else if (elem.name === 'br') {
-        description += '\n';
+    // Combine all text modules
+    let fullHtml = '';
+    modules.forEach(module => {
+      if (module.type === 'text' && module.text) {
+        fullHtml += module.text + '\n\n';
       }
     });
 
-    // If no structured content found, fallback to plain text
-    if (!description) {
-      description = descContainer.text().trim();
+    if (!fullHtml) {
+      // Fallback to summary if no structured content
+      return serverData.components?.eventDescription?.summary || null;
     }
 
+    // Convert HTML to formatted text
+    let description = fullHtml
+      .replace(/<\/p>/gi, '\n\n')
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<\/div>/gi, '\n\n')
+      .replace(/<\/h[1-6]>/gi, '\n\n')
+      .replace(/<li>/gi, '• ')
+      .replace(/<\/li>/gi, '\n')
+      .replace(/<\/ul>/gi, '\n')
+      .replace(/<\/ol>/gi, '\n')
+      .replace(/<strong>/gi, '')
+      .replace(/<\/strong>/gi, '')
+      .replace(/<em>/gi, '')
+      .replace(/<\/em>/gi, '')
+      .replace(/<[^>]+>/g, '');  // Remove all remaining tags
+
     if (description) {
-      // Clean up excessive newlines (more than 2)
-      description = description.replace(/\n{3,}/g, '\n\n');
+      // Clean up whitespace
+      description = description
+        .replace(/\n{3,}/g, '\n\n')
+        .replace(/[ \t]+/g, ' ')
+        .replace(/\n /g, '\n')
+        .trim();
 
       // Remove hashtags
-      description = description.replace(/#\w+\s*/g, '').trim();
+      description = description.replace(/#\w+/g, '').trim();
 
       return description;
     }
