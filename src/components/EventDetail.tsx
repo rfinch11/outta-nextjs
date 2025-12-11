@@ -124,24 +124,24 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Sticky Back Button */}
-      <div className="sticky top-0 left-0 right-0 z-50 px-5 py-4 pointer-events-none">
-        <Link
-          href="/"
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg transition-all no-underline text-gray-900 pointer-events-auto"
-        >
-          <IoIosArrowBack size={24} />
-        </Link>
-      </div>
-
       {/* Hero Image */}
-      <div className="relative w-full h-[400px] bg-gray-100 -mt-[58px]">
+      <div className="relative w-full h-[400px] bg-gray-100">
         <img
           src={imgSrc}
           alt={title}
           className="w-full h-full object-cover"
           onError={handleImageError}
         />
+
+        {/* Sticky Back Button - Positioned over hero */}
+        <div className="sticky top-0 left-0 right-0 z-50 px-5 py-4 pointer-events-none absolute">
+          <Link
+            href="/"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg transition-all no-underline text-gray-900 pointer-events-auto"
+          >
+            <IoIosArrowBack size={24} />
+          </Link>
+        </div>
       </div>
 
       {/* Content */}
