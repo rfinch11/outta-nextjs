@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Widget } from '@typeform/embed-react';
 
 interface SubmitModalProps {
   isOpen: boolean;
@@ -35,15 +34,12 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
             </button>
           </div>
 
-          {/* Typeform Embed */}
+          {/* Airtable Form Embed */}
           <div className="flex-1 overflow-hidden relative">
-            <Widget
-              id="kQU0pScO"
-              style={{ width: '100%', height: '100%' }}
-              className="w-full h-full"
-              opacity={0}
-              hideHeaders
-              hideFooter
+            <iframe
+              className="airtable-embed w-full h-full border-0"
+              src="https://airtable.com/embed/appNEwC9kmw1NTshd/pagOOlOxjijSp6rln/form"
+              style={{ background: 'transparent' }}
             />
           </div>
         </div>
