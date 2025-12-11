@@ -84,19 +84,11 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   // Format time
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
-    const startTime = date.toLocaleTimeString('en-US', {
+    return date.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
       hour12: true,
     });
-    // Add 30 minutes for end time
-    const endDate = new Date(date.getTime() + 30 * 60000);
-    const endTime = endDate.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
-    return `${startTime} - ${endTime}`;
   };
 
   // Handle image load error by falling back to the original image
