@@ -20,14 +20,14 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
       >
         {/* Modal */}
         <div
-          className="bg-white rounded-t-[20px] sm:rounded-2xl w-full sm:max-w-[600px] h-[90vh] sm:h-[80vh] flex flex-col animate-slideUp"
+          className="bg-white rounded-t-[20px] sm:rounded-2xl w-full sm:max-w-[600px] h-[90vh] sm:h-[80vh] relative overflow-hidden animate-slideUp"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="absolute top-0 right-0 z-10 px-5 py-4">
+          {/* Close Button - Fixed in top right */}
+          <div className="absolute top-0 right-0 z-10 px-5 py-4 pointer-events-none">
             <button
               onClick={onClose}
-              className="w-10 h-10 rounded-full flex items-center justify-center border-none cursor-pointer transition-all bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg"
+              className="w-10 h-10 rounded-full flex items-center justify-center border-none cursor-pointer transition-all bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg pointer-events-auto"
               aria-label="Close"
               type="button"
             >
@@ -36,7 +36,7 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Airtable Form Embed */}
-          <div className="w-full h-full overflow-hidden relative">
+          <div className="w-full h-full">
             <iframe
               className="airtable-embed w-full h-full border-0"
               src="https://airtable.com/embed/appNEwC9kmw1NTshd/pagOOlOxjijSp6rln/form"
