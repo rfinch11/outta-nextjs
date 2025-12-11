@@ -3,12 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  IoPricetagOutline,
   IoPeopleOutline,
   IoGlobeOutline,
 } from 'react-icons/io5';
 import { IoIosArrowBack } from 'react-icons/io';
-import { LuCalendar, LuClock3 } from 'react-icons/lu';
+import { LuCalendar, LuClock3, LuTag } from 'react-icons/lu';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 
 interface EventDetailProps {
@@ -175,7 +174,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
 
           {price && (
             <div className="flex items-center gap-3">
-              <IoPricetagOutline size={20} className="text-gray-600 flex-shrink-0" />
+              <LuTag size={20} className="text-gray-600 flex-shrink-0" />
               <span className="text-base text-gray-800">{price}</span>
             </div>
           )}
