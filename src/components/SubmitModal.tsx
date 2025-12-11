@@ -24,10 +24,7 @@ const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 pt-6 pb-4 flex-shrink-0">
-            <h2 className="text-lg font-bold text-malibu-950 m-0">
-              Submit a Listing
-            </h2>
+          <div className="flex items-center justify-end px-6 pt-6 pb-4 flex-shrink-0">
             <button
               onClick={onClose}
               className="w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-transparent hover:bg-gray-100"
