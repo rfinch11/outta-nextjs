@@ -3,11 +3,10 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  IoPeopleOutline,
   IoGlobeOutline,
 } from 'react-icons/io5';
 import { IoIosArrowBack } from 'react-icons/io';
-import { LuCalendar, LuClock3, LuTag } from 'react-icons/lu';
+import { LuCalendar, LuClock3, LuTag, LuUsers } from 'react-icons/lu';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 
 interface EventDetailProps {
@@ -181,7 +180,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
 
           {age_range && (
             <div className="flex items-center gap-3">
-              <IoPeopleOutline size={20} className="text-gray-600 flex-shrink-0" />
+              <LuUsers size={20} className="text-gray-600 flex-shrink-0" />
               <span className="text-base text-gray-800">{age_range}</span>
             </div>
           )}
