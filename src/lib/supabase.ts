@@ -34,3 +34,11 @@ export type Listing = {
   reviews?: number;
   distance?: number; // Calculated client-side
 };
+
+export type Source = {
+  id: string;
+  name: string;
+  logo?: string | null;
+  url: string;
+  featured_source: boolean;
+};

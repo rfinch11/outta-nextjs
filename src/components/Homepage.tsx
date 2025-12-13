@@ -7,13 +7,14 @@ import { IoIosArrowBack, IoMdClose } from 'react-icons/io';
 import { TbLocation } from 'react-icons/tb';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
-import type { Listing } from '@/lib/supabase';
+import type { Listing, Source } from '@/lib/supabase';
 import type { FilterState } from './FilterModal';
 import ClickableCard from './ClickableCard';
 import Footer from './Footer';
 import Loader from './Loader';
 import TabBar, { TabFilter } from './TabBar';
 import FeaturedCarousel from './FeaturedCarousel';
+import VenuesCarousel from './VenuesCarousel';
 
 // Dynamic imports for modals (code splitting)
 const SearchModal = dynamic(() => import('./SearchModal'), {
@@ -36,6 +37,7 @@ const Homepage: React.FC = () => {
   const [allListings, setAllListings] = useState<Listing[]>([]);
   const [displayedListings, setDisplayedListings] = useState<Listing[]>([]);
   const [featuredListings, setFeaturedListings] = useState<Listing[]>([]);
+  const [featuredVenues, setFeaturedVenues] = useState<Source[]>([]);
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(15);
   const [totalFilteredCount, setTotalFilteredCount] = useState(0);
@@ -181,6 +183,7 @@ const Homepage: React.FC = () => {
     if (userLocation) {
       fetchAllListings();
       fetchFeaturedListings();
+      fetchFeaturedVenues();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLocation]);
@@ -312,6 +315,29 @@ const Homepage: React.FC = () => {
       setFeaturedListings(selected);
     } catch (error) {
       console.error('Error fetching featured listings:', error);
+    }
+  };
+
+  // Fetch featured venues from sources table
+  const fetchFeaturedVenues = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('sources')
+        .select('id, name, logo, url, featured_source')
+        .eq('featured_source', true)
+        .not('url', 'is', null)
+        .limit(10);
+
+      if (error) {
+        console.error('Error fetching featured venues:', error);
+        return;
+      }
+
+      if (data) {
+        setFeaturedVenues(data);
+      }
+    } catch (error) {
+      console.error('Error:', error);
     }
   };
 
@@ -838,6 +864,18 @@ const Homepage: React.FC = () => {
             <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Featured events</h2>
             <div className="pl-5">
               <FeaturedCarousel listings={featuredListings} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Top Venues Section */}
+      {!loading && featuredVenues.length > 0 && (
+        <div className="py-3 bg-malibu-50">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Top venues</h2>
+            <div className="pl-5">
+              <VenuesCarousel venues={featuredVenues} />
             </div>
           </div>
         </div>
