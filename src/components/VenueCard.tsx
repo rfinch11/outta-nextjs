@@ -40,7 +40,7 @@ const VenueCard: React.FC<VenueCardProps> = ({ name, logo, url }) => {
         {/* Content below - no background, matches featured card style */}
         <div className="flex flex-col gap-1.5">
           {/* Venue Name */}
-          <h3 className="text-malibu-950 text-md font-bold leading-tight m-0 break-words line-clamp-2">
+          <h3 className="text-malibu-950 text-base font-bold leading-tight m-0 break-words line-clamp-2">
             {name}
           </h3>
         </div>
