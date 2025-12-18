@@ -41,45 +41,14 @@ const Footer: React.FC = () => {
             <h3 className="text-sm font-bold text-black m-0 mb-2 uppercase tracking-wide">
               Support
             </h3>
-            <a href="mailto:hello@outta.events" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
+            <a href="mailto:rfinch@outta.events" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
               Contact
             </a>
             <Link href="/about" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
               About
             </Link>
-            <Link href="/help" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
+            <a href="mailto:rfinch@outta.events" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
               Help
-            </Link>
-          </div>
-
-          {/* Connect */}
-          <div className="flex flex-col gap-3">
-            <h3 className="text-sm font-bold text-black m-0 mb-2 uppercase tracking-wide">
-              Connect
-            </h3>
-            <a
-              href="https://twitter.com/outta"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
-            >
-              Twitter
-            </a>
-            <a
-              href="https://instagram.com/outta"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
-            >
-              Instagram
-            </a>
-            <a
-              href="https://facebook.com/outta"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
-            >
-              Facebook
             </a>
           </div>
         </div>

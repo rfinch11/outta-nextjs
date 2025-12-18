@@ -278,7 +278,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         {/* Report Listing */}
         <div className="text-center mt-6 mb-8">
           <a
-            href={`mailto:ryan@outta.events?subject=Report listing ${currentUrl || `https://outta.events/listings/${airtable_id}`}`}
+            href={`mailto:rfinch@outta.events?subject=Report listing ${currentUrl || `https://outta.events/listings/${airtable_id}`}`}
             className="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-1.5"
           >
             <LuFlag size={16} />
