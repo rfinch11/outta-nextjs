@@ -6,23 +6,6 @@
 
 Outta is a kid-friendly adventures discovery platform built with Next.js 16, TypeScript, and Tailwind CSS. Find amazing activities, events, and camps for kids near you.
 
-## 🚀 Production Status
-
-**Migration Complete!** This Next.js application is now the live production site at outta.events.
-
-### Completed Phases:
-- ✅ Phase 0: Pre-Migration Prep
-- ✅ Phase 1: Initialize Next.js
-- ✅ Phase 2: Migrate Core Components
-- ✅ Phase 5: Production Cutover (November 30, 2025)
-
-### Future Enhancements:
-- ⏸️ Phase 3: Testing Infrastructure
-- ⏸️ Phase 4: Performance Optimization
-- ⏸️ Phase 6: Authentication & User Accounts
-- ⏸️ Phase 7: Advanced Features (Reviews, Map View, Notifications)
-- ⏸️ Phase 8: Analytics & Monetization
-
 ## 🛠 Tech Stack
 
 - **Framework:** Next.js 16 (App Router)
@@ -145,7 +128,7 @@ Vercel automatically builds and deploys to outta.events with zero downtime.
 - **Filters:** Distance, date, price, type, tags, and rating filters
 - **Location:** Geolocation and zip code-based distance calculations
 - **Listing Details:** Rich detail pages with maps, organizer info, and sharing
-- **Submit Listings:** Integrated Typeform for community submissions
+- **Submit Listings:** Integrated Airtable form for community submissions
 - **Load More Pagination:** Infinite scroll with 15 items per page
 - **Mobile Responsive:** Bottom sheet modals and mobile-first design
 
@@ -159,10 +142,6 @@ Powered by Supabase PostgreSQL with the following main tables:
 ## 📝 License
 
 Private - All Rights Reserved
-
-## 🔗 Related Repositories
-
-- [outta](https://github.com/rfinch11/outta) - Legacy CDN-based React application (sunset November 30, 2025)
 
 ---
 
