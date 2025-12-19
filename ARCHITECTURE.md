@@ -83,7 +83,7 @@ Outta is a Next.js 16 application that helps families discover kid-friendly even
 │  │  │    - Emerald (Green)                                       │  │   │
 │  │  │    - Malibu (Blue)                                         │  │   │
 │  │  │    - Black (Grayscale)                                     │  │   │
-│  │  │  • Space Grotesk font                                      │  │   │
+│  │  │  • Bricolage Grotesque font                                      │  │   │
 │  │  └───────────────────────────────────────────────────────────┘  │   │
 │  └───────────────────────────────────────────────────────────────┘   │
 │                                                                           │
