@@ -79,6 +79,21 @@ outta-nextjs/
 │   │   └── Footer.tsx          # Footer component
 │   └── lib/                    # Utilities
 │       └── supabase.ts         # Supabase client
+├── scripts/                    # Automation scripts
+│   ├── import-ebparks-events.js        # East Bay Parks scraper
+│   ├── import-santa-cruz-library.js    # Santa Cruz Library scraper
+│   ├── import-badm-events.js           # Bay Area Discovery Museum scraper
+│   ├── import-eventbrite-events.js     # Eventbrite Bay Area scraper
+│   ├── README-ebparks.md               # East Bay Parks documentation
+│   ├── README-badm.md                  # BADM documentation
+│   ├── README-eventbrite.md            # Eventbrite documentation
+│   └── MIGRATION_PLAN.md               # Airtable to Supabase migration guide
+├── .github/
+│   └── workflows/              # GitHub Actions workflows
+│       ├── import-ebparks-events.yml   # Daily East Bay Parks import
+│       ├── import-santa-cruz-events.yml# Daily Santa Cruz import
+│       ├── import-badm-events.yml      # Daily BADM import
+│       └── import-eventbrite-events.yml# Daily Eventbrite import
 ├── public/                     # Static assets
 │   ├── Outta_logo.svg
 │   ├── hero.png
@@ -135,9 +150,46 @@ Vercel automatically builds and deploys to outta.events with zero downtime.
 
 ## 🤖 Automated Data Pipeline
 
-Outta features a fully automated data pipeline that runs daily via Vercel Cron Jobs:
+Outta features a fully automated data pipeline that runs daily via GitHub Actions and Vercel Cron Jobs:
 
-### RSS Feed Ingestion (9 AM UTC / 1 AM PT)
+### Event Scrapers (GitHub Actions - Daily)
+Custom Playwright-based scrapers that import events directly to Supabase:
+
+#### East Bay Regional Park District (9 AM UTC / 1 AM PT)
+- **Script:** `scripts/import-ebparks-events.js`
+- **Workflow:** `.github/workflows/import-ebparks-events.yml`
+- **Features:**
+  - Scrapes 10 pages of calendar listings
+  - Playwright for React SPA detail pages
+  - Full descriptions with proper formatting
+  - Automatic price, age range, and location extraction
+  - ~97 events imported per run
+- **Documentation:** `scripts/README-ebparks.md`
+
+#### Santa Cruz Public Libraries (6 AM UTC / 10 PM PT)
+- **Script:** `scripts/import-santa-cruz-library.js`
+- **Workflow:** `.github/workflows/import-santa-cruz-events.yml`
+- **Features:**
+  - iCal feed parsing + web scraping
+  - Geo coordinates and address parsing
+  - Event detail page scraping
+
+#### Bay Area Discovery Museum (8 AM UTC / 12 AM PT)
+- **Script:** `scripts/import-badm-events.js`
+- **Workflow:** `.github/workflows/import-badm-events.yml`
+- **Features:**
+  - Museum event listing scraping
+  - Detail page extraction for descriptions and pricing
+
+#### Eventbrite Bay Area (7 AM UTC / 11 PM PT)
+- **Script:** `scripts/import-eventbrite-events.js`
+- **Workflow:** `.github/workflows/import-eventbrite-events.yml`
+- **Features:**
+  - JSON extraction from embedded data
+  - Multi-city support (SF Bay Area)
+  - Full description scraping from event pages
+
+### RSS Feed Ingestion (Vercel Cron - 9 AM UTC / 1 AM PT)
 - **Source:** BiblioCommons library RSS feeds
 - **Libraries:** Palo Alto, San Mateo County, Santa Clara County
 - **Processing:**
@@ -170,12 +222,15 @@ Outta features a fully automated data pipeline that runs daily via Vercel Cron J
 - **Results:** 92% geocoding coverage (2269/2465 listings)
 - **Rate Limiting:** 100ms delay between requests
 
-### Migration from Airtable
+### Migration from Airtable to Supabase (Completed December 2025)
 The project has been fully migrated from Airtable to a Supabase-native architecture:
-- ✅ Removed Airtable dependency completely
-- ✅ All data now flows directly: RSS → Supabase
-- ✅ Automated enrichment (images, geocoding) via cron jobs
-- ✅ No manual intervention required
+- ✅ **All scrapers migrated:** East Bay Parks, Santa Cruz Library, BADM, Eventbrite
+- ✅ **Direct Supabase imports:** All event sources now write directly to Supabase
+- ✅ **No Airtable dependency:** Completely removed Airtable SDK and API calls
+- ✅ **Automated enrichment:** Images (Unsplash) and geocoding (Google Maps) via cron jobs
+- ✅ **Field name migration:** Converted from Airtable capitalized fields to lowercase
+- ✅ **Unique ID generation:** Events use `airtable_id` format (`ebparks_XXXXX`, etc.) for compatibility
+- 📚 **Documentation:** See `scripts/MIGRATION_PLAN.md` and `MIGRATION_RESULTS.csv`
 
 ## ✨ Features
 
@@ -194,12 +249,17 @@ Powered by Supabase PostgreSQL with the following main tables:
 
 ### listings Table
 Core table for all events, activities, and camps with:
-- **Deduplication:** `rss_guid` (RSS feed unique ID), `airtable_id` (legacy ID)
-- **Source Tracking:** `source_name` (e.g., "Palo Alto Library")
+- **Unique IDs:** `airtable_id` (event identifier, e.g., `ebparks_57722`, `rec...`)
+  - East Bay Parks: `ebparks_XXXXX` (extracted from event URL)
+  - Santa Cruz Library: Legacy Airtable IDs
+  - BADM/Eventbrite: Legacy Airtable IDs
+  - RSS feeds: `rss_guid` (BiblioCommons unique ID)
+- **Source Tracking:** `source_name` (e.g., "Palo Alto Library", "East Bay Regional Park District")
 - **Image Management:** `image` (URL), `unsplash_photo_id` (deduplication tracking)
 - **Geolocation:** `latitude`, `longitude`, `street`, `city`, `state`, `zip`
-- **Metadata:** `title`, `description`, `type`, `start_date`, `tags`, `organizer`
-- **Curation:** `recommended` (boolean), `rating` (1-5)
+  - Geocoding via Google Maps API for park names + cities
+- **Metadata:** `title`, `description`, `type`, `start_date`, `tags`, `organizer`, `price`, `age_range`
+- **Curation:** `recommended` (boolean), `rating` (1-5), `scout_pick` (boolean)
 
 ### Future Tables
 - `profiles` - User accounts and preferences

@@ -1,9 +1,9 @@
-name: Import Eventbrite Events
+name: Import Bay Area Discovery Museum Events
 
 on:
   schedule:
-    # Run daily at 7 AM UTC (11 PM PST / 12 AM PDT)
-    - cron: '0 7 * * *'
+    # Run daily at 8 AM UTC (12 AM PST / 1 AM PDT)
+    - cron: '0 8 * * *'
   workflow_dispatch: # Allow manual trigger
 
 jobs:
@@ -22,8 +22,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Import Eventbrite events
+      - name: Import BADM events
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
-        run: node scripts/import-eventbrite-events.js
+        run: node scripts/import-badm-events.js

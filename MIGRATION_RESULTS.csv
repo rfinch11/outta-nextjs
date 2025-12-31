@@ -1,0 +1,53 @@
+Scraper Name,Status,Script File,Workflow File,Database,Features,Events Imported (Production),Changes Made,Notes
+East Bay Regional Park District,✅ Complete,scripts/import-ebparks-events.js,.github/workflows/import-ebparks-events.yml,Supabase,"Playwright scraping, Full descriptions, No images (Unsplash fills), Age ranges, Prices, Pagination (10 pages)",97 events,"Built from scratch for Supabase, Added Playwright for React SPA scraping, Images set to null for Unsplash, Unique ID generation (ebparks_XXXXX), Fixed title extraction, Proper error handling","Successfully imported 97 events with full descriptions. Images null for Unsplash automation."
+Santa Cruz Public Libraries,✅ Complete,scripts/import-santa-cruz-library.js,.github/workflows/import-santa-cruz-events.yml,Supabase,"iCal feed parsing, Web scraping, Geo coordinates, Address parsing",N/A (uses iCal feed),"Replaced Airtable with Supabase, Updated env vars, Lowercase field names, Fixed source column issue","Uses iCal feed for event discovery, then scrapes detail pages"
+Bay Area Discovery Museum,✅ Complete,scripts/import-badm-events.js,.github/workflows/import-badm-events.yml,Supabase,"Event listing scraping, Detail page scraping, Date parsing, Price extraction",N/A,"Replaced Airtable with Supabase, Updated env vars, Changed mapEventToAirtable to mapEventToSupabase, Updated eventExists and createOrUpdateEvent functions","Museum-specific scraper for BADM events"
+Eventbrite Bay Area,✅ Complete,scripts/import-eventbrite-events.js,.github/workflows/import-eventbrite-events.yml,Supabase,"JSON extraction, Full description scraping, Multi-city support",N/A,"Replaced Airtable with Supabase, Updated env vars, Changed mapEventToAirtable to mapEventToSupabase, Updated all database operations","Searches Eventbrite for kid-friendly events across SF Bay Area"
+
+Environment Variable,Old Value,New Value,Required In,Purpose
+AIRTABLE_ACCESS_TOKEN,<token>,REMOVED,All scrapers (removed),Old Airtable authentication
+AIRTABLE_BASE_ID,<base_id>,REMOVED,All scrapers (removed),Old Airtable base identifier
+NEXT_PUBLIC_SUPABASE_URL,N/A,<supabase_url>,All scrapers + workflows,Supabase project URL
+SUPABASE_SERVICE_KEY,N/A,<service_key>,All scrapers + workflows,Supabase service role key for server-side operations
+
+Field Name,Airtable Format,Supabase Format,Data Type,Example Value
+Title,'Title',title,text,Wednesday Walk: Elsie Roemer
+Type,'Type',type,text,Activity
+Description,'Description',description,text,Full event description...
+Start Date,'Start Date',start_date,timestamp,2025-12-31T16:00:00.000Z
+Location Name,'Location name',location_name,text,Crown Beach
+City,'City',city,text,Alameda
+State,'State',state,text,CA
+Street,'Street',street,text,557 McReynolds Rd
+ZIP,'ZIP',zip,integer,94965
+Organizer,'Organizer',organizer,text,East Bay Regional Park District
+Website,'Website',website,text,https://apm.activecommunities.com/...
+Image,'Image',image,text,https://example.com/image.jpg
+Price,'Price',price,text,Free
+Age Range,'Age range',age_range,text,5-12
+Tags,'Tags',tags,text,"Outdoor, Nature, Hiking"
+Place Type,'Place type',place_type,text,Park
+
+Function Name,Old Implementation,New Implementation,Change Description
+eventExists(),airtable('Listings').select().firstPage(),"supabase.from('listings').select('id').eq('website', url).maybeSingle()",Switched from Airtable query to Supabase query with proper error handling
+createOrUpdateEvent(),airtable('Listings').create() / .update(),"supabase.from('listings').insert() / .update()",Changed to Supabase insert/update operations with .select('id').single()
+mapEventToAirtable(),Returns capitalized field names,Renamed to mapEventToSupabase() with lowercase fields,Function renamed and field names changed to match Supabase schema
+
+GitHub Workflow,Schedule,Environment Variables Updated,Status,Last Modified
+import-ebparks-events.yml,Daily at 9 AM UTC (1 AM PST),"NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_KEY",✅ Updated,2025-12-31
+import-santa-cruz-events.yml,Daily at 6 AM UTC (10 PM PST),"NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_KEY",✅ Updated,2025-12-31
+import-badm-events.yml,Daily at 8 AM UTC (12 AM PST),"NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_KEY",✅ Updated,2025-12-31
+import-eventbrite-events.yml,Daily at 7 AM UTC (11 PM PST),"NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_KEY",✅ Updated,2025-12-31
+
+Documentation File,Status,Purpose,Location
+README.md,✅ Updated,Main project documentation with all scrapers,README.md
+README-ebparks.md,✅ Updated,Documentation for East Bay Parks scraper,scripts/README-ebparks.md
+MIGRATION_PLAN.md,✅ Created,Detailed migration guide for all scrapers,scripts/MIGRATION_PLAN.md
+MIGRATION_RESULTS.csv,✅ Updated,CSV summary of migration results,MIGRATION_RESULTS.csv
+
+Migration Summary,,,
+Status,✅ COMPLETE - All 4 scrapers migrated to Supabase,,
+Date Completed,December 31 2025,,
+Total Events Imported,97 from East Bay Parks (first production run),,
+Architecture,"Direct Supabase imports, no Airtable dependency",,
+Automation,"GitHub Actions (daily runs), Vercel Cron (image/geocoding enrichment)",,"Images filled by Unsplash, geocoding by Google Maps API"

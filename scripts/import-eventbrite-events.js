@@ -4,22 +4,22 @@
  * This script:
  * 1. Searches Eventbrite for kid-friendly events across the SF Bay Area
  * 2. Extracts event data from embedded JSON
- * 3. Creates/updates Airtable records with complete information
+ * 3. Creates/updates Supabase records with complete information
  *
  * Usage: node scripts/import-eventbrite-events.js
  *
  * Required environment variables:
- * - AIRTABLE_ACCESS_TOKEN
- * - AIRTABLE_BASE_ID
+ * - NEXT_PUBLIC_SUPABASE_URL
+ * - SUPABASE_SERVICE_KEY
  */
 
 require('dotenv').config({ path: '.env.local' });
-const Airtable = require('airtable');
+const { createClient } = require('@supabase/supabase-js');
 const cheerio = require('cheerio');
 
 // Configuration
-const AIRTABLE_TOKEN = process.env.AIRTABLE_ACCESS_TOKEN;
-const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // Bay Area cities to search
 const BAY_AREA_CITIES = [
@@ -42,13 +42,14 @@ const BAY_AREA_CITIES = [
 ];
 
 // Validate environment variables
-if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
-  console.error('❌ Missing Airtable credentials in .env.local');
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.error('❌ Missing Supabase credentials in .env.local');
+  console.error('Please ensure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_KEY are set');
   process.exit(1);
 }
 
-// Initialize Airtable
-const airtable = new Airtable({ apiKey: AIRTABLE_TOKEN }).base(AIRTABLE_BASE_ID);
+// Initialize Supabase
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Delay helper
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -193,9 +194,9 @@ async function scrapeEventDescription(eventUrl) {
 }
 
 /**
- * Map Eventbrite event to Airtable fields
+ * Map Eventbrite event to Supabase fields
  */
-function mapEventToAirtable(event, fullDescription = null) {
+function mapEventToSupabase(event, fullDescription = null) {
   const venue = event.primary_venue || {};
   const address = venue.address || {};
 
@@ -285,18 +286,22 @@ function mapEventToAirtable(event, fullDescription = null) {
 }
 
 /**
- * Check if event already exists in Airtable by website URL
+ * Check if event already exists in Supabase by website URL
  */
 async function eventExists(websiteUrl) {
   try {
-    const records = await airtable('Listings')
-      .select({
-        filterByFormula: `{Website} = '${websiteUrl.replace(/'/g, "\\'")}'`,
-        maxRecords: 1,
-      })
-      .firstPage();
+    const { data, error } = await supabase
+      .from('listings')
+      .select('id')
+      .eq('website', websiteUrl)
+      .maybeSingle();
 
-    return records.length > 0 ? records[0] : null;
+    if (error) {
+      console.error(`Error checking if event exists:`, error.message);
+      return null;
+    }
+
+    return data;
   } catch (error) {
     console.error(`Error checking if event exists:`, error.message);
     return null;
@@ -304,47 +309,50 @@ async function eventExists(websiteUrl) {
 }
 
 /**
- * Create or update Airtable record
+ * Create or update Supabase record
  */
 async function createOrUpdateEvent(eventData) {
   try {
     const existing = await eventExists(eventData.website);
 
-    // Map field names to match Airtable columns exactly
-    const fields = {
-      'Title': eventData.title,
-      'Type': eventData.type,
-      'Description': eventData.description,
-      'Start Date': eventData.start_date,
-      'Location name': eventData.location_name,
-      'City': eventData.city,
-      'State': eventData.state,
-      'Street': eventData.street,
-      'ZIP': eventData.zip,
-      'Organizer': eventData.organizer,
-      'Website': eventData.website,
-      'Image': eventData.image,
-      'Price': eventData.price,
-      'Age range': eventData.age_range,
-      'Tags': eventData.tags,
-      'Place type': eventData.place_type,
-    };
-
     // Remove null/undefined values
-    Object.keys(fields).forEach(key => {
-      if (fields[key] === null || fields[key] === undefined) {
-        delete fields[key];
+    const cleanData = {};
+    Object.keys(eventData).forEach(key => {
+      if (eventData[key] !== null && eventData[key] !== undefined) {
+        cleanData[key] = eventData[key];
       }
     });
 
     if (existing) {
       // Update existing record
-      await airtable('Listings').update(existing.id, fields);
+      const { error } = await supabase
+        .from('listings')
+        .update({
+          ...cleanData,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', existing.id);
+
+      if (error) {
+        console.error(`Error updating event:`, error.message);
+        return { action: 'error', error: error.message };
+      }
+
       return { action: 'updated', id: existing.id };
     } else {
       // Create new record
-      const record = await airtable('Listings').create(fields);
-      return { action: 'created', id: record.id };
+      const { data, error } = await supabase
+        .from('listings')
+        .insert(cleanData)
+        .select('id')
+        .single();
+
+      if (error) {
+        console.error(`Error creating event:`, error.message);
+        return { action: 'error', error: error.message };
+      }
+
+      return { action: 'created', id: data.id };
     }
   } catch (error) {
     console.error(`Error creating/updating event:`, error.message);
@@ -418,10 +426,10 @@ async function importEvents() {
     console.log(`  🔍 Fetching full description...`);
     const fullDescription = await scrapeEventDescription(event.url);
 
-    // Map to Airtable format
-    const eventData = mapEventToAirtable(event, fullDescription);
+    // Map to Supabase format
+    const eventData = mapEventToSupabase(event, fullDescription);
 
-    // Create or update in Airtable
+    // Create or update in Supabase
     const result = await createOrUpdateEvent(eventData);
 
     if (result.action === 'created') {
