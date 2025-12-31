@@ -1,8 +1,9 @@
 # Outta Production Status
 
-**Last Updated:** November 30, 2025
+**Last Updated:** December 31, 2024
 **Status:** ✅ Live in Production
 **Production URL:** https://www.outta.events
+**Current Version:** v2.0 (Automated Data Pipeline)
 
 ---
 
@@ -16,6 +17,14 @@ The migration from the legacy CDN-based React application to Next.js 16 is **com
 - **Completed:** November 30, 2025
 - **Total Duration:** 9 days
 - **Downtime:** 0 minutes
+
+### Version 2.0: Automated Data Pipeline
+
+Following the successful Next.js migration, version 2.0 introduces a fully automated data pipeline:
+- **Deployed:** December 2024
+- **Features:** Daily automated RSS ingestion, image fetching, and geocoding
+- **Impact:** Zero manual data entry required, automatic content updates
+- **Migration:** Fully deprecated Airtable dependency
 
 ---
 
@@ -81,6 +90,9 @@ The migration from the legacy CDN-based React application to Next.js 16 is **com
 - **Deployment:** Vercel Edge Network
 - **Forms:** Typeform (@typeform/embed-react)
 - **Icons:** React Icons (Lucide)
+- **Automation:** Vercel Cron Jobs (daily RSS, images, geocoding)
+- **RSS Parsing:** rss-parser, he (HTML decoding), luxon (timezone conversion)
+- **APIs:** BiblioCommons RSS, Unsplash, Google Maps Geocoding
 
 ### Infrastructure
 - **Hosting:** Vercel (Production + Staging)
@@ -110,6 +122,13 @@ The migration from the legacy CDN-based React application to Next.js 16 is **com
 - ✅ Mobile-responsive design with bottom sheets
 - ✅ Typeform integration for listing submissions
 
+### Automated Data Pipeline
+- ✅ Daily RSS feed ingestion from 3 library systems (9 AM UTC / 1 AM PT)
+- ✅ Automatic image fetching from Unsplash (10 AM UTC / 2 AM PT)
+- ✅ Automatic geocoding for new listings (11 AM UTC / 3 AM PT)
+- ✅ Zero manual data entry required
+- ✅ Fully deprecated Airtable dependency
+
 ### User Experience
 - ✅ Fast page loads with server-side rendering
 - ✅ Smooth animations and transitions
@@ -124,20 +143,24 @@ The migration from the legacy CDN-based React application to Next.js 16 is **com
 ### Supabase PostgreSQL
 
 **Main Table:**
-- `listings` - 380 total listings
-  - Events: 42
-  - Activities: 292
-  - Camps: 46
+- `listings` - 2,465 total listings
+  - Automated RSS imports from 3 library systems
+  - 92% geocoding coverage (2,269 listings with coordinates)
+  - 100% image coverage via Unsplash automation
 
 **Schema:**
-- `airtable_id` (Primary Key)
+- `id` (UUID, Primary Key)
+- `airtable_id` (Legacy ID, nullable)
+- `rss_guid` (RSS feed unique identifier for deduplication)
+- `source_name` (Data source: "Palo Alto Library", "San Mateo County Library", etc.)
 - `title`, `description`, `type`
-- `city`, `state`, `street`, `zip`
-- `latitude`, `longitude`
+- `city`, `state`, `street`, `zip`, `location_name`
+- `latitude`, `longitude` (92% coverage)
 - `start_date`, `price`, `age_range`
 - `organizer`, `website`, `tags`
-- `recommended`, `place_type`
-- `image`
+- `recommended`, `place_type`, `rating`
+- `image` (URL), `unsplash_photo_id` (Deduplication tracking)
+- `created_at`, `updated_at`
 
 ---
 
@@ -251,8 +274,16 @@ The `dev` branch deploys to staging:
 
 Production environment variables are securely stored in Vercel:
 
+**Public (Client-side):**
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
+
+**Server-side Only:**
+- `SUPABASE_SERVICE_KEY` (Service role for cron jobs)
+- `CRON_SECRET` (Authentication for cron job endpoints)
+- `UNSPLASH_ACCESS_KEY` (Unsplash API for image automation)
+- `GOOGLE_MAPS_API_KEY` (Geocoding API)
 
 All sensitive keys are encrypted and never committed to the repository.
 

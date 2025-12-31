@@ -15,6 +15,8 @@ Outta is a kid-friendly adventures discovery platform built with Next.js 16, Typ
 - **Deployment:** Vercel
 - **Forms:** Typeform (@typeform/embed-react)
 - **Icons:** React Icons (Lucide)
+- **Automation:** Vercel Cron Jobs (RSS ingestion, image fetching, geocoding)
+- **APIs:** BiblioCommons RSS, Unsplash, Google Maps Geocoding
 
 ## 📦 Getting Started
 
@@ -97,11 +99,21 @@ All checks must pass before committing.
 
 ## 🌍 Environment Variables
 
-Required environment variables (see `.env.example`):
+Required environment variables:
 
 ```bash
+# Supabase (Public)
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key
+
+# Supabase (Server-side only)
+SUPABASE_SERVICE_KEY=your_service_role_key
+
+# External APIs (for automated cron jobs)
+UNSPLASH_ACCESS_KEY=your_unsplash_key
+GOOGLE_MAPS_API_KEY=your_google_maps_key
+CRON_SECRET=your_secret_for_cron_authentication
 ```
 
 ## 🚀 Deployment
@@ -121,6 +133,50 @@ git push origin main
 
 Vercel automatically builds and deploys to outta.events with zero downtime.
 
+## 🤖 Automated Data Pipeline
+
+Outta features a fully automated data pipeline that runs daily via Vercel Cron Jobs:
+
+### RSS Feed Ingestion (9 AM UTC / 1 AM PT)
+- **Source:** BiblioCommons library RSS feeds
+- **Libraries:** Palo Alto, San Mateo County, Santa Clara County
+- **Processing:**
+  - Parses RSS feeds with custom field extraction
+  - Decodes HTML entities and cleans descriptions
+  - Converts Pacific Time timestamps to ISO format
+  - Deduplicates using RSS GUID
+  - Automatically imports new events daily
+
+### Unsplash Image Automation (10 AM UTC / 2 AM PT)
+- **Purpose:** Fetches high-quality images for listings without images
+- **Strategy:** Progressive fallback system with 5 search tiers
+  1. All tags + 'kids'
+  2. First tag + 'kids'
+  3. Title keywords + 'kids'
+  4. Smart category detection (e.g., storytime → "children reading books")
+  5. Generic fallbacks ("kids activities", "children playing", "family events")
+- **Features:**
+  - 100% image coverage guaranteed
+  - Deduplication tracking via `unsplash_photo_id`
+  - Landscape orientation, high content filter
+  - 79% unique photo usage across 123 listings
+
+### Geocoding Automation (11 AM UTC / 3 AM PT)
+- **Purpose:** Converts addresses to latitude/longitude coordinates
+- **API:** Google Maps Geocoding API
+- **Address Building:**
+  - Primary: street + city + state + zip
+  - Fallback: location_name + city + state
+- **Results:** 92% geocoding coverage (2269/2465 listings)
+- **Rate Limiting:** 100ms delay between requests
+
+### Migration from Airtable
+The project has been fully migrated from Airtable to a Supabase-native architecture:
+- ✅ Removed Airtable dependency completely
+- ✅ All data now flows directly: RSS → Supabase
+- ✅ Automated enrichment (images, geocoding) via cron jobs
+- ✅ No manual intervention required
+
 ## ✨ Features
 
 - **Tab Navigation:** Browse Events, Activities, and Camps
@@ -136,8 +192,19 @@ Vercel automatically builds and deploys to outta.events with zero downtime.
 
 Powered by Supabase PostgreSQL with the following main tables:
 
-- `listings` - Events, activities, and camps with geolocation data
-- Future: `profiles`, `favorites`, `reviews`
+### listings Table
+Core table for all events, activities, and camps with:
+- **Deduplication:** `rss_guid` (RSS feed unique ID), `airtable_id` (legacy ID)
+- **Source Tracking:** `source_name` (e.g., "Palo Alto Library")
+- **Image Management:** `image` (URL), `unsplash_photo_id` (deduplication tracking)
+- **Geolocation:** `latitude`, `longitude`, `street`, `city`, `state`, `zip`
+- **Metadata:** `title`, `description`, `type`, `start_date`, `tags`, `organizer`
+- **Curation:** `recommended` (boolean), `rating` (1-5)
+
+### Future Tables
+- `profiles` - User accounts and preferences
+- `favorites` - Saved listings
+- `reviews` - User ratings and reviews
 
 ## 📝 License
 
