@@ -99,6 +99,8 @@ outta-nextjs/
 │   ├── hero.png
 │   └── favicon.png
 ├── .env.local                  # Environment variables (not committed)
+├── DATA_SOURCES.md             # Comprehensive data sources documentation
+├── MIGRATION_RESULTS.csv       # Airtable to Supabase migration tracking
 ├── next.config.ts              # Next.js config
 ├── tailwind.config.ts          # Tailwind config
 └── tsconfig.json               # TypeScript config
@@ -150,7 +152,15 @@ Vercel automatically builds and deploys to outta.events with zero downtime.
 
 ## 🤖 Automated Data Pipeline
 
-Outta features a fully automated data pipeline that runs daily via GitHub Actions and Vercel Cron Jobs:
+Outta features a fully automated data pipeline that runs daily via GitHub Actions and Vercel Cron Jobs.
+
+**For comprehensive data source documentation, see [DATA_SOURCES.md](DATA_SOURCES.md)**
+
+### Overview
+- **7 Primary Data Sources** (4 scrapers + 3 RSS feeds)
+- **2 Enrichment Pipelines** (Unsplash images + Google Maps geocoding)
+- **100% Supabase-native** (Airtable fully removed December 2025)
+- **Zero manual intervention** required
 
 ### Event Scrapers (GitHub Actions - Daily)
 Custom Playwright-based scrapers that import events directly to Supabase:
