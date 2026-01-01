@@ -912,7 +912,7 @@ const Homepage: React.FC = () => {
             <>
               <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
                 {/* Cards Column */}
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-1.5">
                   {displayedListings.map((listing, index) => {
                     // Check if date has changed from previous card (for Events only)
                     let showDateDivider = false;
@@ -928,7 +928,7 @@ const Homepage: React.FC = () => {
                     return (
                       <React.Fragment key={listing.airtable_id}>
                         {showDateDivider && listing.start_date && (
-                          <div className="flex items-center gap-3 my-4">
+                          <div className="flex items-center gap-3 my-2">
                             <div className="flex-1 h-px bg-gray-300" />
                             <span className="text-sm font-semibold text-gray-600 whitespace-nowrap">
                               {new Date(listing.start_date).toLocaleDateString('en-US', {
