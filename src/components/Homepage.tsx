@@ -912,25 +912,52 @@ const Homepage: React.FC = () => {
             <>
               <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
                 {/* Cards Column */}
-                <div className="flex flex-col gap-4">
-                  {displayedListings.map((listing) => (
-                    <ClickableCard
-                      key={listing.airtable_id}
-                      airtable_id={listing.airtable_id}
-                      title={listing.title}
-                      type={listing.type}
-                      scout_pick={listing.scout_pick}
-                      deal={listing.deal}
-                      promoted={listing.promoted}
-                      city={listing.city}
-                      distance={listing.distance || 0}
-                      image={listing.image}
-                      place_id={listing.place_id}
-                      start_date={listing.start_date}
-                      place_type={listing.place_type}
-                      description={listing.description}
-                    />
-                  ))}
+                <div className="flex flex-col gap-2">
+                  {displayedListings.map((listing, index) => {
+                    // Check if date has changed from previous card (for Events only)
+                    let showDateDivider = false;
+                    if (activeTab === 'Event' && index > 0 && listing.start_date) {
+                      const prevListing = displayedListings[index - 1];
+                      if (prevListing.start_date) {
+                        const currentDate = new Date(listing.start_date).toDateString();
+                        const prevDate = new Date(prevListing.start_date).toDateString();
+                        showDateDivider = currentDate !== prevDate;
+                      }
+                    }
+
+                    return (
+                      <React.Fragment key={listing.airtable_id}>
+                        {showDateDivider && listing.start_date && (
+                          <div className="flex items-center gap-3 my-4">
+                            <div className="flex-1 h-px bg-gray-300" />
+                            <span className="text-sm font-semibold text-gray-600 whitespace-nowrap">
+                              {new Date(listing.start_date).toLocaleDateString('en-US', {
+                                weekday: 'short',
+                                month: 'short',
+                                day: 'numeric'
+                              })}
+                            </span>
+                            <div className="flex-1 h-px bg-gray-300" />
+                          </div>
+                        )}
+                        <ClickableCard
+                          airtable_id={listing.airtable_id}
+                          title={listing.title}
+                          type={listing.type}
+                          scout_pick={listing.scout_pick}
+                          deal={listing.deal}
+                          promoted={listing.promoted}
+                          city={listing.city}
+                          distance={listing.distance || 0}
+                          image={listing.image}
+                          place_id={listing.place_id}
+                          start_date={listing.start_date}
+                          place_type={listing.place_type}
+                          description={listing.description}
+                        />
+                      </React.Fragment>
+                    );
+                  })}
                 </div>
 
                 {/* Map Column (hidden on mobile) */}

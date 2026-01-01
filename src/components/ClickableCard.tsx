@@ -68,7 +68,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
   return (
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
-      <div className="flex w-full p-2 gap-2.5 rounded-2xl bg-white border border-gray-300 relative cursor-pointer transition-all hover:shadow-lg">
+      <div className="flex w-full p-2 gap-2.5 rounded-2xl bg-transparent relative cursor-pointer transition-all hover:opacity-90">
         {/* Image on the left */}
         <img
           src={imgSrc}
@@ -89,7 +89,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
           )}
 
           {/* Title */}
-          <h3 className="text-malibu-950 text-lg font-bold leading-tight m-0 break-words line-clamp-2">
+          <h3 className="text-malibu-950 text-base font-bold leading-tight m-0 break-words line-clamp-2">
             {title}
           </h3>
 
