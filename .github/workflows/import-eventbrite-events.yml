@@ -2,8 +2,8 @@ name: Import Eventbrite Events
 
 on:
   schedule:
-    # Run daily at 7 AM UTC (11 PM PST / 12 AM PDT)
-    - cron: '0 7 * * *'
+    # Run daily at 6:30 AM UTC (10:30 PM PST / 11:30 PM PDT)
+    - cron: '30 6 * * *'
   workflow_dispatch: # Allow manual trigger
 
 jobs:

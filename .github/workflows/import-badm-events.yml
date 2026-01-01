@@ -2,8 +2,8 @@ name: Import Bay Area Discovery Museum Events
 
 on:
   schedule:
-    # Run daily at 8 AM UTC (12 AM PST / 1 AM PDT)
-    - cron: '0 8 * * *'
+    # Run daily at 7 AM UTC (11 PM PST / 12 AM PDT)
+    - cron: '0 7 * * *'
   workflow_dispatch: # Allow manual trigger
 
 jobs:

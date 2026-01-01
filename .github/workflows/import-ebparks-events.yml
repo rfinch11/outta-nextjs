@@ -2,8 +2,8 @@ name: Import East Bay Regional Park District Events
 
 on:
   schedule:
-    # Run daily at 9 AM UTC (1 AM PST / 2 AM PDT)
-    - cron: '0 9 * * *'
+    # Run daily at 7:30 AM UTC (11:30 PM PST / 12:30 AM PDT)
+    - cron: '30 7 * * *'
   workflow_dispatch: # Allow manual trigger
 
 jobs:

@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/ingest-rss",
-      "schedule": "0 9 * * *"
+      "schedule": "0 8 * * *"
     },
     {
       "path": "/api/fetch-unsplash-images",
