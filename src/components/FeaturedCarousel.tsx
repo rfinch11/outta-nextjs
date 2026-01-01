@@ -9,8 +9,49 @@ interface FeaturedCarouselProps {
 }
 
 /**
- * FeaturedCarousel component with horizontal scrolling
- * Supports swipe on mobile and arrow keys on desktop
+ * FeaturedCarousel - Horizontal scrolling carousel container
+ *
+ * @description
+ * A reusable carousel component for displaying featured listings
+ * in a horizontally scrollable view. Optimized for both mobile and desktop.
+ *
+ * @features
+ * - Touch/swipe scrolling on mobile
+ * - Navigation arrows on desktop (auto-hide at scroll boundaries)
+ * - Keyboard navigation (Arrow Left/Right)
+ * - Smooth scroll with snap-to-item behavior
+ * - Hidden scrollbar for clean appearance
+ *
+ * @configuration
+ * - Card width: 300px per item
+ * - Gap: 16px between cards
+ * - Scroll distance: 300px per arrow click
+ * - Snap: Enabled on mobile for card alignment
+ *
+ * @usage
+ * ```tsx
+ * // 1. Fetch your data
+ * const [listings, setListings] = useState<Listing[]>([]);
+ *
+ * // 2. Render carousel with section wrapper
+ * {listings.length > 0 && (
+ *   <div className="py-3 bg-malibu-50">
+ *     <div className="max-w-7xl mx-auto">
+ *       <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">
+ *         Featured Events
+ *       </h2>
+ *       <div className="pl-5">
+ *         <FeaturedCarousel listings={listings} />
+ *       </div>
+ *     </div>
+ *   </div>
+ * )}
+ * ```
+ *
+ * @customization
+ * To adjust card width, gap, or scroll distance, see CAROUSEL_PATTERN.md
+ *
+ * @see CAROUSEL_PATTERN.md for complete documentation and examples
  */
 const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ listings }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);

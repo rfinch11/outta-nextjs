@@ -24,8 +24,38 @@ interface FeaturedCardProps {
 }
 
 /**
- * FeaturedCard component for featured listings carousel
- * Features a stacked layout with image on top
+ * FeaturedCard - Individual card for carousel displays
+ *
+ * @description
+ * A vertical card component designed for horizontal scrolling carousels.
+ * Features a large image on top with content below.
+ *
+ * @layout
+ * - Fixed width: 300px (set by parent carousel)
+ * - Image: 3:2 aspect ratio (300px × 200px)
+ * - Stacked: Image → Title → Metadata → Location
+ *
+ * @features
+ * - Smart image loading with Google Place API fallback
+ * - Chip badges overlaid on image (scout_pick, deal, promoted)
+ * - Type-specific metadata (Events: date, Activities: type, Camps: description)
+ * - Clickable link to listing detail page
+ *
+ * @usage
+ * ```tsx
+ * <FeaturedCard
+ *   airtable_id="rec123"
+ *   title="Summer Festival"
+ *   image="https://..."
+ *   type="Event"
+ *   start_date="2026-06-15T14:00:00"
+ *   city="San Francisco"
+ *   distance={5.2}
+ *   scout_pick={true}
+ * />
+ * ```
+ *
+ * @see CAROUSEL_PATTERN.md for complete documentation
  */
 const FeaturedCard: React.FC<FeaturedCardProps> = ({
   airtable_id,
@@ -47,18 +77,16 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
     place_id ? `/api/place-photo?place_id=${place_id}&width=600` : (image || '')
   );
 
-  // Format location string
-  const locationText = distance ? `${city}, ${distance} mi` : city;
+  // Format location string (city only for cleaner look)
+  const locationText = city;
 
-  // Format date for events
+  // Format date for events (date only for cleaner carousel display)
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = {
-      month: 'long',
+      weekday: 'short',
+      month: 'short',
       day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
     };
     return date.toLocaleDateString('en-US', options);
   };
@@ -74,7 +102,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
       <div className="flex flex-col cursor-pointer">
         {/* Image with rounded corners and chips overlay */}
-        <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden mb-3">
+        <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden mb-3">
           <img
             src={imgSrc}
             alt={title}
@@ -98,15 +126,16 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
             {title}
           </h3>
 
-          {/* Date for Events */}
+          {/* Metadata - Date/Type and Location on same line */}
           {type === 'Event' && start_date && (
             <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
               <LuCalendar size={16} className="flex-shrink-0 text-black-500" />
               <span className="truncate">{formatDate(start_date)}</span>
+              <HiOutlineLocationMarker size={16} className="flex-shrink-0 text-black-500 ml-2" />
+              <span className="truncate">{locationText}</span>
             </div>
           )}
 
-          {/* Place type for Activities */}
           {type === 'Activity' && place_type && (
             <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
               {React.createElement(getPlaceTypeIcon(place_type), {
@@ -114,21 +143,25 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
                 className: 'flex-shrink-0 text-black-500'
               })}
               <span className="truncate">{place_type}</span>
+              <HiOutlineLocationMarker size={16} className="flex-shrink-0 text-black-500 ml-2" />
+              <span className="truncate">{locationText}</span>
             </div>
           )}
 
-          {/* Description for Camps */}
-          {type === 'Camp' && description && (
-            <div className="text-black-600 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-2">
-              {description}
-            </div>
+          {/* Camps: Description and Location */}
+          {type === 'Camp' && (
+            <>
+              {description && (
+                <div className="text-black-600 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-2">
+                  {description}
+                </div>
+              )}
+              <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
+                <HiOutlineLocationMarker size={16} className="flex-shrink-0 text-black-500" />
+                <span className="truncate">{locationText}</span>
+              </div>
+            </>
           )}
-
-          {/* Location */}
-          <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
-            <HiOutlineLocationMarker size={16} className="flex-shrink-0 text-black-500" />
-            <span className="truncate">{locationText}</span>
-          </div>
         </div>
       </div>
     </Link>
