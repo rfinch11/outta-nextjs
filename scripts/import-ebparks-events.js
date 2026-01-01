@@ -448,7 +448,7 @@ function mapEventToSupabase(event) {
   return {
     airtable_id: generateUniqueId(event.eventUrl),
     title: event.title,
-    type: 'Activity',
+    type: 'Event',
     description: event.description,
     start_date: startDate,
     location_name: location.locationName,

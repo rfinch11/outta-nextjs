@@ -127,7 +127,8 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
           </h3>
 
           {/* Metadata - Date/Type and Location on same line */}
-          {type === 'Event' && start_date && (
+          {/* Priority 1: Show date if available (for any type) */}
+          {start_date && (
             <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
               <LuCalendar size={16} className="flex-shrink-0 text-black-500" />
               <span className="truncate">{formatDate(start_date)}</span>
@@ -136,7 +137,8 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
             </div>
           )}
 
-          {type === 'Activity' && place_type && (
+          {/* Priority 2: Show place type for Activities without dates */}
+          {!start_date && type === 'Activity' && place_type && (
             <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
               {React.createElement(getPlaceTypeIcon(place_type), {
                 size: 16,
