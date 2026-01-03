@@ -122,7 +122,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
         {/* Content below - no background */}
         <div className="flex flex-col gap-1.5">
           {/* Title - max 2 lines with ellipsis */}
-          <h3 className="text-malibu-950 text-lg font-bold leading-tight m-0 break-words line-clamp-2">
+          <h3 className="text-malibu-950 text-base font-bold leading-tight m-0 break-words line-clamp-2">
             {title}
           </h3>
 
