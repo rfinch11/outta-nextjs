@@ -2,11 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import {
-  IoGlobeOutline,
-} from 'react-icons/io5';
 import { IoIosArrowBack } from 'react-icons/io';
-import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag } from 'react-icons/lu';
+import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe } from 'react-icons/lu';
+import { TbCalendarPlus } from 'react-icons/tb';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 
 interface EventDetailProps {
@@ -124,6 +122,56 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         console.error('Error sharing:', error);
       }
     }
+  };
+
+  // Handle add to calendar
+  const handleAddToCalendar = () => {
+    if (!start_date) return;
+
+    const event = {
+      title: title,
+      description: description || '',
+      location: street ? `${street}, ${city}, ${state} ${zip}` : `${city}, ${state}`,
+      start: new Date(start_date),
+      duration: 2, // Default 2 hour duration
+    };
+
+    // Calculate end time (2 hours after start)
+    const endDate = new Date(event.start);
+    endDate.setHours(endDate.getHours() + event.duration);
+
+    // Format dates for iCalendar format (YYYYMMDDTHHMMSSZ)
+    const formatICalDate = (date: Date) => {
+      return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    };
+
+    // Create .ics file content
+    const icsContent = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Outta//Event//EN',
+      'BEGIN:VEVENT',
+      `UID:${airtable_id}@outta.events`,
+      `DTSTAMP:${formatICalDate(new Date())}`,
+      `DTSTART:${formatICalDate(event.start)}`,
+      `DTEND:${formatICalDate(endDate)}`,
+      `SUMMARY:${event.title}`,
+      `DESCRIPTION:${event.description.replace(/\n/g, '\\n')}`,
+      `LOCATION:${event.location}`,
+      website ? `URL:${website}` : '',
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ].filter(Boolean).join('\r\n');
+
+    // Create blob and download
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
   };
 
   const fullAddress = `${street}, ${city}, ${state} ${zip}`;
@@ -254,29 +302,8 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
           </div>
         )}
 
-        {/* Action Buttons */}
-        <div className="flex gap-3 mt-2 mb-8">
-          {website && (
-            <a
-              href={website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 bg-white border-2 border-malibu-950 rounded-[53px] shadow-[3px_4px_0px_0px_#06304b] px-7 py-3.5 text-base font-bold text-gray-900 cursor-pointer no-underline flex items-center justify-center gap-2 hover:shadow-[1px_2px_0px_0px_#06304b] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
-            >
-              <IoGlobeOutline size={20} />
-              Website
-            </a>
-          )}
-          <button
-            onClick={handleShare}
-            className="flex-1 bg-broom-400 border-2 border-malibu-950 rounded-[53px] shadow-[3px_4px_0px_0px_#06304b] px-7 py-3.5 text-base font-bold text-black-900 cursor-pointer hover:shadow-[1px_2px_0px_0px_#06304b] hover:translate-x-0.5 hover:translate-y-0.5 transition-all"
-          >
-            Share
-          </button>
-        </div>
-
         {/* Report Listing */}
-        <div className="text-center mt-6 mb-8">
+        <div className="text-center mt-6 mb-24">
           <a
             href={`mailto:rfinch@outta.events?subject=Report listing ${currentUrl || `https://outta.events/listings/${airtable_id}`}`}
             className="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-1.5"
@@ -284,6 +311,41 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
             <LuFlag size={16} />
             Report listing
           </a>
+        </div>
+      </div>
+
+      {/* Fixed Action Bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-5 py-4 z-40">
+        <div className="max-w-3xl mx-auto flex gap-3">
+          <button
+            onClick={handleShare}
+            className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-gray-700 hover:text-malibu-950 transition-colors"
+          >
+            <LuShare size={24} />
+            <span className="text-xs font-medium">Share</span>
+          </button>
+
+          {start_date && (
+            <button
+              onClick={handleAddToCalendar}
+              className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-gray-700 hover:text-malibu-950 transition-colors"
+            >
+              <TbCalendarPlus size={24} />
+              <span className="text-xs font-medium">Add to calendar</span>
+            </button>
+          )}
+
+          {website && (
+            <a
+              href={website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-gray-700 hover:text-malibu-950 transition-colors no-underline"
+            >
+              <LuGlobe size={24} />
+              <span className="text-xs font-medium">Visit website</span>
+            </a>
+          )}
         </div>
       </div>
     </div>
