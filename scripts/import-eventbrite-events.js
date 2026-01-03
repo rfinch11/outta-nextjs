@@ -13,6 +13,7 @@
  * - SUPABASE_SERVICE_KEY
  */
 
+// Load environment variables from .env.local if running locally
 require('dotenv').config({ path: '.env.local' });
 const { createClient } = require('@supabase/supabase-js');
 const cheerio = require('cheerio');
@@ -43,8 +44,10 @@ const BAY_AREA_CITIES = [
 
 // Validate environment variables
 if (!SUPABASE_URL || !SUPABASE_KEY) {
-  console.error('❌ Missing Supabase credentials in .env.local');
+  console.error('❌ Missing Supabase credentials');
   console.error('Please ensure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_KEY are set');
+  console.error('In GitHub Actions: Configure these as repository secrets');
+  console.error('Locally: Set them in .env.local file');
   process.exit(1);
 }
 
