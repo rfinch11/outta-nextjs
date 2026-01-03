@@ -102,7 +102,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
       <div className="flex flex-col cursor-pointer">
         {/* Image with rounded corners and chips overlay */}
-        <div className="relative w-full aspect-[3/2] rounded-2xl overflow-hidden mb-3">
+        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-3">
           <img
             src={imgSrc}
             alt={title}
