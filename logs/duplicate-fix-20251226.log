@@ -1,0 +1,18 @@
+========================================
+Starting duplicate image fix at Fri Dec 26 11:37:06 EST 2025
+========================================
+[dotenv@17.2.3] injecting env (31) from .env.local -- tip: ⚙️  write to custom object with { processEnv: myObject }
+🔍 Finding duplicate images...
+
+❌ Error fetching listings: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '\n' +
+    'Caused by: Error: read ECONNRESET (ECONNRESET)\n' +
+    'Error: read ECONNRESET\n' +
+    '    at TLSWrap.onStreamRead (node:internal/stream_base_commons:216:20)',
+  hint: '',
+  code: ''
+}
+Completed at Fri Dec 26 11:48:14 EST 2025
+

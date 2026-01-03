@@ -4,8 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe } from 'react-icons/lu';
-import { TbCalendarPlus } from 'react-icons/tb';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
+import ActionBar from './ActionBar';
 
 interface EventDetailProps {
   // Core fields
@@ -180,10 +180,10 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   return (
     <div className="min-h-screen bg-white">
       {/* Fixed Back Button - Always visible */}
-      <div className="fixed top-0 left-0 right-0 z-50 px-5 py-4 pointer-events-none">
+      <div className="fixed top-5 left-5 z-50 mt-2.5">
         <Link
           href="/"
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg transition-all no-underline text-gray-900 pointer-events-auto"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg transition-all no-underline text-gray-900"
         >
           <IoIosArrowBack size={24} />
         </Link>
@@ -303,7 +303,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         )}
 
         {/* Report Listing */}
-        <div className="text-center mt-6 mb-24">
+        <div className="text-center mt-6 mb-8">
           <a
             href={`mailto:rfinch@outta.events?subject=Report listing ${currentUrl || `https://outta.events/listings/${airtable_id}`}`}
             className="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-1.5"
@@ -314,40 +314,29 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         </div>
       </div>
 
-      {/* Fixed Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-5 py-4 z-40">
-        <div className="max-w-3xl mx-auto flex gap-3">
-          <button
-            onClick={handleShare}
-            className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-gray-700 hover:text-malibu-950 transition-colors"
+      {/* Fixed Action Bar - Top Right */}
+      <ActionBar position="top-right">
+        <ActionBar.Button onClick={handleShare} aria-label="Share">
+          <LuShare size={17} />
+        </ActionBar.Button>
+
+        {start_date && (
+          <ActionBar.Button onClick={handleAddToCalendar} aria-label="Add to calendar">
+            <LuCalendar size={17} />
+          </ActionBar.Button>
+        )}
+
+        {website && (
+          <ActionBar.Button
+            href={website}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit website"
           >
-            <LuShare size={24} />
-            <span className="text-xs font-medium">Share</span>
-          </button>
-
-          {start_date && (
-            <button
-              onClick={handleAddToCalendar}
-              className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-gray-700 hover:text-malibu-950 transition-colors"
-            >
-              <TbCalendarPlus size={24} />
-              <span className="text-xs font-medium">Add to calendar</span>
-            </button>
-          )}
-
-          {website && (
-            <a
-              href={website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-gray-700 hover:text-malibu-950 transition-colors no-underline"
-            >
-              <LuGlobe size={24} />
-              <span className="text-xs font-medium">Visit website</span>
-            </a>
-          )}
-        </div>
-      </div>
+            <LuGlobe size={17} />
+          </ActionBar.Button>
+        )}
+      </ActionBar>
     </div>
   );
 };

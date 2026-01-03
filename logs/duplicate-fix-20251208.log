@@ -1,0 +1,376 @@
+========================================
+Starting duplicate image fix at Mon Dec  8 19:11:08 PST 2025
+========================================
+[dotenv@17.2.3] injecting env (30) from .env.local -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+🔍 Finding duplicate images...
+
+📊 Found 11 images used by multiple listings:
+
+
+🖼️  Image used by 4 listings:
+   https://images.unsplash.com/photo-1631508766808-3f4c79fd5ffc...
+
+   [1/3] Make It With Superspace
+      ⚠️  No alternative image found
+
+   [2/3] Step Into Wellness: Atherton Library's Walking Club
+      ⚠️  No alternative image found
+
+   [3/3] Kids Culture Club
+      ⚠️  No alternative image found
+
+🖼️  Image used by 38 listings:
+   https://images.unsplash.com/photo-1631508766808-3f4c79fd5ffc...
+
+   [1/37] Fireside Reflections: Belmont Poet Laureate Farewell & Open Mic
+      📸 New image by Sean Thoman
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/37] Crafty Sundays
+      📸 New image by Shiona Das
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [3/37] Punch Needle Embroidery/ Bordado de Piquete con Aguja Mágica
+      📸 New image by Peter Burdon
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/37] Interactive Forensic Art Talk
+      📸 New image by Richard Bell
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [5/37] Open Sewing
+      📸 New image by Alicia Christin Gerald
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [6/37] Fun Fridays! ¡Viernes Divertidos!
+      📸 New image by Jason Grant
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [7/37] Ab-SEW-lute Beginners
+      📸 New image by Paul Hanaoka
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [8/37] Maker Exploration
+      📸 New image by Sash Bo
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [9/37] Holiday Boutique Book Sale
+      📸 New image by Haberdoedas II
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [10/37] Tech Tutor Drop-In
+      📸 New image by Maria Thalassinou
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [11/37] Gem Painting at the Library!
+      📸 New image by Annie Spratt
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [12/37] Maker Hangout
+      📸 New image by Do Hoang Anh
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [13/37] Computer Basics: Intro to iOS for iPhone and iPad
+      📸 New image by Vitaly Gariev
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [14/37] Saturday Storytime
+      📸 New image by ochimax studio
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [15/37] Family Storytime With Stay and Play
+      📸 New image by Seljan Salimova
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [16/37] Open Sewing
+      📸 New image by mdreza jalali
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [17/37] Junk Journaling
+      📸 New image by WrS.tm.pl
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [18/37] Drop-in Sewing Machine Basics
+      📸 New image by Erik Mclean
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [19/37] Free In-Person English Class | Clase de inglés en persona gratuita
+      📸 New image by enkuu smile
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [20/37] Yoga
+      📸 New image by Alex Shaw
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [21/37] Boardtime!
+      ⚠️  No alternative image found
+
+   [22/37] Family Storytime with Stay & Play
+      📸 New image by HiveBoxx
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [23/37] Maker Hangout
+      📸 New image by Vitaly Gariev
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [24/37] Bilingual Storytime / Hora de cuentos bilingüe
+      📸 New image by Jorge Salvador
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [25/37] Family Storytime with Stay and Play!
+      📸 New image by Alvin Mahmudov
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [26/37] Drop-In 3D Printing
+      📸 New image by Jakub Żerdzicki
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [27/37] Reading Buddies
+      📸 New image by Christi Marcheschi
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [28/37] Pacifica Friends of the Library Book Sale
+      📸 New image by shawnie yang
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [29/37] Maker Exploration for Families
+      📸 New image by Vitaly Gariev
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [30/37] Maker Exploration
+      📸 New image by Winston Chen
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [31/37] Drop-In Tech Help
+      📸 New image by Jelleke Vanooteghem
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [32/37] U.S. Citizenship Test Class
+      📸 New image by Jason Leung
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [33/37] Intro to Robotics and Circuitry with Team 5940 BREAD
+      📸 New image by Tanya Barrow
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [34/37] Maker Exploration
+      📸 New image by Quang Nguyen Vinh
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [35/37] Creation Exploration
+      📸 New image by Alex Shute
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [36/37] Engineering Hub
+      📸 New image by Austrian National Library
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [37/37] In-Person English Conversation Club
+      📸 New image by Evgeniy Alyoshin
+      ✅ Updated
+
+🖼️  Image used by 2 listings:
+   https://images.unsplash.com/photo-1594928612444-c0031242a143...
+
+   [1/1] Yoga
+      📸 New image by Sören Funk
+      ✅ Updated
+
+🖼️  Image used by 3 listings:
+   https://images.unsplash.com/photo-1552417559-f62e53cba705?cr...
+
+   [1/2] In-Person English Conversation Club
+      📸 New image by Evgeniy Alyoshin
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/2] In-Person English Conversation Club
+      📸 New image by Markus Winkler
+      ✅ Updated
+
+🖼️  Image used by 9 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/8] Zumba Party!
+      📸 New image by Brian Wangenheim
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/8] Gem Painting
+      📸 New image by Uliya Kurilova
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [3/8] Hora de Cuentos (Spanish Storytime)
+      📸 New image by Cristian Mayo
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/8] Tai Chi
+      📸 New image by Yifei Wong
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [5/8] Needle-Felted Holiday Ornaments
+      📸 New image by Matias Eduardo
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [6/8] Toddler Storytime With Stay and Play
+      📸 New image by Md Ishak Raman
+Error updating Airtable record recNJtHvXXDtKz3AH: request to https://api.airtable.com/v0/appNEwC9kmw1NTshd/Listings/recNJtHvXXDtKz3AH? failed, reason: read ECONNRESET
+      ❌ Failed to update
+      ⏳ Waiting 5 seconds...
+
+   [7/8] Baby Bounce Storytime
+      📸 New image by kian zhang
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [8/8] Qigong
+      📸 New image by Boston Public Library
+      ✅ Updated
+
+🖼️  Image used by 2 listings:
+   https://images.unsplash.com/photo-1719154714971-af9d72cfebf3...
+
+   [1/1] Free Meals at the Library / Comida gratis en la biblioteca
+      📸 New image by Lisa Anna
+      ✅ Updated
+
+🖼️  Image used by 3 listings:
+   https://images.unsplash.com/photo-1715860738421-b30b98f8614f...
+
+   [1/2] Spanish Conversation Club
+      📸 New image by cham5 champoleiro
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/2] Spanish Conversation Club
+      📸 New image by cham5 champoleiro
+      ✅ Updated
+
+🖼️  Image used by 2 listings:
+   https://images.unsplash.com/photo-1680634658502-78e57b1eec50...
+
+   [1/1] In-Person English Conversation Club
+      📸 New image by Shelby Murphy Figueroa
+      ✅ Updated
+
+🖼️  Image used by 3 listings:
+   https://images.unsplash.com/photo-1645594287996-086e2217a809...
+
+   [1/2] Free In-Person English Class | Clase de inglés en persona gratuita
+      📸 New image by ‪Salah Darwish
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/2] Free In-Person English Class | Clase de inglés en persona gratuita
+Error fetching from Unsplash: fetch failed
+      ⚠️  No alternative image found
+
+🖼️  Image used by 2 listings:
+   https://images.unsplash.com/photo-1760267982929-b038bf9b82e0...
+
+   [1/1] Free Meals at the Library / Comida gratis en la biblioteca
+Error fetching from Unsplash: fetch failed
+      ⚠️  No alternative image found
+
+🖼️  Image used by 2 listings:
+   https://images.unsplash.com/photo-1708012779444-08043934c69f...
+
+   [1/1] Tai Chi
+      📸 New image by Claire
+      ✅ Updated
+
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+✅ Fixed 52 duplicate images
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Done!
+Completed at Mon Dec  8 20:40:10 PST 2025
+
