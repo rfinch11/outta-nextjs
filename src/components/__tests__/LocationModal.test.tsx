@@ -29,11 +29,9 @@ describe('LocationModal', () => {
       <LocationModal isOpen={true} onClose={mockOnClose} onLocationSet={mockOnLocationSet} />
     );
 
-    expect(screen.getByText('Enter Your Location')).toBeInTheDocument();
-    expect(
-      screen.getByText('Enter your zip code to find kid-friendly adventures near you')
-    ).toBeInTheDocument();
-    expect(screen.getByPlaceholderText('Zip code (e.g., 94043)')).toBeInTheDocument();
+    expect(screen.getByText('Set Your Location')).toBeInTheDocument();
+    expect(screen.getByText('Use my location')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('e.g., 94043')).toBeInTheDocument();
   });
 
   it('does not render when closed', () => {
@@ -41,7 +39,7 @@ describe('LocationModal', () => {
       <LocationModal isOpen={false} onClose={mockOnClose} onLocationSet={mockOnLocationSet} />
     );
 
-    expect(screen.queryByText('Enter Your Location')).not.toBeInTheDocument();
+    expect(screen.queryByText('Set Your Location')).not.toBeInTheDocument();
   });
 
   it('closes when clicking overlay', () => {
@@ -49,7 +47,7 @@ describe('LocationModal', () => {
       <LocationModal isOpen={true} onClose={mockOnClose} onLocationSet={mockOnLocationSet} />
     );
 
-    const overlay = screen.getByText('Enter Your Location').parentElement?.parentElement;
+    const overlay = screen.getByText('Set Your Location').parentElement?.parentElement;
     if (overlay) {
       fireEvent.click(overlay);
       expect(mockOnClose).toHaveBeenCalledTimes(1);
@@ -61,7 +59,7 @@ describe('LocationModal', () => {
       <LocationModal isOpen={true} onClose={mockOnClose} onLocationSet={mockOnLocationSet} />
     );
 
-    const submitButton = screen.getByText('Submit');
+    const submitButton = screen.getByRole('button', { name: /set location/i });
     expect(submitButton).toBeDisabled();
   });
 
@@ -70,10 +68,10 @@ describe('LocationModal', () => {
       <LocationModal isOpen={true} onClose={mockOnClose} onLocationSet={mockOnLocationSet} />
     );
 
-    const input = screen.getByPlaceholderText('Zip code (e.g., 94043)');
+    const input = screen.getByPlaceholderText('e.g., 94043');
     fireEvent.change(input, { target: { value: '94043' } });
 
-    const submitButton = screen.getByText('Submit');
+    const submitButton = screen.getByRole('button', { name: /set location/i });
     expect(submitButton).not.toBeDisabled();
   });
 
@@ -86,10 +84,10 @@ describe('LocationModal', () => {
       <LocationModal isOpen={true} onClose={mockOnClose} onLocationSet={mockOnLocationSet} />
     );
 
-    const input = screen.getByPlaceholderText('Zip code (e.g., 94043)');
+    const input = screen.getByPlaceholderText('e.g., 94043');
     fireEvent.change(input, { target: { value: '94043' } });
 
-    const submitButton = screen.getByText('Submit');
+    const submitButton = screen.getByRole('button', { name: /set location/i });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -107,7 +105,7 @@ describe('LocationModal', () => {
       <LocationModal isOpen={true} onClose={mockOnClose} onLocationSet={mockOnLocationSet} />
     );
 
-    const input = screen.getByPlaceholderText('Zip code (e.g., 94043)');
+    const input = screen.getByPlaceholderText('e.g., 94043');
     fireEvent.change(input, { target: { value: '94043' } });
     fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
@@ -125,12 +123,12 @@ describe('LocationModal', () => {
       <LocationModal isOpen={true} onClose={mockOnClose} onLocationSet={mockOnLocationSet} />
     );
 
-    const input = screen.getByPlaceholderText('Zip code (e.g., 94043)');
+    const input = screen.getByPlaceholderText('e.g., 94043');
     fireEvent.change(input, { target: { value: '94043' } });
 
-    const submitButton = screen.getByText('Submit');
+    const submitButton = screen.getByRole('button', { name: /set location/i });
     fireEvent.click(submitButton);
 
-    expect(screen.getByText('Finding...')).toBeInTheDocument();
+    expect(screen.getByText('Setting...')).toBeInTheDocument();
   });
 });
