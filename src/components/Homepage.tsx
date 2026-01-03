@@ -38,6 +38,9 @@ const Homepage: React.FC = () => {
   const [displayedListings, setDisplayedListings] = useState<Listing[]>([]);
   const [featuredListings, setFeaturedListings] = useState<Listing[]>([]);
   const [featuredVenues, setFeaturedVenues] = useState<Source[]>([]);
+  const [saturdayStokeListings, setSaturdayStokeListings] = useState<Listing[]>([]);
+  const [superSundayListings, setSuperSundayListings] = useState<Listing[]>([]);
+  const [worthTheDriveListings, setWorthTheDriveListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(15);
   const [totalFilteredCount, setTotalFilteredCount] = useState(0);
@@ -184,6 +187,9 @@ const Homepage: React.FC = () => {
       fetchAllListings();
       fetchFeaturedListings();
       fetchFeaturedVenues();
+      fetchSaturdayStokeListings();
+      fetchSuperSundayListings();
+      fetchWorthTheDriveListings();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLocation]);
@@ -338,6 +344,230 @@ const Homepage: React.FC = () => {
       }
     } catch (error) {
       console.error('Error:', error);
+    }
+  };
+
+  // Helper: Get upcoming Saturday (start and end of day in UTC)
+  const getUpcomingSaturday = () => {
+    const now = new Date();
+    const today = now.getDay(); // 0 = Sunday, 6 = Saturday
+    const daysUntilSaturday = (6 - today + 7) % 7 || 7; // If today is Saturday, get next Saturday
+    const saturday = new Date(now);
+    saturday.setDate(now.getDate() + daysUntilSaturday);
+
+    // Start of Saturday (00:00:00)
+    const startOfDay = new Date(saturday);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    // End of Saturday (23:59:59)
+    const endOfDay = new Date(saturday);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    return {
+      start: startOfDay.toISOString(),
+      end: endOfDay.toISOString()
+    };
+  };
+
+  // Helper: Get upcoming Sunday (start and end of day in UTC)
+  const getUpcomingSunday = () => {
+    const now = new Date();
+    const today = now.getDay(); // 0 = Sunday
+    const daysUntilSunday = (7 - today) % 7 || 7; // If today is Sunday, get next Sunday
+    const sunday = new Date(now);
+    sunday.setDate(now.getDate() + daysUntilSunday);
+
+    // Start of Sunday (00:00:00)
+    const startOfDay = new Date(sunday);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    // End of Sunday (23:59:59)
+    const endOfDay = new Date(sunday);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    return {
+      start: startOfDay.toISOString(),
+      end: endOfDay.toISOString()
+    };
+  };
+
+  // Fetch Saturday Stoke listings
+  const fetchSaturdayStokeListings = async () => {
+    if (!userLocation) return;
+
+    try {
+      const saturday = getUpcomingSaturday();
+
+      // Fetch all potential listings
+      const { data, error } = await supabase
+        .from('listings')
+        .select('*')
+        .not('latitude', 'is', null)
+        .not('longitude', 'is', null);
+
+      if (error) {
+        console.error('Error fetching Saturday Stoke listings:', error);
+        return;
+      }
+
+      if (!data) return;
+
+      // Calculate distances and filter
+      const listingsWithDistance = data
+        .map((listing) => {
+          const distance = calculateDistance(
+            userLocation.lat,
+            userLocation.lng,
+            listing.latitude!,
+            listing.longitude!
+          );
+          return { ...listing, distance };
+        })
+        .filter((listing) => {
+          // Events within 0-30 miles on Saturday
+          if (listing.type === 'Event' && listing.start_date) {
+            const eventDate = new Date(listing.start_date);
+            const isSaturday = eventDate >= new Date(saturday.start) && eventDate <= new Date(saturday.end);
+            return isSaturday && listing.distance <= 30;
+          }
+
+          // Activities with scout_pick or featured within 0-20 miles
+          if (listing.type === 'Activity') {
+            return (listing.scout_pick || listing.featured) && listing.distance <= 20;
+          }
+
+          return false;
+        })
+        .sort((a, b) => {
+          // Sort by distance
+          return (a.distance || 0) - (b.distance || 0);
+        })
+        .slice(0, 10);
+
+      setSaturdayStokeListings(listingsWithDistance);
+    } catch (error) {
+      console.error('Error fetching Saturday Stoke listings:', error);
+    }
+  };
+
+  // Fetch Super Sunday listings
+  const fetchSuperSundayListings = async () => {
+    if (!userLocation) return;
+
+    try {
+      const sunday = getUpcomingSunday();
+
+      // Fetch all potential listings
+      const { data, error } = await supabase
+        .from('listings')
+        .select('*')
+        .not('latitude', 'is', null)
+        .not('longitude', 'is', null);
+
+      if (error) {
+        console.error('Error fetching Super Sunday listings:', error);
+        return;
+      }
+
+      if (!data) return;
+
+      // Calculate distances and filter
+      const listingsWithDistance = data
+        .map((listing) => {
+          const distance = calculateDistance(
+            userLocation.lat,
+            userLocation.lng,
+            listing.latitude!,
+            listing.longitude!
+          );
+          return { ...listing, distance };
+        })
+        .filter((listing) => {
+          // Events within 0-30 miles on Sunday
+          if (listing.type === 'Event' && listing.start_date) {
+            const eventDate = new Date(listing.start_date);
+            const isSunday = eventDate >= new Date(sunday.start) && eventDate <= new Date(sunday.end);
+            return isSunday && listing.distance <= 30;
+          }
+
+          // Activities with scout_pick or featured within 0-20 miles
+          if (listing.type === 'Activity') {
+            return (listing.scout_pick || listing.featured) && listing.distance <= 20;
+          }
+
+          return false;
+        })
+        .sort((a, b) => {
+          // Sort by distance
+          return (a.distance || 0) - (b.distance || 0);
+        })
+        .slice(0, 10);
+
+      setSuperSundayListings(listingsWithDistance);
+    } catch (error) {
+      console.error('Error fetching Super Sunday listings:', error);
+    }
+  };
+
+  // Fetch Worth the Drive listings
+  const fetchWorthTheDriveListings = async () => {
+    if (!userLocation) return;
+
+    try {
+      const now = new Date().toISOString();
+
+      // Fetch scout_pick or featured events
+      const { data, error } = await supabase
+        .from('listings')
+        .select('*')
+        .eq('type', 'Event')
+        .not('latitude', 'is', null)
+        .not('longitude', 'is', null);
+
+      if (error) {
+        console.error('Error fetching Worth the Drive listings:', error);
+        return;
+      }
+
+      if (!data) return;
+
+      // Calculate distances and filter
+      const listingsWithDistance = data
+        .map((listing) => {
+          const distance = calculateDistance(
+            userLocation.lat,
+            userLocation.lng,
+            listing.latitude!,
+            listing.longitude!
+          );
+          return { ...listing, distance };
+        })
+        .filter((listing) => {
+          // Must be scout_pick or featured
+          if (!listing.scout_pick && !listing.featured) return false;
+
+          // Must be 20-50 miles away
+          if (listing.distance < 20 || listing.distance > 50) return false;
+
+          // Must be future event
+          if (listing.start_date) {
+            return new Date(listing.start_date) >= new Date(now);
+          }
+
+          return false;
+        })
+        .sort((a, b) => {
+          // Sort by start date
+          if (a.start_date && b.start_date) {
+            return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
+          }
+          return 0;
+        })
+        .slice(0, 10);
+
+      setWorthTheDriveListings(listingsWithDistance);
+    } catch (error) {
+      console.error('Error fetching Worth the Drive listings:', error);
     }
   };
 
@@ -876,6 +1106,42 @@ const Homepage: React.FC = () => {
             <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Top venues</h2>
             <div className="pl-5">
               <VenuesCarousel venues={featuredVenues} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Saturday Stoke Section */}
+      {!loading && saturdayStokeListings.length > 0 && (
+        <div className="py-3 bg-malibu-50">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Saturday Stoke</h2>
+            <div className="pl-5">
+              <FeaturedCarousel listings={saturdayStokeListings} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Super Sunday Section */}
+      {!loading && superSundayListings.length > 0 && (
+        <div className="py-3 bg-malibu-50">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Super Sunday</h2>
+            <div className="pl-5">
+              <FeaturedCarousel listings={superSundayListings} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Worth the Drive Section */}
+      {!loading && worthTheDriveListings.length > 0 && (
+        <div className="py-3 bg-malibu-50">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Worth the Drive</h2>
+            <div className="pl-5">
+              <FeaturedCarousel listings={worthTheDriveListings} />
             </div>
           </div>
         </div>
