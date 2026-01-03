@@ -347,48 +347,80 @@ const Homepage: React.FC = () => {
     }
   };
 
-  // Helper: Get upcoming Saturday (start and end of day in UTC)
+  // Helper: Get upcoming Saturday dates (current if today is Sat, plus next Saturday)
   const getUpcomingSaturday = () => {
     const now = new Date();
     const today = now.getDay(); // 0 = Sunday, 6 = Saturday
-    const daysUntilSaturday = (6 - today + 7) % 7 || 7; // If today is Saturday, get next Saturday
-    const saturday = new Date(now);
-    saturday.setDate(now.getDate() + daysUntilSaturday);
+    const isTodaySaturday = today === 6;
 
-    // Start of Saturday (00:00:00)
-    const startOfDay = new Date(saturday);
-    startOfDay.setHours(0, 0, 0, 0);
+    const saturdays = [];
 
-    // End of Saturday (23:59:59)
-    const endOfDay = new Date(saturday);
-    endOfDay.setHours(23, 59, 59, 999);
+    // If today is Saturday, include today
+    if (isTodaySaturday) {
+      const todayStart = new Date(now);
+      todayStart.setHours(0, 0, 0, 0);
+      const todayEnd = new Date(now);
+      todayEnd.setHours(23, 59, 59, 999);
+      saturdays.push({
+        start: todayStart.toISOString(),
+        end: todayEnd.toISOString(),
+        isToday: true
+      });
+    }
 
-    return {
-      start: startOfDay.toISOString(),
-      end: endOfDay.toISOString()
-    };
+    // Always include next Saturday (or next week if today is Saturday)
+    const daysUntilNextSaturday = isTodaySaturday ? 7 : (6 - today + 7) % 7;
+    const nextSaturday = new Date(now);
+    nextSaturday.setDate(now.getDate() + daysUntilNextSaturday);
+    const nextStart = new Date(nextSaturday);
+    nextStart.setHours(0, 0, 0, 0);
+    const nextEnd = new Date(nextSaturday);
+    nextEnd.setHours(23, 59, 59, 999);
+    saturdays.push({
+      start: nextStart.toISOString(),
+      end: nextEnd.toISOString(),
+      isToday: false
+    });
+
+    return saturdays;
   };
 
-  // Helper: Get upcoming Sunday (start and end of day in UTC)
+  // Helper: Get upcoming Sunday dates (current if today is Sun, plus next Sunday)
   const getUpcomingSunday = () => {
     const now = new Date();
     const today = now.getDay(); // 0 = Sunday
-    const daysUntilSunday = (7 - today) % 7 || 7; // If today is Sunday, get next Sunday
-    const sunday = new Date(now);
-    sunday.setDate(now.getDate() + daysUntilSunday);
+    const isTodaySunday = today === 0;
 
-    // Start of Sunday (00:00:00)
-    const startOfDay = new Date(sunday);
-    startOfDay.setHours(0, 0, 0, 0);
+    const sundays = [];
 
-    // End of Sunday (23:59:59)
-    const endOfDay = new Date(sunday);
-    endOfDay.setHours(23, 59, 59, 999);
+    // If today is Sunday, include today
+    if (isTodaySunday) {
+      const todayStart = new Date(now);
+      todayStart.setHours(0, 0, 0, 0);
+      const todayEnd = new Date(now);
+      todayEnd.setHours(23, 59, 59, 999);
+      sundays.push({
+        start: todayStart.toISOString(),
+        end: todayEnd.toISOString(),
+        isToday: true
+      });
+    }
 
-    return {
-      start: startOfDay.toISOString(),
-      end: endOfDay.toISOString()
-    };
+    // Always include next Sunday (or next week if today is Sunday)
+    const daysUntilNextSunday = isTodaySunday ? 7 : (7 - today) % 7;
+    const nextSunday = new Date(now);
+    nextSunday.setDate(now.getDate() + daysUntilNextSunday);
+    const nextStart = new Date(nextSunday);
+    nextStart.setHours(0, 0, 0, 0);
+    const nextEnd = new Date(nextSunday);
+    nextEnd.setHours(23, 59, 59, 999);
+    sundays.push({
+      start: nextStart.toISOString(),
+      end: nextEnd.toISOString(),
+      isToday: false
+    });
+
+    return sundays;
   };
 
   // Fetch Saturday Stoke listings
@@ -396,7 +428,7 @@ const Homepage: React.FC = () => {
     if (!userLocation) return;
 
     try {
-      const saturday = getUpcomingSaturday();
+      const saturdays = getUpcomingSaturday();
 
       // Fetch all potential listings
       const { data, error } = await supabase
@@ -421,14 +453,28 @@ const Homepage: React.FC = () => {
             listing.latitude!,
             listing.longitude!
           );
-          return { ...listing, distance };
-        })
-        .filter((listing) => {
-          // Events within 0-30 miles on Saturday
+
+          // Check which Saturday this event falls on
+          let isToday = false;
+          let matchesSaturday = false;
+
           if (listing.type === 'Event' && listing.start_date) {
             const eventDate = new Date(listing.start_date);
-            const isSaturday = eventDate >= new Date(saturday.start) && eventDate <= new Date(saturday.end);
-            return isSaturday && listing.distance <= 30;
+            for (const saturday of saturdays) {
+              if (eventDate >= new Date(saturday.start) && eventDate <= new Date(saturday.end)) {
+                matchesSaturday = true;
+                isToday = saturday.isToday;
+                break;
+              }
+            }
+          }
+
+          return { ...listing, distance, isToday, matchesSaturday };
+        })
+        .filter((listing) => {
+          // Events within 0-30 miles on any Saturday
+          if (listing.type === 'Event' && listing.start_date) {
+            return listing.matchesSaturday && listing.distance <= 30;
           }
 
           // Activities with scout_pick or featured within 0-20 miles
@@ -439,7 +485,10 @@ const Homepage: React.FC = () => {
           return false;
         })
         .sort((a, b) => {
-          // Prioritize Events over Activities
+          // Prioritize today's events over next week
+          if (a.isToday && !b.isToday) return -1;
+          if (!a.isToday && b.isToday) return 1;
+          // Then prioritize Events over Activities
           if (a.type === 'Event' && b.type === 'Activity') return -1;
           if (a.type === 'Activity' && b.type === 'Event') return 1;
           // Then sort by distance
@@ -458,7 +507,7 @@ const Homepage: React.FC = () => {
     if (!userLocation) return;
 
     try {
-      const sunday = getUpcomingSunday();
+      const sundays = getUpcomingSunday();
 
       // Fetch all potential listings
       const { data, error } = await supabase
@@ -483,14 +532,28 @@ const Homepage: React.FC = () => {
             listing.latitude!,
             listing.longitude!
           );
-          return { ...listing, distance };
-        })
-        .filter((listing) => {
-          // Events within 0-30 miles on Sunday
+
+          // Check which Sunday this event falls on
+          let isToday = false;
+          let matchesSunday = false;
+
           if (listing.type === 'Event' && listing.start_date) {
             const eventDate = new Date(listing.start_date);
-            const isSunday = eventDate >= new Date(sunday.start) && eventDate <= new Date(sunday.end);
-            return isSunday && listing.distance <= 30;
+            for (const sunday of sundays) {
+              if (eventDate >= new Date(sunday.start) && eventDate <= new Date(sunday.end)) {
+                matchesSunday = true;
+                isToday = sunday.isToday;
+                break;
+              }
+            }
+          }
+
+          return { ...listing, distance, isToday, matchesSunday };
+        })
+        .filter((listing) => {
+          // Events within 0-30 miles on any Sunday
+          if (listing.type === 'Event' && listing.start_date) {
+            return listing.matchesSunday && listing.distance <= 30;
           }
 
           // Activities with scout_pick or featured within 0-20 miles
@@ -501,7 +564,10 @@ const Homepage: React.FC = () => {
           return false;
         })
         .sort((a, b) => {
-          // Prioritize Events over Activities
+          // Prioritize today's events over next week
+          if (a.isToday && !b.isToday) return -1;
+          if (!a.isToday && b.isToday) return 1;
+          // Then prioritize Events over Activities
           if (a.type === 'Event' && b.type === 'Activity') return -1;
           if (a.type === 'Activity' && b.type === 'Event') return 1;
           // Then sort by distance
