@@ -439,7 +439,10 @@ const Homepage: React.FC = () => {
           return false;
         })
         .sort((a, b) => {
-          // Sort by distance
+          // Prioritize Events over Activities
+          if (a.type === 'Event' && b.type === 'Activity') return -1;
+          if (a.type === 'Activity' && b.type === 'Event') return 1;
+          // Then sort by distance
           return (a.distance || 0) - (b.distance || 0);
         })
         .slice(0, 10);
@@ -498,7 +501,10 @@ const Homepage: React.FC = () => {
           return false;
         })
         .sort((a, b) => {
-          // Sort by distance
+          // Prioritize Events over Activities
+          if (a.type === 'Event' && b.type === 'Activity') return -1;
+          if (a.type === 'Activity' && b.type === 'Event') return 1;
+          // Then sort by distance
           return (a.distance || 0) - (b.distance || 0);
         })
         .slice(0, 10);
@@ -1099,18 +1105,6 @@ const Homepage: React.FC = () => {
         </div>
       )}
 
-      {/* Top Venues Section */}
-      {!loading && featuredVenues.length > 0 && (
-        <div className="py-3 bg-malibu-50">
-          <div className="max-w-7xl mx-auto">
-            <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Top venues</h2>
-            <div className="pl-5">
-              <VenuesCarousel venues={featuredVenues} />
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Saturday Stoke Section */}
       {!loading && saturdayStokeListings.length > 0 && (
         <div className="py-3 bg-malibu-50">
@@ -1142,6 +1136,18 @@ const Homepage: React.FC = () => {
             <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Worth the Drive</h2>
             <div className="pl-5">
               <FeaturedCarousel listings={worthTheDriveListings} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Top Venues Section */}
+      {!loading && featuredVenues.length > 0 && (
+        <div className="py-3 bg-malibu-50">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Top venues</h2>
+            <div className="pl-5">
+              <VenuesCarousel venues={featuredVenues} />
             </div>
           </div>
         </div>
