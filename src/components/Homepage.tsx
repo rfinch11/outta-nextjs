@@ -2,9 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { LuSearch, LuPlus, LuMap } from 'react-icons/lu';
-import { IoIosArrowBack, IoMdClose } from 'react-icons/io';
-import { TbLocation } from 'react-icons/tb';
+import { LuMap } from 'react-icons/lu';
+import { IoIosArrowBack } from 'react-icons/io';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import type { Listing, Source } from '@/lib/supabase';
@@ -15,6 +14,7 @@ import Loader from './Loader';
 import TabBar, { TabFilter } from './TabBar';
 import FeaturedCarousel from './FeaturedCarousel';
 import VenuesCarousel from './VenuesCarousel';
+import BentoMenu from './BentoMenu';
 
 // Dynamic imports for modals (code splitting)
 const SearchModal = dynamic(() => import('./SearchModal'), {
@@ -44,7 +44,6 @@ const Homepage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(15);
   const [totalFilteredCount, setTotalFilteredCount] = useState(0);
-  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
 
   // Location state
   const [userLocation, setUserLocation] = useState<{
@@ -69,7 +68,6 @@ const Homepage: React.FC = () => {
   // Search state
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isSearchMode, setIsSearchMode] = useState(false);
 
   // Location modal state
   const [showLocationModal, setShowLocationModal] = useState(false);
@@ -364,7 +362,7 @@ const Homepage: React.FC = () => {
       saturdays.push({
         start: todayStart.toISOString(),
         end: todayEnd.toISOString(),
-        isToday: true
+        isToday: true,
       });
     }
 
@@ -379,7 +377,7 @@ const Homepage: React.FC = () => {
     saturdays.push({
       start: nextStart.toISOString(),
       end: nextEnd.toISOString(),
-      isToday: false
+      isToday: false,
     });
 
     return saturdays;
@@ -402,7 +400,7 @@ const Homepage: React.FC = () => {
       sundays.push({
         start: todayStart.toISOString(),
         end: todayEnd.toISOString(),
-        isToday: true
+        isToday: true,
       });
     }
 
@@ -417,7 +415,7 @@ const Homepage: React.FC = () => {
     sundays.push({
       start: nextStart.toISOString(),
       end: nextEnd.toISOString(),
-      isToday: false
+      isToday: false,
     });
 
     return sundays;
@@ -934,14 +932,10 @@ const Homepage: React.FC = () => {
         { id: 'type', label: 'Type', value: null }
       );
     } else if (activeTab === 'Camp') {
-      baseFilters.push(
-        { id: 'distance', label: 'Distance', value: null }
-      );
+      baseFilters.push({ id: 'distance', label: 'Distance', value: null });
     } else if (activeTab === 'Restaurant') {
       // Restaurants coming soon - no filters yet
-      baseFilters.push(
-        { id: 'distance', label: 'Distance', value: null }
-      );
+      baseFilters.push({ id: 'distance', label: 'Distance', value: null });
     }
 
     return baseFilters;
@@ -1032,129 +1026,26 @@ const Homepage: React.FC = () => {
       <header className="sticky top-0 z-50 bg-malibu-50 px-5 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
           {/* Logo */}
-          <div
-            className={`overflow-hidden flex-shrink-0 ${isSearchMode ? 'w-0' : 'w-[120px]'}`}
-            style={{
-              transition: 'width 300ms cubic-bezier(0.4, 0, 0.2, 1)',
-              willChange: isSearchMode ? 'width' : 'auto'
-            }}
-          >
-            <div className={`transition-opacity ${isSearchMode ? 'opacity-0 duration-75' : 'opacity-100 duration-300'}`}>
-              <Image src="/Outta_logo.svg" alt="Outta" width={120} height={40} className="h-10 w-auto" />
-            </div>
+          <div className="flex-shrink-0 w-[120px]">
+            <Image
+              src="/Outta_logo.svg"
+              alt="Outta"
+              width={120}
+              height={40}
+              className="h-10 w-auto"
+            />
           </div>
 
-          {/* Action Bar / Search Bar */}
-          <div
-            className={`flex items-center gap-2 bg-white rounded-[60px] shadow-sm ${isSearchMode ? 'flex-1 py-2 pl-2 pr-4' : 'p-2'}`}
-            style={{
-              willChange: isSearchMode ? 'flex' : 'auto'
-            }}
-          >
-            {isSearchMode ? (
-              <>
-                {/* Back button */}
-                <button
-                  onClick={() => {
-                    setIsSearchMode(false);
-                    setSearchQuery('');
-                    setFilters({ ...filters, search: '' });
-                  }}
-                  className="w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-transparent hover:bg-gray-100"
-                  aria-label="Close search"
-                  type="button"
-                >
-                  <IoIosArrowBack size={20} />
-                </button>
-
-                {/* Search form */}
-                <form
-                  className="flex-1 flex items-center"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    // The search is already applied via onChange, just blur the input
-                    (e.target as HTMLFormElement).querySelector('input')?.blur();
-                  }}
-                >
-                  <input
-                    type="text"
-                    inputMode="search"
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      setFilters({ ...filters, search: e.target.value });
-                    }}
-                    placeholder="Find something amazing"
-                    className="flex-1 bg-transparent border-none outline-none text-base px-2"
-                    autoFocus
-                  />
-                </form>
-
-                {/* Clear button */}
-                {searchQuery && (
-                  <button
-                    onClick={() => {
-                      setSearchQuery('');
-                      setFilters({ ...filters, search: '' });
-                    }}
-                    className="w-8 h-8 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors bg-transparent hover:bg-gray-100"
-                    aria-label="Clear search"
-                    type="button"
-                  >
-                    <IoMdClose size={20} className="text-gray-400" />
-                  </button>
-                )}
-              </>
-            ) : (
-              <>
-                <button
-                  onMouseEnter={() => setHoveredButton('search')}
-                  onMouseLeave={() => setHoveredButton(null)}
-                  onClick={() => {
-                    setHoveredButton(null);
-                    setIsSearchMode(true);
-                  }}
-                  className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
-                    hoveredButton === 'search' || searchQuery
-                      ? 'bg-malibu-50'
-                      : 'bg-transparent hover:bg-gray-100'
-                  }`}
-                  aria-label="Search"
-                >
-                  <LuSearch size={17} />
-                </button>
-
-                <button
-                  onMouseEnter={() => setHoveredButton('map')}
-                  onMouseLeave={() => setHoveredButton(null)}
-                  onClick={() => {
-                    setHoveredButton(null);
-                    setShowLocationModal(true);
-                  }}
-                  className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
-                    hoveredButton === 'map' ? 'bg-malibu-50' : 'bg-transparent hover:bg-gray-100'
-                  }`}
-                  aria-label="Change location"
-                >
-                  <TbLocation size={17} />
-                </button>
-
-                <button
-                  onMouseEnter={() => setHoveredButton('add')}
-                  onMouseLeave={() => setHoveredButton(null)}
-                  onClick={() => {
-                    setHoveredButton(null);
-                    setShowSubmitModal(true);
-                  }}
-                  className={`w-11 h-11 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
-                    hoveredButton === 'add' ? 'bg-malibu-50' : 'bg-transparent hover:bg-gray-100'
-                  }`}
-                  aria-label="Add listing"
-                >
-                  <LuPlus size={17} />
-                </button>
-              </>
-            )}
+          {/* Bento Menu */}
+          <div className="bg-white rounded-[60px] shadow-sm p-2">
+            <BentoMenu
+              onLocationSet={saveLocation}
+              onSubmitClick={() => setShowSubmitModal(true)}
+              onSearch={(query) => {
+                setSearchQuery(query);
+                setFilters({ ...filters, search: query });
+              }}
+            />
           </div>
         </div>
       </header>
@@ -1272,7 +1163,7 @@ const Homepage: React.FC = () => {
                               {new Date(listing.start_date).toLocaleDateString('en-US', {
                                 weekday: 'short',
                                 month: 'short',
-                                day: 'numeric'
+                                day: 'numeric',
                               })}
                             </span>
                             <div className="flex-1 h-px bg-gray-300" />
@@ -1300,7 +1191,12 @@ const Homepage: React.FC = () => {
 
                 {/* Map Column (hidden on mobile) */}
                 <div className="hidden md:block sticky top-[140px] h-[calc(100vh-180px)] rounded-2xl overflow-hidden border border-gray-300 shadow-lg">
-                  <MapView listings={displayedListings} userLocation={userLocation} activeTab={activeTab} filters={filters} />
+                  <MapView
+                    listings={displayedListings}
+                    userLocation={userLocation}
+                    activeTab={activeTab}
+                    filters={filters}
+                  />
                 </div>
               </div>
 
@@ -1348,10 +1244,7 @@ const Homepage: React.FC = () => {
         onLocationSet={saveLocation}
       />
 
-      <SubmitModal
-        isOpen={showSubmitModal}
-        onClose={() => setShowSubmitModal(false)}
-      />
+      <SubmitModal isOpen={showSubmitModal} onClose={() => setShowSubmitModal(false)} />
 
       {/* Map Modal (Mobile Only) */}
       {showMapModal && (
@@ -1366,7 +1259,12 @@ const Homepage: React.FC = () => {
               <IoIosArrowBack size={24} />
             </button>
           </div>
-          <MapView listings={displayedListings} userLocation={userLocation} activeTab={activeTab} filters={filters} />
+          <MapView
+            listings={displayedListings}
+            userLocation={userLocation}
+            activeTab={activeTab}
+            filters={filters}
+          />
         </div>
       )}
     </div>
