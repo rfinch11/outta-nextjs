@@ -38,8 +38,12 @@ const Homepage: React.FC = () => {
   const [displayedListings, setDisplayedListings] = useState<Listing[]>([]);
   const [featuredListings, setFeaturedListings] = useState<Listing[]>([]);
   const [featuredVenues, setFeaturedVenues] = useState<Source[]>([]);
+  // Disabled carousels - keeping for potential future use
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [saturdayStokeListings, setSaturdayStokeListings] = useState<Listing[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [superSundayListings, setSuperSundayListings] = useState<Listing[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [worthTheDriveListings, setWorthTheDriveListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(15);
@@ -185,9 +189,10 @@ const Homepage: React.FC = () => {
       fetchAllListings();
       fetchFeaturedListings();
       fetchFeaturedVenues();
-      fetchSaturdayStokeListings();
-      fetchSuperSundayListings();
-      fetchWorthTheDriveListings();
+      // Disabled for now - may re-enable in the future
+      // fetchSaturdayStokeListings();
+      // fetchSuperSundayListings();
+      // fetchWorthTheDriveListings();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLocation]);
@@ -422,6 +427,7 @@ const Homepage: React.FC = () => {
   };
 
   // Fetch Saturday Stoke listings
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const fetchSaturdayStokeListings = async () => {
     if (!userLocation) return;
 
@@ -501,6 +507,7 @@ const Homepage: React.FC = () => {
   };
 
   // Fetch Super Sunday listings
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const fetchSuperSundayListings = async () => {
     if (!userLocation) return;
 
@@ -580,6 +587,7 @@ const Homepage: React.FC = () => {
   };
 
   // Fetch Worth the Drive listings
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const fetchWorthTheDriveListings = async () => {
     if (!userLocation) return;
 
@@ -1062,8 +1070,9 @@ const Homepage: React.FC = () => {
         </div>
       )}
 
+      {/* Disabled for now - may re-enable in the future */}
       {/* Saturday Stoke Section */}
-      {!loading && saturdayStokeListings.length > 0 && (
+      {/* {!loading && saturdayStokeListings.length > 0 && (
         <div className="py-3 bg-malibu-50">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Saturday Stoke</h2>
@@ -1072,10 +1081,10 @@ const Homepage: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Super Sunday Section */}
-      {!loading && superSundayListings.length > 0 && (
+      {/* {!loading && superSundayListings.length > 0 && (
         <div className="py-3 bg-malibu-50">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Super Sunday</h2>
@@ -1084,10 +1093,10 @@ const Homepage: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Worth the Drive Section */}
-      {!loading && worthTheDriveListings.length > 0 && (
+      {/* {!loading && worthTheDriveListings.length > 0 && (
         <div className="py-3 bg-malibu-50">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-xl font-bold text-malibu-950 mb-6 px-5">Worth the Drive</h2>
@@ -1096,7 +1105,7 @@ const Homepage: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Top Venues Section */}
       {!loading && featuredVenues.length > 0 && (
