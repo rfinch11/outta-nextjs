@@ -74,6 +74,11 @@ When "Set location" is clicked, the popover transforms to show:
 - Shadow: `shadow-lg`
 - Z-index: `z-50`
 - Width: `min-w-[280px] max-w-[320px]`
+- Animation: `slideInDown 0.2s ease-out`
+  - Fades in (opacity: 0 → 1)
+  - Slides down 8px (translateY: -8px → 0)
+  - Scales up (scale: 0.98 → 1)
+  - Duration: 200ms with ease-out timing
 
 ### Grid Action Buttons
 - Layout: `grid grid-cols-2 gap-3 p-4`
@@ -205,6 +210,8 @@ All icons from `react-icons`:
   - Removed search mode state from header
   - Removed logo hide/show animation
   - Changed from `onLocationClick` to `onLocationSet` pattern
+- `src/app/globals.css`:
+  - Added `slideInDown` keyframe animation for popover entrance effect
 
 ## Edge Cases Handled
 

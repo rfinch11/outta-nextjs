@@ -128,6 +128,9 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
       <div
         ref={ref}
         className="absolute top-full right-0 mt-3 bg-white rounded-xl shadow-lg border border-gray-200 z-50 min-w-[280px] max-w-[320px]"
+        style={{
+          animation: 'slideInDown 0.2s ease-out',
+        }}
       >
         {mode === 'grid' ? (
           <>

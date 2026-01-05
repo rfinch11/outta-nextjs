@@ -1,15 +1,15 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --background: #ffffff;
   --foreground: #171717;
 
   /* Legacy Outta Brand Colors (deprecated - use design system colors) */
-  --outta-yellow: #FFF407;
-  --outta-orange: #FF7E08;
-  --outta-blue: #E3F2FD;
-  --outta-green: #3DD68C;
-  --outta-dark: #37474F;
+  --outta-yellow: #fff407;
+  --outta-orange: #ff7e08;
+  --outta-blue: #e3f2fd;
+  --outta-green: #3dd68c;
+  --outta-dark: #37474f;
 
   /* Design System Color Scales - Broom (Yellow/Brown) */
   --color-broom-50: #fdfee8;
@@ -184,5 +184,22 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-bricolage-grotesque), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    var(--font-bricolage-grotesque),
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+}
+
+/* Bento Menu Popover Animation */
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
