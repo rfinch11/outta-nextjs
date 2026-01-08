@@ -69,25 +69,26 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
   return (
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
       <div className="flex w-full p-2 gap-2.5 rounded-2xl bg-transparent relative cursor-pointer transition-all hover:opacity-90">
-        {/* Image on the left */}
-        <img
-          src={imgSrc}
-          alt={title}
-          className="w-[96px] h-[96px] flex-shrink-0 rounded-xl object-cover aspect-square"
-          onError={handleImageError}
-        />
-
-        {/* Content on the right */}
-        <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-          {/* Chips row */}
+        {/* Image on the left with chips overlay */}
+        <div className="relative w-[96px] h-[96px] flex-shrink-0">
+          <img
+            src={imgSrc}
+            alt={title}
+            className="w-full h-full rounded-xl object-cover aspect-square"
+            onError={handleImageError}
+          />
+          {/* Chips overlaid on top left of image */}
           {(scout_pick || deal || promoted) && (
-            <div className="flex gap-1.5 flex-wrap">
+            <div className="absolute top-1.5 left-1.5 flex gap-1 flex-wrap max-w-[90px]">
               {scout_pick && <Chip variant="scoutpick" />}
               {deal && <Chip variant="deal" />}
               {promoted && <Chip variant="promoted" />}
             </div>
           )}
+        </div>
 
+        {/* Content on the right */}
+        <div className="flex flex-col gap-1.5 flex-1 min-w-0">
           {/* Title */}
           <h3 className="text-malibu-950 text-base font-bold leading-tight m-0 break-words line-clamp-2">
             {title}
@@ -106,7 +107,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
             <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
               {React.createElement(getPlaceTypeIcon(place_type), {
                 size: 16,
-                className: 'flex-shrink-0 text-black-500'
+                className: 'flex-shrink-0 text-black-500',
               })}
               <span className="truncate">{place_type}</span>
             </div>
