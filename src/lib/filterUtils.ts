@@ -147,7 +147,7 @@ export function addDistanceToListings(
  */
 export function getUpcomingEvents(
   listings: Listing[],
-  maxCount: number = 4
+  maxCount: number = 6
 ): Listing[] {
   const now = new Date();
 
@@ -173,7 +173,7 @@ export function getUpcomingEvents(
  */
 export function getAdvancedPlannerEvents(
   listings: Listing[],
-  maxCount: number = 4
+  maxCount: number = 6
 ): Listing[] {
   const sixDaysFromNow = new Date();
   sixDaysFromNow.setDate(sixDaysFromNow.getDate() + 6);
@@ -197,7 +197,7 @@ export function getAdvancedPlannerEvents(
  */
 export function getMostLovedPlaygrounds(
   listings: Listing[],
-  maxCount: number = 4
+  maxCount: number = 6
 ): Listing[] {
   return listings
     .filter((l) => l.type !== 'Event')
@@ -213,7 +213,7 @@ export function getMostLovedPlaygrounds(
  */
 export function getRainyDayAdventures(
   listings: Listing[],
-  maxCount: number = 3
+  maxCount: number = 6
 ): Listing[] {
   return listings
     .filter((l) => l.type !== 'Event')
@@ -228,7 +228,7 @@ export function getRainyDayAdventures(
  */
 export function getFavoriteParks(
   listings: Listing[],
-  maxCount: number = 3
+  maxCount: number = 6
 ): Listing[] {
   return listings
     .filter((l) => l.type !== 'Event')

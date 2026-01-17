@@ -36,26 +36,30 @@ const CollectionSection: React.FC<CollectionSectionProps> = ({
       </Link>
 
       {/* Collection Cards */}
-      <div className="flex flex-col gap-1.5">
-        {listings.map((listing) => (
-          <ClickableCard
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1.5">
+        {listings.slice(0, 6).map((listing, index) => (
+          <div
             key={listing.airtable_id}
-            airtable_id={listing.airtable_id}
-            title={listing.title}
-            type={listing.type}
-            scout_pick={listing.scout_pick}
-            deal={listing.deal}
-            promoted={listing.promoted}
-            city={listing.city}
-            distance={listing.distance || 0}
-            image={listing.image}
-            place_id={listing.place_id}
-            start_date={listing.start_date}
-            place_type={listing.place_type}
-            description={listing.description}
-            organizer={listing.organizer}
-            rating={listing.rating}
-          />
+            className={index >= 4 ? 'hidden lg:block' : ''}
+          >
+            <ClickableCard
+              airtable_id={listing.airtable_id}
+              title={listing.title}
+              type={listing.type}
+              scout_pick={listing.scout_pick}
+              deal={listing.deal}
+              promoted={listing.promoted}
+              city={listing.city}
+              distance={listing.distance || 0}
+              image={listing.image}
+              place_id={listing.place_id}
+              start_date={listing.start_date}
+              place_type={listing.place_type}
+              description={listing.description}
+              organizer={listing.organizer}
+              rating={listing.rating}
+            />
+          </div>
         ))}
       </div>
     </section>

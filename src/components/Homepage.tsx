@@ -245,11 +245,11 @@ const Homepage: React.FC = () => {
   };
 
   // Generate collections from listings
-  const upcomingEvents = getUpcomingEvents(allListings, 4);
-  const advancedPlannerEvents = getAdvancedPlannerEvents(allListings, 4);
-  const playgrounds = getMostLovedPlaygrounds(allListings, 4);
-  const rainyDayAdventures = getRainyDayAdventures(allListings, 4);
-  const parks = getFavoriteParks(allListings, 4);
+  const upcomingEvents = getUpcomingEvents(allListings, 6);
+  const advancedPlannerEvents = getAdvancedPlannerEvents(allListings, 6);
+  const playgrounds = getMostLovedPlaygrounds(allListings, 6);
+  const rainyDayAdventures = getRainyDayAdventures(allListings, 6);
+  const parks = getFavoriteParks(allListings, 6);
 
   return (
     <div className="min-h-screen bg-malibu-50">
