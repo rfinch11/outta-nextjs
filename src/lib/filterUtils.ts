@@ -49,27 +49,44 @@ export function filterEvents(
 
 /**
  * Filter listings by place_type, sorted by distance (closest first)
+ * Excludes past events (listings with start_date before now)
  */
 export function filterByPlaceType(
   listings: Listing[],
   placeType: string
 ): Listing[] {
+  const now = new Date();
+
   return listings
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type === placeType)
+    .filter((l) => {
+      // Exclude past events (if it has a start_date and it's in the past)
+      if (l.start_date) {
+        return new Date(l.start_date) >= now;
+      }
+      // Keep listings without start_date (activities, camps, etc.)
+      return true;
+    })
     .sort((a, b) => (a.distance || 0) - (b.distance || 0));
 }
 
 /**
  * Get aggregated counts of listings by place_type, ordered by count descending
+ * Excludes past events from counts
  */
 export function getPlaceTypeCounts(
   listings: Listing[]
 ): Array<{ type: string; count: number }> {
+  const now = new Date();
   const counts = new Map<string, number>();
 
   for (const listing of listings) {
     if (listing.place_type && listing.latitude && listing.longitude) {
+      // Skip past events
+      if (listing.start_date && new Date(listing.start_date) < now) {
+        continue;
+      }
       counts.set(listing.place_type, (counts.get(listing.place_type) || 0) + 1);
     }
   }
