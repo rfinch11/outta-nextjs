@@ -59,7 +59,7 @@ export function filterByPlaceType(
 
   return listings
     .filter((l) => l.latitude && l.longitude)
-    .filter((l) => l.place_type === placeType)
+    .filter((l) => l.place_type?.toLowerCase() === placeType.toLowerCase())
     .filter((l) => {
       // Exclude past events (if it has a start_date and it's in the past)
       if (l.start_date) {
