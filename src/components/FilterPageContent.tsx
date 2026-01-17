@@ -90,7 +90,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
     const fetchListings = async () => {
       setLoading(true);
       try {
-        const { data, error } = await supabase.from('listings').select('*');
+        const { data, error } = await supabase.from('listings').select('*').limit(10000);
 
         if (error) {
           console.error('Error fetching listings:', error);

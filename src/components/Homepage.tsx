@@ -151,7 +151,7 @@ const Homepage: React.FC = () => {
     setLoading(true);
     try {
       // Fetch ALL listings at once
-      const query = supabase.from('listings').select('*');
+      const query = supabase.from('listings').select('*').limit(10000);
 
       const { data, error } = await query;
 

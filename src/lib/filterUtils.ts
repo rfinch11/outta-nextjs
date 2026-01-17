@@ -57,10 +57,6 @@ export function filterByPlaceType(
 ): Listing[] {
   const now = new Date();
 
-  const withCoords = listings.filter((l) => l.latitude && l.longitude);
-  const matchingType = withCoords.filter((l) => l.place_type?.toLowerCase() === placeType.toLowerCase());
-  console.log(`filterByPlaceType: total=${listings.length}, withCoords=${withCoords.length}, matching "${placeType}"=${matchingType.length}`);
-
   return listings
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type?.toLowerCase() === placeType.toLowerCase())
