@@ -248,8 +248,8 @@ const Homepage: React.FC = () => {
   const upcomingEvents = getUpcomingEvents(allListings, 4);
   const advancedPlannerEvents = getAdvancedPlannerEvents(allListings, 4);
   const playgrounds = getMostLovedPlaygrounds(allListings, 4);
-  const rainyDayAdventures = getRainyDayAdventures(allListings, 3);
-  const parks = getFavoriteParks(allListings, 3);
+  const rainyDayAdventures = getRainyDayAdventures(allListings, 4);
+  const parks = getFavoriteParks(allListings, 4);
 
   return (
     <div className="min-h-screen bg-malibu-50">
