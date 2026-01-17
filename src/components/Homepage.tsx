@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
-import { LuMap } from 'react-icons/lu';
-import { IoIosArrowBack } from 'react-icons/io';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
@@ -21,9 +19,6 @@ const LocationModal = dynamic(() => import('./LocationModal'), {
   ssr: false,
 });
 const SubmitModal = dynamic(() => import('./SubmitModal'), {
-  ssr: false,
-});
-const MapView = dynamic(() => import('./MapView'), {
   ssr: false,
 });
 
@@ -66,9 +61,6 @@ const Homepage: React.FC = () => {
 
   // Submit modal state
   const [showSubmitModal, setShowSubmitModal] = useState(false);
-
-  // Map modal state (mobile)
-  const [showMapModal, setShowMapModal] = useState(false);
 
   // Calculate distance using Haversine formula
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -550,9 +542,7 @@ const Homepage: React.FC = () => {
             <div className="text-center py-12 text-gray-600">No events found</div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
-                {/* Cards Column */}
-                <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5">
                   {displayedListings.map((listing, index) => {
                     // Check if date has changed from previous card (for Events only)
                     let showDateDivider = false;
@@ -599,17 +589,6 @@ const Homepage: React.FC = () => {
                       </React.Fragment>
                     );
                   })}
-                </div>
-
-                {/* Map Column (hidden on mobile) */}
-                <div className="hidden md:block sticky top-[140px] h-[calc(100vh-180px)] rounded-2xl overflow-hidden border border-gray-300 shadow-lg">
-                  <MapView
-                    listings={displayedListings}
-                    userLocation={userLocation}
-                    activeTab={activeTab}
-                    filters={filters}
-                  />
-                </div>
               </div>
 
               {/* Load More Button */}
@@ -631,17 +610,6 @@ const Homepage: React.FC = () => {
       {/* Footer */}
       <Footer />
 
-      {/* FAB for Map (Mobile Only) */}
-      <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
-        <button
-          onClick={() => setShowMapModal(true)}
-          className="w-14 h-14 bg-broom-400 border-2 border-malibu-950 rounded-full shadow-[3px_4px_0px_0px_#06304b] hover:shadow-[1px_2px_0px_0px_#06304b] hover:translate-x-0.5 hover:translate-y-0.5 transition-all flex items-center justify-center"
-          aria-label="View map"
-        >
-          <LuMap size={24} />
-        </button>
-      </div>
-
       {/* Modals */}
       <SearchModal
         isOpen={showSearchModal}
@@ -657,28 +625,6 @@ const Homepage: React.FC = () => {
       />
 
       <SubmitModal isOpen={showSubmitModal} onClose={() => setShowSubmitModal(false)} />
-
-      {/* Map Modal (Mobile Only) */}
-      {showMapModal && (
-        <div className="md:hidden fixed inset-0 bg-white z-[1000]">
-          {/* Floating Back Button */}
-          <div className="absolute top-0 left-0 right-0 z-50 px-5 py-4">
-            <button
-              onClick={() => setShowMapModal(false)}
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg transition-all"
-              aria-label="Close map"
-            >
-              <IoIosArrowBack size={24} />
-            </button>
-          </div>
-          <MapView
-            listings={displayedListings}
-            userLocation={userLocation}
-            activeTab={activeTab}
-            filters={filters}
-          />
-        </div>
-      )}
     </div>
   );
 };
