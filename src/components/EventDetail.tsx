@@ -298,7 +298,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
             {tagArray.map((tag, index) => (
               <span
                 key={index}
-                className="inline-block px-3 py-1.5 bg-gray-100 text-malibu-950/80 rounded-full text-sm"
+                className="inline-block px-3 py-1.5 bg-white text-malibu-950/80 rounded-full text-sm"
               >
                 {tag}
               </span>
