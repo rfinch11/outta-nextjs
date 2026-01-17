@@ -11,7 +11,6 @@ import type { FilterState } from './FilterModal';
 import ClickableCard from './ClickableCard';
 import Footer from './Footer';
 import Loader from './Loader';
-import TabBar, { TabFilter } from './TabBar';
 import BentoMenu from './BentoMenu';
 
 // Dynamic imports for modals (code splitting)
@@ -31,7 +30,7 @@ const MapView = dynamic(() => import('./MapView'), {
 type TabType = 'Event' | 'Activity' | 'Camp' | 'Restaurant';
 
 const Homepage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabType>('Event');
+  const [activeTab] = useState<TabType>('Event');
   const [allListings, setAllListings] = useState<Listing[]>([]);
   const [displayedListings, setDisplayedListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,10 +69,6 @@ const Homepage: React.FC = () => {
 
   // Map modal state (mobile)
   const [showMapModal, setShowMapModal] = useState(false);
-
-  // Tab bar filter state
-  const [activeTabFilters, setActiveTabFilters] = useState<TabFilter[]>([]);
-  const [availableTypes, setAvailableTypes] = useState<string[]>([]);
 
   // Calculate distance using Haversine formula
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -231,17 +226,6 @@ const Homepage: React.FC = () => {
       });
 
       setAllListings(listingsWithDistance);
-
-      // Extract unique place types for the type filter
-      const uniqueTypes = Array.from(
-        new Set(
-          listingsWithDistance
-            .map((listing) => listing.place_type)
-            .filter((type): type is string => !!type)
-        )
-      ).sort();
-      setAvailableTypes(uniqueTypes);
-
       setLoading(false);
     } catch (error) {
       console.error('Error:', error);
@@ -525,109 +509,6 @@ const Homepage: React.FC = () => {
     setSearchQuery(query);
   };
 
-  // Get available filters based on active tab
-  const getAvailableFilters = (): TabFilter[] => {
-    const baseFilters: TabFilter[] = [];
-
-    if (activeTab === 'Event') {
-      baseFilters.push(
-        { id: 'date', label: 'Date', value: null },
-        { id: 'distance', label: 'Distance', value: null }
-      );
-    } else if (activeTab === 'Activity') {
-      baseFilters.push(
-        { id: 'distance', label: 'Distance', value: null },
-        { id: 'type', label: 'Type', value: null }
-      );
-    } else if (activeTab === 'Camp') {
-      baseFilters.push({ id: 'distance', label: 'Distance', value: null });
-    } else if (activeTab === 'Restaurant') {
-      // Restaurants coming soon - no filters yet
-      baseFilters.push({ id: 'distance', label: 'Distance', value: null });
-    }
-
-    return baseFilters;
-  };
-
-  // Handle date filter selection
-  const handleDateSelect = (value: 'today' | 'tomorrow' | 'this_week' | 'this_month') => {
-    setFilters((prev) => ({ ...prev, dateQuick: value }));
-  };
-
-  // Handle distance filter selection
-  const handleDistanceSelect = (distance: number) => {
-    setFilters((prev) => ({ ...prev, distance }));
-  };
-
-  // Handle type filter selection
-  const handleTypeSelect = (types: string[]) => {
-    setFilters((prev) => ({ ...prev, types }));
-  };
-
-  // Handle tab change and clear filters
-  const handleTabChange = (tab: TabType) => {
-    setActiveTab(tab);
-    // Clear all quick filters when switching tabs
-    setFilters((prev) => ({
-      ...prev,
-      dateQuick: null,
-      distance: null,
-      types: [],
-    }));
-  };
-
-  // Handle filter removal
-  const handleFilterRemove = (filterId: string) => {
-    setActiveTabFilters((prev) => prev.filter((f) => f.id !== filterId));
-
-    // Also update the main filter state
-    if (filterId === 'date') {
-      setFilters((prev) => ({ ...prev, dateQuick: null }));
-    } else if (filterId === 'distance') {
-      setFilters((prev) => ({ ...prev, distance: null }));
-    } else if (filterId === 'type') {
-      setFilters((prev) => ({ ...prev, types: [] }));
-    }
-  };
-
-  // Update active tab filters when filters change
-  useEffect(() => {
-    const newActiveFilters: TabFilter[] = [];
-
-    if (filters.dateQuick) {
-      const labels: Record<string, string> = {
-        today: 'Today',
-        tomorrow: 'Tomorrow',
-        this_week: 'This week',
-        this_month: 'This month',
-      };
-      newActiveFilters.push({
-        id: 'date',
-        label: labels[filters.dateQuick] || filters.dateQuick,
-        value: filters.dateQuick,
-      });
-    }
-
-    if (filters.distance !== null) {
-      newActiveFilters.push({
-        id: 'distance',
-        label: `<${filters.distance} mi`,
-        value: filters.distance,
-      });
-    }
-
-    if (filters.types && filters.types.length > 0) {
-      const label = filters.types.length === 1 ? filters.types[0] : `${filters.types.length} types`;
-      newActiveFilters.push({
-        id: 'type',
-        label,
-        value: filters.types,
-      });
-    }
-
-    setActiveTabFilters(newActiveFilters);
-  }, [filters.dateQuick, filters.distance, filters.types]);
-
   return (
     <div className="min-h-screen bg-malibu-50">
       {/* Header */}
@@ -658,22 +539,6 @@ const Homepage: React.FC = () => {
         </div>
       </header>
 
-      {/* Tab Navigation with Filters */}
-      <TabBar
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        activeFilters={activeTabFilters}
-        availableFilters={getAvailableFilters()}
-        onFilterRemove={handleFilterRemove}
-        onDateSelect={handleDateSelect}
-        onDistanceSelect={handleDistanceSelect}
-        onTypeSelect={handleTypeSelect}
-        currentDateFilter={filters.dateQuick}
-        currentDistanceFilter={filters.distance}
-        currentTypeFilter={filters.types}
-        availableTypes={availableTypes}
-      />
-
       {/* Listings */}
       <div className="px-5 py-6">
         <div className="max-w-7xl mx-auto">
@@ -682,9 +547,7 @@ const Homepage: React.FC = () => {
               <Loader size={120} />
             </div>
           ) : displayedListings.length === 0 ? (
-            <div className="text-center py-12 text-gray-600">
-              No {activeTab.toLowerCase()}s found
-            </div>
+            <div className="text-center py-12 text-gray-600">No events found</div>
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-4">
