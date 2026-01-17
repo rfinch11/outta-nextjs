@@ -68,7 +68,7 @@ const Menu: React.FC<MenuProps> = ({ onLocationSet, className = '' }) => {
         ref={buttonRef}
         onClick={handleToggle}
         className={`w-9 h-9 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
-          isOpen ? 'bg-malibu-50' : 'bg-transparent hover:bg-gray-100'
+          isOpen ? 'bg-malibu-50' : 'bg-transparent hover:bg-white'
         }`}
         aria-label={isOpen ? 'Close menu' : 'Open menu'}
         aria-expanded={isOpen}

@@ -85,7 +85,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
   return (
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
-      <div className="flex w-full p-2 gap-3 rounded-xl relative cursor-pointer transition-all hover:bg-black-50 hover:shadow-sm">
+      <div className="flex w-full p-2 gap-3 rounded-xl relative cursor-pointer transition-all hover:bg-white hover:shadow-sm">
         {/* Image on the left with chips overlay */}
         <div className="w-[80px] h-[80px] flex-shrink-0">
           <img

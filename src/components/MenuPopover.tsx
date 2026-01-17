@@ -150,7 +150,7 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
             <div className="p-3">
               <button
                 onClick={handlePartner}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border-none bg-transparent cursor-pointer transition-colors hover:bg-black-50"
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border-none bg-transparent cursor-pointer transition-colors hover:bg-malibu-50"
                 type="button"
               >
                 <div className="flex flex-col items-start text-left">
