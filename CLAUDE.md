@@ -113,6 +113,14 @@ outta-nextjs/
 
 ## 🎨 Design System
 
+### Design System v2 (January 2026)
+Based on Vercel Geist Design System with Outta brand colors.
+
+### Typography
+- **Primary Font:** Geist Sans (via `geist` package)
+- **Monospace Font:** Geist Mono (for code/technical content)
+- Loaded in `src/app/layout.tsx`
+
 ### Color Scales (6 palettes, 11 shades each: 50-950)
 Defined in `src/app/globals.css` using Tailwind v4 `@theme` inline:
 
@@ -123,14 +131,21 @@ Defined in `src/app/globals.css` using Tailwind v4 `@theme` inline:
 - **Malibu** (Blue): Backgrounds, info states
 - **Black** (Grayscale 50-950): Text, borders, backgrounds
 
-### Typography
-- **Primary Font:** Bricolage Grotesque (Google Fonts)
-- Loaded in `src/app/layout.tsx`
+### Icons
+- **Primary:** Lucide icons via `react-icons/lu`
+- **Navigation:** BiNavigation from `react-icons/bi`
+- See `src/lib/placeTypeIcons.ts` for place type mappings
 
 ### Component System
-- **Chip Badges:** 6 variants (Scout Pick, Deal, Promoted, New, Coming Soon, Top Rated)
-- **Cards:** ClickableCard with image overlays for chips
-- **Modals:** Bottom sheet style for mobile, centered for desktop
+- **Modals/Drawers:** Vaul (`vaul` package) - bottom sheet on mobile, centered on desktop
+- **ResponsiveModal:** `src/components/ui/ResponsiveModal.tsx` - wrapper component
+- **Chip Badges:** 6 variants with Lucide icons and subtle borders
+- **Cards:** ClickableCard with hover effects and material-like styling
+
+### Key Design Files
+- `DESIGN_SYSTEM_V2.md` - Full design system documentation
+- `src/lib/design-system-colors.ts` - Color scale definitions
+- `src/hooks/useMediaQuery.ts` - Responsive breakpoint detection
 
 ---
 

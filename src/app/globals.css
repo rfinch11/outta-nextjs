@@ -93,7 +93,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-space-grotesk);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 
   /* Legacy Outta Custom Colors (deprecated) */
   --color-outta-yellow: var(--outta-yellow);
@@ -185,11 +186,20 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family:
-    var(--font-bricolage-grotesque),
+    var(--font-geist-sans),
     -apple-system,
     BlinkMacSystemFont,
     'Segoe UI',
     sans-serif;
+}
+
+/* Monospace text utility */
+.font-mono {
+  font-family:
+    var(--font-geist-mono),
+    ui-monospace,
+    SFMono-Regular,
+    monospace;
 }
 
 /* Bento Menu Popover Animation */
