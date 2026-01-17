@@ -105,7 +105,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
           ${
             isActiveLayer
               ? 'bg-white border-2 border-flamenco-500 text-malibu-950'
-              : 'bg-black-50 border-2 border-transparent text-black-700 hover:bg-black-100'
+              : 'bg-transparent border-2 border-transparent text-black-700 hover:text-malibu-950'
           }
         `}
         tabIndex={isActiveLayer ? -1 : 0}
