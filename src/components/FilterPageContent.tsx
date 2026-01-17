@@ -449,24 +449,26 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
       <Drawer.Root open={mapDrawerOpen} onOpenChange={setMapDrawerOpen}>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" />
-          <Drawer.Content className="bg-white flex flex-col rounded-t-[10px] h-[95vh] fixed bottom-0 left-0 right-0 z-[70] outline-none">
+          <Drawer.Content className="bg-white flex flex-col rounded-t-[10px] h-[95dvh] max-h-[95dvh] fixed bottom-0 left-0 right-0 z-[70] outline-none overflow-hidden">
             <Drawer.Title className="sr-only">Map View</Drawer.Title>
             <Drawer.Description className="sr-only">
               View {getTitle()} on a map
             </Drawer.Description>
 
-            {/* Close Button */}
-            <button
-              onClick={() => setMapDrawerOpen(false)}
-              className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-lg border border-black-100 transition-colors hover:bg-black-50"
-              aria-label="Close map"
-              type="button"
-            >
-              <LuX size={24} className="text-malibu-950" />
-            </button>
+            {/* Header with Close Button */}
+            <div className="flex items-center justify-end px-5 pt-4 pb-2">
+              <button
+                onClick={() => setMapDrawerOpen(false)}
+                className="flex items-center justify-center transition-colors hover:opacity-70"
+                aria-label="Close map"
+                type="button"
+              >
+                <LuX size={24} className="text-malibu-950" />
+              </button>
+            </div>
 
             {/* Map */}
-            <div className="flex-1 relative p-4 pt-6">
+            <div className="flex-1 relative px-4 pb-2 pt-2">
               {isLoaded ? (
                 <GoogleMap
                   mapContainerStyle={{ width: '100%', height: '100%', borderRadius: '12px' }}
@@ -509,17 +511,17 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
             </div>
 
             {/* Card Carousel */}
-            <div className="bg-white py-4">
+            <div className="bg-white pt-4 pb-6">
               <div
                 ref={carouselRef}
                 onScroll={handleCarouselScroll}
-                className="flex gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
+                className="flex gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory pb-2"
                 style={{ paddingLeft: 'calc(50% - 150px)', paddingRight: 'calc(50% - 150px)' }}
               >
                 {mappableListings.map((listing) => (
                   <div
                     key={listing.airtable_id}
-                    className="flex-shrink-0 w-[300px] snap-center"
+                    className="flex-shrink-0 w-[300px] snap-center bg-white rounded-xl shadow-md"
                     onClick={() => handleMarkerClick(listing.airtable_id)}
                   >
                     <ClickableCard
