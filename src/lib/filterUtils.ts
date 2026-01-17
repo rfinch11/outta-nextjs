@@ -193,13 +193,14 @@ export function getAdvancedPlannerEvents(
 }
 
 /**
- * Most loved playgrounds: place_type=Playground, ≤30mi, rating high→low, featured only
+ * Most loved playgrounds: place_type=Playground, ≤30mi, rating high→low, featured only, excludes events
  */
 export function getMostLovedPlaygrounds(
   listings: Listing[],
   maxCount: number = 4
 ): Listing[] {
   return listings
+    .filter((l) => l.type !== 'Event')
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type?.toLowerCase() === 'playground')
     .filter((l) => (l.distance || 0) <= 30)
@@ -209,13 +210,14 @@ export function getMostLovedPlaygrounds(
 }
 
 /**
- * Rainy day adventures: place_type=Indoor Playground, sorted by distance
+ * Rainy day adventures: place_type=Indoor Playground, sorted by distance, excludes events
  */
 export function getRainyDayAdventures(
   listings: Listing[],
   maxCount: number = 3
 ): Listing[] {
   return listings
+    .filter((l) => l.type !== 'Event')
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type?.toLowerCase() === 'indoor playground')
     .sort((a, b) => (a.distance || 0) - (b.distance || 0))
@@ -223,13 +225,14 @@ export function getRainyDayAdventures(
 }
 
 /**
- * Favorite parks: place_type=Park, ≤30mi, rating high→low, featured only
+ * Favorite parks: place_type=Park, ≤30mi, rating high→low, featured only, excludes events
  */
 export function getFavoriteParks(
   listings: Listing[],
   maxCount: number = 3
 ): Listing[] {
   return listings
+    .filter((l) => l.type !== 'Event')
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type?.toLowerCase() === 'park')
     .filter((l) => (l.distance || 0) <= 30)
