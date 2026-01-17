@@ -246,7 +246,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
 
       {/* Hero Image */}
       <div className="relative w-full max-w-3xl mx-auto px-5">
-        <div className="relative w-full h-[400px] bg-gray-100 rounded-3xl overflow-hidden">
+        <div className="relative w-full h-[400px] bg-gray-100 rounded-3xl overflow-hidden shadow-lg">
           <img
             src={imgSrc}
             alt={title}
