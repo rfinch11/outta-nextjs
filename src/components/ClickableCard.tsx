@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { LuCalendar, LuMapPin, LuStar, LuStarHalf } from 'react-icons/lu';
+import { getPlaceTypeIcon } from '@/lib/placeTypeIcons';
 
 interface ClickableCardProps {
   airtable_id: string;
@@ -30,6 +31,8 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
   image,
   place_id,
   start_date,
+  place_type,
+  description,
   organizer,
   rating,
 }) => {
@@ -58,11 +61,11 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
     for (let i = 0; i < 5; i++) {
       if (i < fullStars || (i === fullStars && roundUp)) {
         stars.push(
-          <LuStar key={i} size={14} className="text-flamenco-500 fill-flamenco-500" />
+          <LuStar key={i} size={14} className="text-broom-500 fill-broom-500" />
         );
       } else if (i === fullStars && hasHalfStar) {
         stars.push(
-          <LuStarHalf key={i} size={14} className="text-flamenco-500 fill-flamenco-500" />
+          <LuStarHalf key={i} size={14} className="text-broom-500 fill-broom-500" />
         );
       } else {
         stars.push(
@@ -101,6 +104,15 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
               {organizer}
             </div>
           )}
+
+          {/* Star rating above title for Activity and Camp */}
+          {(type === 'Activity' || type === 'Camp') && rating && (
+            <div className="flex items-center gap-0.5">
+              {renderStars(rating)}
+              <span className="ml-1 text-sm text-black-600">{rating.toFixed(1)}</span>
+            </div>
+          )}
+
           {/* Title */}
           <h3 className="text-malibu-950 text-base font-bold leading-tight m-0 break-words line-clamp-2">
             {title}
@@ -120,13 +132,16 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
             </div>
           )}
 
-          {/* Rating & Location row for Activities */}
+          {/* Place type & Location row for Activities */}
           {type === 'Activity' && (
             <div className="text-black-600 text-sm leading-5 flex items-center gap-3 min-w-0">
-              {rating && (
-                <div className="flex items-center gap-0.5 flex-shrink-0">
-                  {renderStars(rating)}
-                  <span className="ml-1 text-black-600">{rating.toFixed(1)}</span>
+              {place_type && (
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  {React.createElement(getPlaceTypeIcon(place_type), {
+                    size: 14,
+                    className: 'flex-shrink-0 text-black-500',
+                  })}
+                  <span className="truncate">{place_type}</span>
                 </div>
               )}
               <div className="flex items-center gap-1 min-w-0">
@@ -136,20 +151,19 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
             </div>
           )}
 
-          {/* Rating & Location for Camps */}
+          {/* Description & Location for Camps */}
           {type === 'Camp' && (
-            <div className="text-black-600 text-sm leading-5 flex items-center gap-3 min-w-0">
-              {rating && (
-                <div className="flex items-center gap-0.5 flex-shrink-0">
-                  {renderStars(rating)}
-                  <span className="ml-1 text-black-600">{rating.toFixed(1)}</span>
+            <>
+              {description && (
+                <div className="text-black-600 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-1">
+                  {description}
                 </div>
               )}
-              <div className="flex items-center gap-1 min-w-0">
+              <div className="text-black-600 text-sm leading-5 flex items-center gap-1 min-w-0">
                 <LuMapPin size={14} className="flex-shrink-0 text-black-500" />
                 <span className="truncate">{city}</span>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
