@@ -284,10 +284,10 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
           {/* Page Title */}
           <h1 className="text-2xl font-bold text-malibu-950 flex-1">{getTitle()}</h1>
 
-          {/* Map View Button */}
+          {/* Map View Button - mobile only */}
           <button
             onClick={() => setMapDrawerOpen(true)}
-            className="flex items-center justify-center transition-colors hover:opacity-70"
+            className="flex md:hidden items-center justify-center transition-colors hover:opacity-70"
             aria-label="View on map"
             type="button"
           >
@@ -296,7 +296,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
         </div>
       </header>
 
-      {/* Listings */}
+      {/* Main Content */}
       <div className="px-5 pb-6">
         <div className="max-w-7xl mx-auto">
           {loading ? (
@@ -308,7 +308,8 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
               No {filterType === 'events' ? 'events' : 'listings'} found
             </div>
           ) : (
-            <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Listings Column */}
               <div className="flex flex-col gap-1.5">
                 {filteredListings.slice(0, displayCount).map((listing, index) => {
                   // For events, show date separators
@@ -378,26 +379,70 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                     </React.Fragment>
                   );
                 })}
+
+                {/* Load More Button */}
+                {hasMore && (
+                  <div className="flex justify-center mt-8">
+                    <button
+                      onClick={handleLoadMore}
+                      className="w-full max-w-md px-4 py-4 bg-broom-400 border-2 border-malibu-950 rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#06304b] hover:shadow-[1px_2px_0px_0px_#06304b] hover:translate-x-0.5 hover:translate-y-0.5"
+                    >
+                      Load more
+                    </button>
+                  </div>
+                )}
               </div>
 
-              {/* Load More Button */}
-              {hasMore && (
-                <div className="flex justify-center mt-8">
-                  <button
-                    onClick={handleLoadMore}
-                    className="w-full max-w-md px-4 py-4 bg-broom-400 border-2 border-malibu-950 rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#06304b] hover:shadow-[1px_2px_0px_0px_#06304b] hover:translate-x-0.5 hover:translate-y-0.5"
+              {/* Inline Map - md and lg only */}
+              <div className="hidden md:block lg:col-span-2 sticky top-20 h-[calc(100vh-120px)]">
+                {isLoaded ? (
+                  <GoogleMap
+                    mapContainerStyle={{ width: '100%', height: '100%', borderRadius: '12px' }}
+                    center={getMapCenter()}
+                    zoom={12}
+                    onLoad={onMapLoad}
+                    options={{
+                      zoomControl: true,
+                      streetViewControl: false,
+                      mapTypeControl: false,
+                      fullscreenControl: false,
+                    }}
                   >
-                    Load more
-                  </button>
-                </div>
-              )}
-            </>
+                    {mappableListings.map((listing) => (
+                      <Marker
+                        key={listing.airtable_id}
+                        position={{
+                          lat: listing.latitude!,
+                          lng: listing.longitude!,
+                        }}
+                        onClick={() => handleMarkerClick(listing.airtable_id)}
+                        icon={{
+                          path: window.google.maps.SymbolPath.CIRCLE,
+                          scale: selectedListingId === listing.airtable_id ? 10 : 6,
+                          fillColor: selectedListingId === listing.airtable_id ? '#efdb03' : '#feff43',
+                          fillOpacity: 1,
+                          strokeColor: '#06304b',
+                          strokeWeight: 1.5,
+                        }}
+                        zIndex={selectedListingId === listing.airtable_id ? 1000 : 1}
+                      />
+                    ))}
+                  </GoogleMap>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-black-50 rounded-xl">
+                    <Loader size={60} />
+                  </div>
+                )}
+              </div>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Footer */}
-      <Footer />
+      {/* Footer - mobile only when map is inline on larger screens */}
+      <div className="md:hidden">
+        <Footer />
+      </div>
 
       {/* Map Drawer */}
       <Drawer.Root open={mapDrawerOpen} onOpenChange={setMapDrawerOpen}>
