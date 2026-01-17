@@ -21,7 +21,12 @@ function detectEventCategory(listing: any): string | null {
   if (text.includes('yoga') || text.includes('tai chi') || text.includes('exercise')) {
     return 'kids yoga exercise';
   }
-  if (text.includes('steam') || text.includes('maker') || text.includes('engineering') || text.includes('science')) {
+  if (
+    text.includes('steam') ||
+    text.includes('maker') ||
+    text.includes('engineering') ||
+    text.includes('science')
+  ) {
     return 'kids science hands-on activities';
   }
   if (text.includes('sewing') || text.includes('craft') || text.includes('art')) {
@@ -48,13 +53,28 @@ function detectEventCategory(listing: any): string | null {
  */
 function extractTitleKeywords(title: string): string {
   // Remove common words and extract key terms
-  const stopWords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'];
+  const stopWords = [
+    'the',
+    'a',
+    'an',
+    'and',
+    'or',
+    'but',
+    'in',
+    'on',
+    'at',
+    'to',
+    'for',
+    'of',
+    'with',
+    'by',
+  ];
 
   return title
     .toLowerCase()
     .replace(/[^\w\s]/g, ' ') // Remove punctuation
     .split(/\s+/)
-    .filter(word => word.length > 3 && !stopWords.includes(word))
+    .filter((word) => word.length > 3 && !stopWords.includes(word))
     .slice(0, 3) // Take first 3 meaningful words
     .join(' ');
 }
@@ -76,7 +96,7 @@ function buildSearchTerms(listing: any): string[] {
       .map((tag: string) => tag.trim())
       .filter((tag: string) => {
         if (tag.length === 0) return false;
-        return !excludedTerms.some(term => tag.includes(term));
+        return !excludedTerms.some((term) => tag.includes(term));
       });
 
     if (tags.length > 0) {
@@ -87,7 +107,7 @@ function buildSearchTerms(listing: any): string[] {
   // Try 2: First tag + 'kids'
   if (listing.tags) {
     const firstTag = listing.tags.split(',')[0]?.trim();
-    if (firstTag && !excludedTerms.some(term => firstTag.includes(term))) {
+    if (firstTag && !excludedTerms.some((term) => firstTag.includes(term))) {
       searchTerms.push(firstTag + ' kids');
     }
   }
@@ -127,7 +147,7 @@ async function getUsedPhotoIds(): Promise<Set<string>> {
     return new Set();
   }
 
-  return new Set(data.map(row => row.unsplash_photo_id));
+  return new Set(data.map((row) => row.unsplash_photo_id));
 }
 
 /**
@@ -139,8 +159,8 @@ async function searchUnsplash(searchTerm: string): Promise<any[]> {
     `https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchTerm)}&per_page=10&orientation=landscape&content_filter=high`,
     {
       headers: {
-        'Authorization': `Client-ID ${UNSPLASH_ACCESS_KEY}`
-      }
+        Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}`,
+      },
     }
   );
 
@@ -193,7 +213,7 @@ async function fetchUnsplashImage(listing: any, usedPhotoIds: Set<string>) {
           .from('listings')
           .update({
             image: imageUrl,
-            unsplash_photo_id: photoId
+            unsplash_photo_id: photoId,
           })
           .eq('id', listing.id);
 
@@ -212,20 +232,20 @@ async function fetchUnsplashImage(listing: any, usedPhotoIds: Set<string>) {
           photographer,
           photoId,
           searchTerm,
-          attemptNumber: i + 1
+          attemptNumber: i + 1,
         };
       } else {
         console.log(`   ⚠️  No results, trying next fallback...`);
       }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`   ❌ Error searching: ${error.message}`);
       continue; // Try next search term
     }
 
     // Small delay between searches
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   // If we get here, all search terms failed (shouldn't happen with generic fallbacks)
@@ -284,11 +304,11 @@ export async function POST(request: NextRequest) {
       results.push({
         listingId: listing.id,
         title: listing.title,
-        ...result
+        ...result,
       });
 
       // Add a delay to respect Unsplash rate limits
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise((resolve) => setTimeout(resolve, 200));
     }
 
     // Summary
@@ -304,10 +324,10 @@ export async function POST(request: NextRequest) {
       imagesAdded: successCount,
       errors: errorCount,
       uniquePhotosUsed: usedPhotoIds.size,
-      results
+      results,
     });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('❌ Unexpected error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });

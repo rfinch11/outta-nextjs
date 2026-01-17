@@ -14,51 +14,33 @@ export default function DesignSystemExample() {
   return (
     <div className="p-8 space-y-12">
       <div>
-        <h1 className="text-4xl font-bold text-black-900 mb-2">
-          Outta Design System Colors
-        </h1>
-        <p className="text-black-600 mb-8">
-          Complete color scales for the Outta brand
-        </p>
+        <h1 className="text-4xl font-bold text-black-900 mb-2">Outta Design System Colors</h1>
+        <p className="text-black-600 mb-8">Complete color scales for the Outta brand</p>
       </div>
 
       {/* Legacy Colors Comparison */}
       <section>
-        <h2 className="text-2xl font-bold text-black-800 mb-4">
-          Legacy → New Mapping
-        </h2>
+        <h2 className="text-2xl font-bold text-black-800 mb-4">Legacy → New Mapping</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="p-4 rounded-lg border border-black-200">
             <div className="w-full h-16 bg-outta-yellow rounded mb-2" />
-            <p className="text-sm font-mono text-black-600">
-              outta-yellow
-            </p>
+            <p className="text-sm font-mono text-black-600">outta-yellow</p>
             <div className="w-full h-16 bg-broom-400 rounded mt-2" />
-            <p className="text-sm font-mono text-black-900">
-              broom-400 (new)
-            </p>
+            <p className="text-sm font-mono text-black-900">broom-400 (new)</p>
           </div>
 
           <div className="p-4 rounded-lg border border-black-200">
             <div className="w-full h-16 bg-outta-orange rounded mb-2" />
-            <p className="text-sm font-mono text-black-600">
-              outta-orange
-            </p>
+            <p className="text-sm font-mono text-black-600">outta-orange</p>
             <div className="w-full h-16 bg-flamenco-500 rounded mt-2" />
-            <p className="text-sm font-mono text-black-900">
-              flamenco-500 (new)
-            </p>
+            <p className="text-sm font-mono text-black-900">flamenco-500 (new)</p>
           </div>
 
           <div className="p-4 rounded-lg border border-black-200">
             <div className="w-full h-16 bg-outta-green rounded mb-2" />
-            <p className="text-sm font-mono text-black-600">
-              outta-green
-            </p>
+            <p className="text-sm font-mono text-black-600">outta-green</p>
             <div className="w-full h-16 bg-emerald-500 rounded mt-2" />
-            <p className="text-sm font-mono text-black-900">
-              emerald-500 (new)
-            </p>
+            <p className="text-sm font-mono text-black-900">emerald-500 (new)</p>
           </div>
         </div>
       </section>
@@ -79,12 +61,8 @@ export default function DesignSystemExample() {
                     style={{ backgroundColor: colorValue }}
                   />
                   <div className="text-center">
-                    <p className="text-xs font-semibold text-black-900">
-                      {shade}
-                    </p>
-                    <p className="text-xs font-mono text-black-500">
-                      {colorValue}
-                    </p>
+                    <p className="text-xs font-semibold text-black-900">{shade}</p>
+                    <p className="text-xs font-mono text-black-500">{colorValue}</p>
                   </div>
                 </div>
               );
@@ -95,9 +73,7 @@ export default function DesignSystemExample() {
 
       {/* Usage Examples */}
       <section>
-        <h2 className="text-2xl font-bold text-black-800 mb-4">
-          Usage Examples
-        </h2>
+        <h2 className="text-2xl font-bold text-black-800 mb-4">Usage Examples</h2>
 
         <div className="space-y-6">
           {/* Buttons */}
@@ -124,25 +100,19 @@ export default function DesignSystemExample() {
             <h3 className="text-lg font-semibold text-black-700 mb-3">Cards</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-6 bg-broom-50 border border-broom-200 rounded-lg">
-                <h4 className="text-lg font-bold text-broom-900 mb-2">
-                  Broom Card
-                </h4>
+                <h4 className="text-lg font-bold text-broom-900 mb-2">Broom Card</h4>
                 <p className="text-broom-700">
                   Light background with darker text using broom scale
                 </p>
               </div>
               <div className="p-6 bg-malibu-50 border border-malibu-200 rounded-lg">
-                <h4 className="text-lg font-bold text-malibu-900 mb-2">
-                  Malibu Card
-                </h4>
+                <h4 className="text-lg font-bold text-malibu-900 mb-2">Malibu Card</h4>
                 <p className="text-malibu-700">
                   Light background with darker text using malibu scale
                 </p>
               </div>
               <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-lg">
-                <h4 className="text-lg font-bold text-emerald-900 mb-2">
-                  Emerald Card
-                </h4>
+                <h4 className="text-lg font-bold text-emerald-900 mb-2">Emerald Card</h4>
                 <p className="text-emerald-700">
                   Light background with darker text using emerald scale
                 </p>

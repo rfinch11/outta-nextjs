@@ -26,10 +26,7 @@ const CACHE_ENABLED = false; // DISABLED - see note above
  * @param fetcher - Function to fetch fresh data
  * @returns Cached or fresh data
  */
-export async function getCachedData<T>(
-  key: string,
-  fetcher: () => Promise<T>
-): Promise<T> {
+export async function getCachedData<T>(key: string, fetcher: () => Promise<T>): Promise<T> {
   // Caching is currently disabled - always fetch fresh data
   if (!CACHE_ENABLED) {
     return fetcher();

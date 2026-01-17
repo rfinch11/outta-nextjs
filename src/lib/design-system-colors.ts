@@ -107,11 +107,11 @@ export function getColor(scale: ColorScale, shade: ColorShade): string {
  * Maps old single-value colors to new scale-based colors
  */
 export const legacyColorMap = {
-  'outta-yellow': colorScales.broom[400],    // #FFF407 -> #fff407 (matches!)
+  'outta-yellow': colorScales.broom[400], // #FFF407 -> #fff407 (matches!)
   'outta-orange': colorScales.flamenco[500], // #FF7E08 -> #ff7e08 (matches!)
-  'outta-blue': colorScales.malibu[100],     // #E3F2FD -> #dff2ff (similar light blue)
-  'outta-green': colorScales.emerald[500],   // #3DD68C -> #35cb75 (similar green)
-  'outta-dark': colorScales.black[800],      // #37474F -> #454545 (similar dark gray)
+  'outta-blue': colorScales.malibu[100], // #E3F2FD -> #dff2ff (similar light blue)
+  'outta-green': colorScales.emerald[500], // #3DD68C -> #35cb75 (similar green)
+  'outta-dark': colorScales.black[800], // #37474F -> #454545 (similar dark gray)
 } as const;
 
 /**

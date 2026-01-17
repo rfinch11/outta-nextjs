@@ -72,7 +72,7 @@ async function geocodeAddress(address: string) {
         success: true,
         latitude: lat,
         longitude: lng,
-        formatted_address: result.formatted_address
+        formatted_address: result.formatted_address,
       };
     } else if (data.status === 'ZERO_RESULTS') {
       return { success: false, error: 'No results found' };
@@ -80,7 +80,7 @@ async function geocodeAddress(address: string) {
       return { success: false, error: `Geocoding failed: ${data.status}` };
     }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     return { success: false, error: error.message };
   }
@@ -108,7 +108,7 @@ async function geocodeListing(listing: any) {
       .from('listings')
       .update({
         latitude: result.latitude,
-        longitude: result.longitude
+        longitude: result.longitude,
       })
       .eq('id', listing.id);
 
@@ -123,9 +123,8 @@ async function geocodeListing(listing: any) {
       latitude: result.latitude,
       longitude: result.longitude,
       formatted_address: result.formatted_address,
-      address_used: address
+      address_used: address,
     };
-
   } else {
     console.log(`   ❌ Geocoding failed: ${result.error}`);
     return result;
@@ -159,7 +158,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Filter to only those with some address information
-    const listingsToGeocode = listings.filter(listing => {
+    const listingsToGeocode = listings.filter((listing) => {
       const address = buildAddress(listing);
       return address !== null;
     });
@@ -187,11 +186,11 @@ export async function POST(request: NextRequest) {
       results.push({
         listingId: listing.id,
         title: listing.title,
-        ...result
+        ...result,
       });
 
       // Small delay to respect rate limits
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
 
     // Summary
@@ -207,10 +206,10 @@ export async function POST(request: NextRequest) {
       geocoded: successCount,
       errors: errorCount,
       skipped: skippedCount,
-      results
+      results,
     });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('❌ Unexpected error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });

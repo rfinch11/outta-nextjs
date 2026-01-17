@@ -51,7 +51,7 @@ const DistanceFilterMenu: React.FC<DistanceFilterMenuProps> = ({
             onChange={handleSliderChange}
             className="distance-slider w-full h-2 rounded-lg appearance-none cursor-pointer"
             style={{
-              background: `linear-gradient(to right, #dff2ff 0%, #dff2ff ${percentage}%, #E5E7EB ${percentage}%, #E5E7EB 100%)`
+              background: `linear-gradient(to right, #dff2ff 0%, #dff2ff ${percentage}%, #E5E7EB ${percentage}%, #E5E7EB 100%)`,
             }}
           />
         </div>

@@ -22,18 +22,17 @@ describe('ClickableCard', () => {
     airtable_id: 'event123',
     title: 'Summer Festival',
     type: 'Event' as const,
-    recommended: true,
     city: 'San Francisco',
     distance: '5',
     image: 'https://example.com/image.jpg',
     start_date: '2025-06-15T14:00:00',
+    organizer: 'City Parks Department',
   };
 
   const mockActivityListing = {
     airtable_id: 'activity456',
-    title: 'Children\'s Museum',
+    title: "Children's Museum",
     type: 'Activity' as const,
-    recommended: false,
     city: 'Oakland',
     distance: '10',
     image: 'https://example.com/image.jpg',
@@ -44,7 +43,6 @@ describe('ClickableCard', () => {
     airtable_id: 'camp789',
     title: 'Adventure Camp',
     type: 'Camp' as const,
-    recommended: false,
     city: 'Berkeley',
     distance: '15',
     image: 'https://example.com/image.jpg',
@@ -55,17 +53,17 @@ describe('ClickableCard', () => {
     render(<ClickableCard {...mockEventListing} />);
 
     expect(screen.getByText('Summer Festival')).toBeInTheDocument();
-    expect(screen.getByText('Recommended')).toBeInTheDocument();
+    expect(screen.getByText('City Parks Department')).toBeInTheDocument();
     expect(screen.getByText(/San Francisco/)).toBeInTheDocument();
-    expect(screen.getByText(/5 mi/)).toBeInTheDocument();
+    expect(screen.getByText('June 15')).toBeInTheDocument();
   });
 
   it('renders activity card with place type', () => {
     render(<ClickableCard {...mockActivityListing} />);
 
-    expect(screen.getByText('Children\'s Museum')).toBeInTheDocument();
+    expect(screen.getByText("Children's Museum")).toBeInTheDocument();
     expect(screen.getByText('Museum')).toBeInTheDocument();
-    expect(screen.queryByText('Recommended')).not.toBeInTheDocument();
+    expect(screen.getByText('Oakland')).toBeInTheDocument();
   });
 
   it('renders camp card with description', () => {
@@ -73,6 +71,7 @@ describe('ClickableCard', () => {
 
     expect(screen.getByText('Adventure Camp')).toBeInTheDocument();
     expect(screen.getByText(/A fun week-long adventure camp/)).toBeInTheDocument();
+    expect(screen.getByText('Berkeley')).toBeInTheDocument();
   });
 
   it('has correct link href to listing detail page', () => {
@@ -82,14 +81,14 @@ describe('ClickableCard', () => {
     expect(link).toHaveAttribute('href', '/listings/event123');
   });
 
-  it('displays recommended badge for recommended listings', () => {
+  it('renders organizer when provided', () => {
     render(<ClickableCard {...mockEventListing} />);
-    expect(screen.getByText('Recommended')).toBeInTheDocument();
+    expect(screen.getByText('City Parks Department')).toBeInTheDocument();
   });
 
-  it('does not display recommended badge for non-recommended listings', () => {
+  it('does not render organizer when not provided', () => {
     render(<ClickableCard {...mockActivityListing} />);
-    expect(screen.queryByText('Recommended')).not.toBeInTheDocument();
+    expect(screen.queryByText('City Parks Department')).not.toBeInTheDocument();
   });
 
   it('renders image with correct alt text', () => {

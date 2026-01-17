@@ -104,7 +104,9 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   const handleShare = async () => {
     const shareData = {
       title: title,
-      text: description ? description.substring(0, 200) : `Check out this ${props.type.toLowerCase()} on Outta!`,
+      text: description
+        ? description.substring(0, 200)
+        : `Check out this ${props.type.toLowerCase()} on Outta!`,
       url: `${window.location.origin}/listings/${airtable_id}`,
     };
 
@@ -161,7 +163,9 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
       website ? `URL:${website}` : '',
       'END:VEVENT',
       'END:VCALENDAR',
-    ].filter(Boolean).join('\r\n');
+    ]
+      .filter(Boolean)
+      .join('\r\n');
 
     // Create blob and download
     const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
@@ -272,9 +276,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
             {location_name && (
               <p className="text-base font-semibold text-gray-900 mb-1">{location_name}</p>
             )}
-            {street && (
-              <p className="text-sm text-gray-600 mb-4">{fullAddress}</p>
-            )}
+            {street && <p className="text-sm text-gray-600 mb-4">{fullAddress}</p>}
 
             {/* Embedded Map */}
             {latitude && longitude && (

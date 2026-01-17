@@ -1192,6 +1192,7 @@ const Homepage: React.FC = () => {
                           start_date={listing.start_date}
                           place_type={listing.place_type}
                           description={listing.description}
+                          organizer={listing.organizer}
                         />
                       </React.Fragment>
                     );

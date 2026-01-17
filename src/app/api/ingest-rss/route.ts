@@ -16,8 +16,8 @@ const parser = new Parser({
       ['bc:location', 'bcLocation', { keepArray: false }],
       ['category', 'category'],
       ['enclosure', 'enclosure'],
-    ]
-  }
+    ],
+  },
 });
 
 // RSS Feed configurations
@@ -69,20 +69,31 @@ function cleanDescription(rawDescription?: string): string | null {
 function mapRSSToListing(item: any, feedConfig: any) {
   // Extract BiblioCommons location data (fields come as arrays, take first element)
   const bcLoc = item.bcLocation || {};
-  const locationName = Array.isArray(bcLoc['bc:name']) ? bcLoc['bc:name'][0] : bcLoc['bc:name'] || null;
-  const locationNumber = Array.isArray(bcLoc['bc:number']) ? bcLoc['bc:number'][0] : bcLoc['bc:number'] || '';
-  const locationStreet = Array.isArray(bcLoc['bc:street']) ? bcLoc['bc:street'][0] : bcLoc['bc:street'] || '';
-  const locationCity = Array.isArray(bcLoc['bc:city']) ? bcLoc['bc:city'][0] : bcLoc['bc:city'] || null;
-  const locationState = Array.isArray(bcLoc['bc:state']) ? bcLoc['bc:state'][0] : bcLoc['bc:state'] || null;
+  const locationName = Array.isArray(bcLoc['bc:name'])
+    ? bcLoc['bc:name'][0]
+    : bcLoc['bc:name'] || null;
+  const locationNumber = Array.isArray(bcLoc['bc:number'])
+    ? bcLoc['bc:number'][0]
+    : bcLoc['bc:number'] || '';
+  const locationStreet = Array.isArray(bcLoc['bc:street'])
+    ? bcLoc['bc:street'][0]
+    : bcLoc['bc:street'] || '';
+  const locationCity = Array.isArray(bcLoc['bc:city'])
+    ? bcLoc['bc:city'][0]
+    : bcLoc['bc:city'] || null;
+  const locationState = Array.isArray(bcLoc['bc:state'])
+    ? bcLoc['bc:state'][0]
+    : bcLoc['bc:state'] || null;
   const locationZip = Array.isArray(bcLoc['bc:zip']) ? bcLoc['bc:zip'][0] : bcLoc['bc:zip'] || null;
-  const locationLat = Array.isArray(bcLoc['bc:latitude']) ? bcLoc['bc:latitude'][0] : bcLoc['bc:latitude'] || null;
-  const locationLng = Array.isArray(bcLoc['bc:longitude']) ? bcLoc['bc:longitude'][0] : bcLoc['bc:longitude'] || null;
+  const locationLat = Array.isArray(bcLoc['bc:latitude'])
+    ? bcLoc['bc:latitude'][0]
+    : bcLoc['bc:latitude'] || null;
+  const locationLng = Array.isArray(bcLoc['bc:longitude'])
+    ? bcLoc['bc:longitude'][0]
+    : bcLoc['bc:longitude'] || null;
 
   // Concatenate street address from number + street
-  const street = [locationNumber, locationStreet]
-    .filter(Boolean)
-    .join(' ')
-    .trim() || null;
+  const street = [locationNumber, locationStreet].filter(Boolean).join(' ').trim() || null;
 
   // Extract image URL from enclosure
   const imageUrl = item.enclosure?.url || item.enclosure || null;
@@ -180,10 +191,7 @@ async function processFeed(feedConfig: any) {
         const listing = mapRSSToListing(item, feedConfig);
 
         // Insert new listing
-        const { error } = await supabase
-          .from('listings')
-          .insert(listing)
-          .select();
+        const { error } = await supabase.from('listings').insert(listing).select();
 
         if (error) {
           console.error(`   ❌ Error inserting "${item.title}":`, error.message);
@@ -193,7 +201,7 @@ async function processFeed(feedConfig: any) {
           newCount++;
         }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (itemError: any) {
         console.error(`   ❌ Error processing item:`, itemError.message);
         errorCount++;
@@ -208,7 +216,7 @@ async function processFeed(feedConfig: any) {
       errors: errorCount,
     };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error(`❌ Error fetching feed ${feedConfig.name}:`, error.message);
     return {
@@ -241,11 +249,14 @@ export async function POST(request: NextRequest) {
 
   // Summary
   console.log('\n📊 Ingestion Summary:');
-  const totals = results.reduce((acc, r) => ({
-    new: acc.new + (r.new || 0),
-    skipped: acc.skipped + (r.skipped || 0),
-    errors: acc.errors + (r.errors || 0),
-  }), { new: 0, skipped: 0, errors: 0 });
+  const totals = results.reduce(
+    (acc, r) => ({
+      new: acc.new + (r.new || 0),
+      skipped: acc.skipped + (r.skipped || 0),
+      errors: acc.errors + (r.errors || 0),
+    }),
+    { new: 0, skipped: 0, errors: 0 }
+  );
 
   console.log(`   New: ${totals.new}`);
   console.log(`   Skipped: ${totals.skipped}`);

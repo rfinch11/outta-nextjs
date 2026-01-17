@@ -23,9 +23,7 @@ const ChipShowcase: React.FC = () => {
       {/* Scout Pick */}
       <div className="space-y-3">
         <h2 className="text-xl font-bold text-lavender-magenta-900">Scout Pick</h2>
-        <p className="text-sm text-gray-600">
-          Editor-curated recommendations and featured picks
-        </p>
+        <p className="text-sm text-gray-600">Editor-curated recommendations and featured picks</p>
         <div className="flex flex-wrap gap-2 p-4 bg-white border border-gray-200 rounded-lg">
           <Chip variant="scoutpick" />
           <Chip variant="scoutpick" label="Editor's Choice" />
@@ -37,9 +35,7 @@ const ChipShowcase: React.FC = () => {
       {/* Deal */}
       <div className="space-y-3">
         <h2 className="text-xl font-bold text-emerald-900">Deal</h2>
-        <p className="text-sm text-gray-600">
-          Special offers, discounts, and promotional pricing
-        </p>
+        <p className="text-sm text-gray-600">Special offers, discounts, and promotional pricing</p>
         <div className="flex flex-wrap gap-2 p-4 bg-white border border-gray-200 rounded-lg">
           <Chip variant="deal" />
           <Chip variant="deal" label="50% Off" />
@@ -76,9 +72,7 @@ const ChipShowcase: React.FC = () => {
       {/* Coming Soon */}
       <div className="space-y-3">
         <h2 className="text-xl font-bold text-black-800">Coming Soon</h2>
-        <p className="text-sm text-gray-600">
-          Future or upcoming listings not yet available
-        </p>
+        <p className="text-sm text-gray-600">Future or upcoming listings not yet available</p>
         <div className="flex flex-wrap gap-2 p-4 bg-white border border-gray-200 rounded-lg">
           <Chip variant="comingsoon" />
           <Chip variant="comingsoon" label="Opens Soon" />
@@ -90,9 +84,7 @@ const ChipShowcase: React.FC = () => {
       {/* Top Rated */}
       <div className="space-y-3">
         <h2 className="text-xl font-bold text-flamenco-900">Top Rated</h2>
-        <p className="text-sm text-gray-600">
-          Highly-rated content based on user reviews
-        </p>
+        <p className="text-sm text-gray-600">Highly-rated content based on user reviews</p>
         <div className="flex flex-wrap gap-2 p-4 bg-white border border-gray-200 rounded-lg">
           <Chip variant="toprated" />
           <Chip variant="toprated" label="4.8★" />
@@ -104,9 +96,7 @@ const ChipShowcase: React.FC = () => {
       {/* Multiple Chips Example */}
       <div className="space-y-3">
         <h2 className="text-xl font-bold">Multiple Chips</h2>
-        <p className="text-sm text-gray-600">
-          Examples of multiple chips used together
-        </p>
+        <p className="text-sm text-gray-600">Examples of multiple chips used together</p>
         <div className="space-y-4 p-4 bg-white border border-gray-200 rounded-lg">
           <div className="flex items-center gap-2">
             <span className="font-medium w-32">Event Card:</span>

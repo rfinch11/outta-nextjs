@@ -115,9 +115,7 @@ const LocationModal: React.FC<LocationModalProps> = ({ isOpen, onClose, onLocati
 
         {/* Zip Code Input */}
         <div>
-          <label className="block text-sm font-medium text-black-700 mb-2">
-            Enter zip code
-          </label>
+          <label className="block text-sm font-medium text-black-700 mb-2">Enter zip code</label>
           <input
             type="text"
             value={zipCodeInput}

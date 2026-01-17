@@ -7,10 +7,15 @@
  * This requires calling the Places API with the place_id
  */
 export async function getPlacePhotoReference(placeId: string): Promise<string | null> {
-  const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+  const apiKey =
+    process.env.GOOGLE_PLACES_API_KEY ||
+    process.env.GOOGLE_MAPS_API_KEY ||
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   if (!apiKey) {
-    console.error('GOOGLE_PLACES_API_KEY, GOOGLE_MAPS_API_KEY, or NEXT_PUBLIC_GOOGLE_MAPS_API_KEY not configured');
+    console.error(
+      'GOOGLE_PLACES_API_KEY, GOOGLE_MAPS_API_KEY, or NEXT_PUBLIC_GOOGLE_MAPS_API_KEY not configured'
+    );
     return null;
   }
 
@@ -36,11 +41,11 @@ export async function getPlacePhotoReference(placeId: string): Promise<string | 
  * Construct a Google Places Photo URL from a photo reference
  * Max dimensions: 1600x1600 for Basic/no API key, 4800x4800 for Premium
  */
-export function getPlacePhotoUrl(
-  photoReference: string,
-  maxWidth: number = 800
-): string {
-  const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+export function getPlacePhotoUrl(photoReference: string, maxWidth: number = 800): string {
+  const apiKey =
+    process.env.GOOGLE_PLACES_API_KEY ||
+    process.env.GOOGLE_MAPS_API_KEY ||
+    process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   if (!apiKey) {
     throw new Error('Google Places API key not configured');

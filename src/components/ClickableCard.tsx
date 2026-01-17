@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import { LuCalendar, LuMapPin } from 'react-icons/lu';
 import { getPlaceTypeIcon } from '@/lib/placeTypeIcons';
-import Chip from './Chip';
 
 interface ClickableCardProps {
   airtable_id: string;
@@ -20,40 +19,32 @@ interface ClickableCardProps {
   start_date?: string;
   place_type?: string;
   description?: string;
+  organizer?: string | null;
 }
 
 const ClickableCard: React.FC<ClickableCardProps> = ({
   airtable_id,
   title,
   type,
-  scout_pick,
-  deal,
-  promoted,
   city,
-  distance,
   image,
   place_id,
   start_date,
   place_type,
   description,
+  organizer,
 }) => {
   // State to track if we should use the fallback image
   const [imgSrc, setImgSrc] = React.useState<string>(
     place_id ? `/api/place-photo?place_id=${place_id}&width=400` : image
   );
 
-  // Format location string
-  const locationText = `${city}, ${distance} mi`;
-
-  // Format date for events
+  // Format date for events (date only, no time)
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const options: Intl.DateTimeFormatOptions = {
       month: 'long',
       day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
     };
     return date.toLocaleDateString('en-US', options);
   };
@@ -67,63 +58,77 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
   return (
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
-      <div className="flex w-full p-2 gap-3 rounded-xl bg-white relative cursor-pointer transition-all hover:bg-black-50 hover:shadow-sm">
+      <div className="flex w-full p-2 gap-3 rounded-xl relative cursor-pointer transition-all hover:bg-black-50 hover:shadow-sm">
         {/* Image on the left with chips overlay */}
-        <div className="relative w-[96px] h-[96px] flex-shrink-0">
+        <div className="w-[80px] h-[80px] flex-shrink-0">
           <img
             src={imgSrc}
             alt={title}
             className="w-full h-full rounded-xl object-cover aspect-square"
             onError={handleImageError}
           />
-          {/* Chips overlaid on top left of image */}
-          {(scout_pick || deal || promoted) && (
-            <div className="absolute top-1.5 left-1.5 flex gap-1 flex-wrap max-w-[90px]">
-              {scout_pick && <Chip variant="scoutpick" />}
-              {deal && <Chip variant="deal" />}
-              {promoted && <Chip variant="promoted" />}
-            </div>
-          )}
         </div>
 
         {/* Content on the right */}
         <div className="flex flex-col gap-1.5 flex-1 min-w-0">
+          {/* Organizer */}
+          {organizer && (
+            <div className="text-black-600 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-1">
+              {organizer}
+            </div>
+          )}
           {/* Title */}
           <h3 className="text-malibu-950 text-base font-bold leading-tight m-0 break-words line-clamp-2">
             {title}
           </h3>
 
-          {/* Date for Events */}
+          {/* Date & Location row for Events */}
           {type === 'Event' && start_date && (
-            <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
-              <LuCalendar size={16} className="flex-shrink-0 text-black-500" />
-              <span className="truncate">{formatDate(start_date)}</span>
+            <div className="text-black-600 text-sm leading-5 flex items-center gap-3">
+              <div className="flex items-center gap-1">
+                <LuCalendar size={14} className="flex-shrink-0 text-black-500" />
+                <span>{formatDate(start_date)}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <LuMapPin size={14} className="flex-shrink-0 text-black-500" />
+                <span>{city}</span>
+              </div>
             </div>
           )}
 
-          {/* Place type for Activities */}
-          {type === 'Activity' && place_type && (
-            <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
-              {React.createElement(getPlaceTypeIcon(place_type), {
-                size: 16,
-                className: 'flex-shrink-0 text-black-500',
-              })}
-              <span className="truncate">{place_type}</span>
+          {/* Place type & Location row for Activities */}
+          {type === 'Activity' && (
+            <div className="text-black-600 text-sm leading-5 flex items-center gap-3">
+              {place_type && (
+                <div className="flex items-center gap-1">
+                  {React.createElement(getPlaceTypeIcon(place_type), {
+                    size: 14,
+                    className: 'flex-shrink-0 text-black-500',
+                  })}
+                  <span className="truncate">{place_type}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1">
+                <LuMapPin size={14} className="flex-shrink-0 text-black-500" />
+                <span>{city}</span>
+              </div>
             </div>
           )}
 
-          {/* Description for Camps */}
-          {type === 'Camp' && description && (
-            <div className="text-black-600 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-2">
-              {description}
-            </div>
+          {/* Description & Location for Camps */}
+          {type === 'Camp' && (
+            <>
+              {description && (
+                <div className="text-black-600 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-1">
+                  {description}
+                </div>
+              )}
+              <div className="text-black-600 text-sm leading-5 flex items-center gap-1">
+                <LuMapPin size={14} className="flex-shrink-0 text-black-500" />
+                <span>{city}</span>
+              </div>
+            </>
           )}
-
-          {/* Location */}
-          <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
-            <LuMapPin size={16} className="flex-shrink-0 text-black-500" />
-            <span className="truncate">{locationText}</span>
-          </div>
         </div>
       </div>
     </Link>

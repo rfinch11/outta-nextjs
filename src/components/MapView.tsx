@@ -290,60 +290,60 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab, fi
           fullscreenControl: true,
         }}
       >
-      {validListings.map((listing) => (
-        <Marker
-          key={listing.airtable_id}
-          position={{
-            lat: listing.latitude!,
-            lng: listing.longitude!,
-          }}
-          onClick={() => setSelectedListing(listing)}
-          icon={{
-            path: window.google.maps.SymbolPath.CIRCLE,
-            scale: 8,
-            fillColor: '#FFF407',
-            fillOpacity: 1,
-            strokeColor: '#000000',
-            strokeWeight: 2,
-          }}
-        />
-      ))}
+        {validListings.map((listing) => (
+          <Marker
+            key={listing.airtable_id}
+            position={{
+              lat: listing.latitude!,
+              lng: listing.longitude!,
+            }}
+            onClick={() => setSelectedListing(listing)}
+            icon={{
+              path: window.google.maps.SymbolPath.CIRCLE,
+              scale: 8,
+              fillColor: '#FFF407',
+              fillOpacity: 1,
+              strokeColor: '#000000',
+              strokeWeight: 2,
+            }}
+          />
+        ))}
 
-      {selectedListing && selectedListing.latitude && selectedListing.longitude && (
-        <InfoWindow
-          position={{
-            lat: selectedListing.latitude,
-            lng: selectedListing.longitude,
-          }}
-          onCloseClick={() => setSelectedListing(null)}
-        >
-          <Link
-            href={`/listings/${selectedListing.airtable_id}`}
-            className="block no-underline max-w-[250px]"
+        {selectedListing && selectedListing.latitude && selectedListing.longitude && (
+          <InfoWindow
+            position={{
+              lat: selectedListing.latitude,
+              lng: selectedListing.longitude,
+            }}
+            onCloseClick={() => setSelectedListing(null)}
           >
-            <div className="flex flex-col gap-2">
-              {selectedListing.image && (
-                <Image
-                  src={selectedListing.image}
-                  alt={selectedListing.title}
-                  width={250}
-                  height={150}
-                  className="w-full h-[150px] object-cover rounded-lg"
-                />
-              )}
-              <div>
-                <h3 className="text-base font-bold text-gray-900 m-0 mb-1">
-                  {selectedListing.title}
-                </h3>
-                <p className="text-sm text-gray-600 m-0">
-                  {selectedListing.city}
-                  {selectedListing.distance && ` • ${selectedListing.distance} mi`}
-                </p>
+            <Link
+              href={`/listings/${selectedListing.airtable_id}`}
+              className="block no-underline max-w-[250px]"
+            >
+              <div className="flex flex-col gap-2">
+                {selectedListing.image && (
+                  <Image
+                    src={selectedListing.image}
+                    alt={selectedListing.title}
+                    width={250}
+                    height={150}
+                    className="w-full h-[150px] object-cover rounded-lg"
+                  />
+                )}
+                <div>
+                  <h3 className="text-base font-bold text-gray-900 m-0 mb-1">
+                    {selectedListing.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 m-0">
+                    {selectedListing.city}
+                    {selectedListing.distance && ` • ${selectedListing.distance} mi`}
+                  </p>
+                </div>
               </div>
-            </div>
-          </Link>
-        </InfoWindow>
-      )}
+            </Link>
+          </InfoWindow>
+        )}
       </GoogleMap>
     </div>
   );

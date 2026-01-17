@@ -22,16 +22,23 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-8 mb-10">
           {/* Legal */}
           <div className="flex flex-col gap-3">
-            <h3 className="text-sm font-bold text-black m-0 mb-2 uppercase tracking-wide">
-              Legal
-            </h3>
-            <Link href="/privacy" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
+            <h3 className="text-sm font-bold text-black m-0 mb-2 uppercase tracking-wide">Legal</h3>
+            <Link
+              href="/privacy"
+              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
+            >
               Privacy Policy
             </Link>
-            <Link href="/terms" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
+            <Link
+              href="/terms"
+              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
+            >
               Terms of Service
             </Link>
-            <Link href="/cookies" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
+            <Link
+              href="/cookies"
+              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
+            >
               Cookie Policy
             </Link>
           </div>
@@ -41,13 +48,22 @@ const Footer: React.FC = () => {
             <h3 className="text-sm font-bold text-black m-0 mb-2 uppercase tracking-wide">
               Support
             </h3>
-            <a href="mailto:rfinch@outta.events" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
+            <a
+              href="mailto:rfinch@outta.events"
+              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
+            >
               Contact
             </a>
-            <Link href="/about" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
+            <Link
+              href="/about"
+              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
+            >
               About
             </Link>
-            <a href="mailto:rfinch@outta.events" className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors">
+            <a
+              href="mailto:rfinch@outta.events"
+              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
+            >
               Help
             </a>
           </div>

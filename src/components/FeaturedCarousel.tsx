@@ -117,10 +117,7 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ listings }) => {
         }}
       >
         {listings.map((listing) => (
-          <div
-            key={listing.airtable_id}
-            className="flex-none snap-start w-[300px]"
-          >
+          <div key={listing.airtable_id} className="flex-none snap-start w-[300px]">
             <FeaturedCard
               airtable_id={listing.airtable_id}
               title={listing.title}
@@ -147,8 +144,20 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ listings }) => {
           className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-10 h-10 bg-white rounded-full shadow-lg items-center justify-center hover:bg-gray-50 transition-colors z-10 border border-gray-200"
           aria-label="Scroll left"
         >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12.5 15L7.5 10L12.5 5"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
       )}
@@ -159,8 +168,20 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ listings }) => {
           className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg items-center justify-center hover:bg-gray-50 transition-colors z-10 border border-gray-200"
           aria-label="Scroll right"
         >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M7.5 15L12.5 10L7.5 5"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
       )}

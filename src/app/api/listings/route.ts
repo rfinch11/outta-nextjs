@@ -77,12 +77,7 @@ export async function GET(request: NextRequest) {
       // TODO: Replace with PostGIS distance calculation after migration
       const dataWithDistance = data?.map((listing) => {
         if (userLat && userLng && listing.latitude && listing.longitude) {
-          const distance = calculateDistance(
-            userLat,
-            userLng,
-            listing.latitude,
-            listing.longitude
-          );
+          const distance = calculateDistance(userLat, userLng, listing.latitude, listing.longitude);
           return { ...listing, distance };
         }
         return listing;
@@ -98,21 +93,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(result);
   } catch (error) {
     console.error('Listings API unexpected error:', error);
-    return NextResponse.json(
-      { error: 'An unexpected error occurred' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'An unexpected error occurred' }, { status: 500 });
   }
 }
 
 // Haversine formula for calculating distance between two points
 // TODO: Remove after PostGIS migration (PostGIS is more accurate)
-function calculateDistance(
-  lat1: number,
-  lon1: number,
-  lat2: number,
-  lon2: number
-): number {
+function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 3959; // Earth's radius in miles
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
   const dLon = ((lon2 - lon1) * Math.PI) / 180;

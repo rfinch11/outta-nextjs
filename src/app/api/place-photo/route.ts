@@ -17,27 +17,18 @@ export async function GET(request: NextRequest) {
   const width = parseInt(searchParams.get('width') || '800');
 
   if (!placeId) {
-    return NextResponse.json(
-      { error: 'place_id is required' },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'place_id is required' }, { status: 400 });
   }
 
   if (width > 1600) {
-    return NextResponse.json(
-      { error: 'Max width is 1600' },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'Max width is 1600' }, { status: 400 });
   }
 
   try {
     const photoUrl = await getPlacePhotoUrlByPlaceId(placeId, width);
 
     if (!photoUrl) {
-      return NextResponse.json(
-        { error: 'No photo found for this place' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'No photo found for this place' }, { status: 404 });
     }
 
     // Redirect to the Google Places photo URL
@@ -45,9 +36,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(photoUrl);
   } catch (error) {
     console.error('Error fetching place photo:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch photo' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch photo' }, { status: 500 });
   }
 }

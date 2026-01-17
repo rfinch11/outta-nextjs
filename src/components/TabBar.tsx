@@ -89,8 +89,8 @@ const TabBar: React.FC<TabBarProps> = ({
         (ref) => ref && ref.contains(event.target as Node)
       );
 
-      const clickedInsideFilterMenu = activeFilterMenuRef.current &&
-        activeFilterMenuRef.current.contains(event.target as Node);
+      const clickedInsideFilterMenu =
+        activeFilterMenuRef.current && activeFilterMenuRef.current.contains(event.target as Node);
 
       if (!clickedInsideFilterChip && !clickedInsideFilterMenu) {
         setOpenFilterMenu(null);
@@ -171,27 +171,33 @@ const TabBar: React.FC<TabBarProps> = ({
 
             {/* Show available filters (excluding active ones) as white chips with dropdown menus */}
             {availableFilters
-              .filter((availFilter) => !activeFilters.some((actFilter) => actFilter.id === availFilter.id))
+              .filter(
+                (availFilter) => !activeFilters.some((actFilter) => actFilter.id === availFilter.id)
+              )
               .map((filter) => (
-                <div
-                  key={filter.id}
-                  className="inline-block"
-                >
+                <div key={filter.id} className="inline-block">
                   <div
-                    ref={(el) => { filterMenuRefs.current[filter.id] = el; }}
+                    ref={(el) => {
+                      filterMenuRefs.current[filter.id] = el;
+                    }}
                     onClick={() => {
                       const isOpening = openFilterMenu !== filter.id;
                       setOpenFilterMenu(isOpening ? filter.id : null);
                       if (isOpening && filterMenuRefs.current[filter.id]) {
                         const rect = filterMenuRefs.current[filter.id]!.getBoundingClientRect();
-                        const parentRect = filterMenuRefs.current[filter.id]!.closest('.max-w-7xl')?.getBoundingClientRect();
+                        const parentRect =
+                          filterMenuRefs.current[filter.id]!.closest(
+                            '.max-w-7xl'
+                          )?.getBoundingClientRect();
 
                         // Calculate position, accounting for dropdown width
-                        const dropdownWidth = filter.id === 'distance' ? 280 : filter.id === 'type' ? 200 : 180;
+                        const dropdownWidth =
+                          filter.id === 'distance' ? 280 : filter.id === 'type' ? 200 : 180;
                         let leftPosition = rect.left - (parentRect?.left || 0);
 
                         // Check if dropdown would overflow right edge of screen
-                        const wouldOverflowRight = rect.left + dropdownWidth > window.innerWidth - 20; // 20px margin
+                        const wouldOverflowRight =
+                          rect.left + dropdownWidth > window.innerWidth - 20; // 20px margin
 
                         if (wouldOverflowRight) {
                           // Try aligning to right edge of chip
@@ -211,10 +217,7 @@ const TabBar: React.FC<TabBarProps> = ({
                       }
                     }}
                   >
-                    <FilterChip
-                      label={filter.label}
-                      active={false}
-                    />
+                    <FilterChip label={filter.label} active={false} />
                   </div>
                 </div>
               ))}

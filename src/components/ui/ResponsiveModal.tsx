@@ -73,9 +73,7 @@ export function ResponsiveModal({
               <Drawer.Description className="sr-only">{description}</Drawer.Description>
             )}
             <div className="flex-1 overflow-y-auto p-6">{children}</div>
-            {footer && (
-              <div className="p-4 border-t border-black-100 shrink-0">{footer}</div>
-            )}
+            {footer && <div className="p-4 border-t border-black-100 shrink-0">{footer}</div>}
           </Drawer.Content>
         </Drawer.Portal>
       </Drawer.Root>
@@ -98,9 +96,7 @@ export function ResponsiveModal({
 
           {title && (
             <div className="flex items-center justify-between px-4 py-3 border-b border-black-100 shrink-0">
-              <Drawer.Title className="text-xl font-semibold text-black-950">
-                {title}
-              </Drawer.Title>
+              <Drawer.Title className="text-xl font-semibold text-black-950">{title}</Drawer.Title>
               <Drawer.Close asChild>
                 <button
                   className="p-2 hover:bg-black-50 rounded-md transition-colors"
@@ -117,9 +113,7 @@ export function ResponsiveModal({
 
           <div className="flex-1 overflow-y-auto p-4">{children}</div>
 
-          {footer && (
-            <div className="p-4 border-t border-black-100 shrink-0">{footer}</div>
-          )}
+          {footer && <div className="p-4 border-t border-black-100 shrink-0">{footer}</div>}
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

@@ -74,7 +74,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
 }) => {
   // State to track if we should use the fallback image
   const [imgSrc, setImgSrc] = React.useState<string>(
-    place_id ? `/api/place-photo?place_id=${place_id}&width=600` : (image || '')
+    place_id ? `/api/place-photo?place_id=${place_id}&width=600` : image || ''
   );
 
   // Format location string (city only for cleaner look)
@@ -142,7 +142,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
             <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
               {React.createElement(getPlaceTypeIcon(place_type), {
                 size: 16,
-                className: 'flex-shrink-0 text-black-500'
+                className: 'flex-shrink-0 text-black-500',
               })}
               <span className="truncate">{place_type}</span>
               <HiOutlineLocationMarker size={16} className="flex-shrink-0 text-black-500 ml-2" />
