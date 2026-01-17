@@ -69,7 +69,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
         );
       } else {
         stars.push(
-          <LuStar key={i} size={14} className="text-black-300" />
+          <LuStar key={i} size={14} className="text-malibu-950/30" />
         );
       }
     }
@@ -100,7 +100,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
         <div className="flex flex-col gap-1.5 flex-1 min-w-0">
           {/* Organizer */}
           {organizer && (
-            <div className="text-black-600 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-1">
+            <div className="text-malibu-950/80 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-1">
               {organizer}
             </div>
           )}
@@ -109,7 +109,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
           {(type === 'Activity' || type === 'Camp') && rating && (
             <div className="flex items-center gap-0.5">
               {renderStars(rating)}
-              <span className="ml-1 text-sm text-black-600">{rating.toFixed(1)}</span>
+              <span className="ml-1 text-sm text-malibu-950/80">{rating.toFixed(1)}</span>
             </div>
           )}
 
@@ -120,13 +120,13 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
           {/* Date & Location row for Events */}
           {type === 'Event' && start_date && (
-            <div className="text-black-600 text-sm leading-5 flex items-center gap-3 min-w-0">
+            <div className="text-malibu-950/80 text-sm leading-5 flex items-center gap-3 min-w-0">
               <div className="flex items-center gap-1 flex-shrink-0">
-                <LuCalendar size={14} className="flex-shrink-0 text-black-500" />
+                <LuCalendar size={14} className="flex-shrink-0 text-malibu-950/70" />
                 <span>{formatDate(start_date)}</span>
               </div>
               <div className="flex items-center gap-1 min-w-0">
-                <LuMapPin size={14} className="flex-shrink-0 text-black-500" />
+                <LuMapPin size={14} className="flex-shrink-0 text-malibu-950/70" />
                 <span className="truncate">{city}</span>
               </div>
             </div>
@@ -134,18 +134,18 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
           {/* Place type & Location row for Activities */}
           {type === 'Activity' && (
-            <div className="text-black-600 text-sm leading-5 flex items-center gap-3 min-w-0">
+            <div className="text-malibu-950/80 text-sm leading-5 flex items-center gap-3 min-w-0">
               {place_type && (
                 <div className="flex items-center gap-1 flex-shrink-0">
                   {React.createElement(getPlaceTypeIcon(place_type), {
                     size: 14,
-                    className: 'flex-shrink-0 text-black-500',
+                    className: 'flex-shrink-0 text-malibu-950/70',
                   })}
                   <span className="truncate">{place_type}</span>
                 </div>
               )}
               <div className="flex items-center gap-1 min-w-0">
-                <LuMapPin size={14} className="flex-shrink-0 text-black-500" />
+                <LuMapPin size={14} className="flex-shrink-0 text-malibu-950/70" />
                 <span className="truncate">{city}</span>
               </div>
             </div>
@@ -155,12 +155,12 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
           {type === 'Camp' && (
             <>
               {description && (
-                <div className="text-black-600 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-1">
+                <div className="text-malibu-950/80 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-1">
                   {description}
                 </div>
               )}
-              <div className="text-black-600 text-sm leading-5 flex items-center gap-1 min-w-0">
-                <LuMapPin size={14} className="flex-shrink-0 text-black-500" />
+              <div className="text-malibu-950/80 text-sm leading-5 flex items-center gap-1 min-w-0">
+                <LuMapPin size={14} className="flex-shrink-0 text-malibu-950/70" />
                 <span className="truncate">{city}</span>
               </div>
             </>
