@@ -77,7 +77,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
       }
     } else {
       // Neutral state
-      buttonClasses += ' bg-transparent border-2 border-transparent text-black-700 hover:text-malibu-950';
+      buttonClasses += ' bg-transparent border-2 border-transparent text-malibu-950/90 hover:text-malibu-950';
     }
 
     return (

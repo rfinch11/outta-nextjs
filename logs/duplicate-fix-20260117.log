@@ -7142,3 +7142,96 @@ Starting duplicate image fix at Sat Jan 17 08:45:39 PST 2026
 ✅ Done!
 Completed at Sat Jan 17 08:56:12 PST 2026
 
+========================================
+Starting duplicate image fix at Sat Jan 17 09:56:12 PST 2026
+========================================
+[dotenv@17.2.3] injecting env (33) from .env.local -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+🔍 Finding duplicate images...
+
+📋 Found 251 unique Unsplash images in database
+
+📊 Found 16 images used by multiple listings:
+
+
+🖼️  Image used by 13 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/12] Musical Storytime
+      📸 New image by Leonardo Borneva
+      🔍 Search: "Musical Storytime Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/12] Closure: Christmas
+      📸 New image by chris robert
+      🔍 Search: "Closure: Christmas Library Closures Adults (19+ years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [3/12] Bilingual Storytime / Hora de Cuentos Bilingüe
+      📸 New image by Harshad Khandare
+      🔍 Search: "Bilingual Storytime / Hora de Cuentos Bilingüe Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/12] Drop-In Mahjong
+      📸 New image by Jason Leung
+      🔍 Search: "Drop-In Mahjong 55+ Friendly Games"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [5/12] Family Storytime
+      📸 New image by Vitaly Gariev
+      🔍 Search: "Family Storytime Literacy Music"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [6/12] Tai Chi
+      📸 New image by Elist Nguyen
+      🔍 Search: "Tai Chi 55+ Friendly Health"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [7/12] Free Meals at the Library / Comida gratis en la biblioteca
+      📸 New image by Natalie Sierra
+      🔍 Search: "Free Meals at the Library / Comida gratis en la biblioteca Community Food"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [8/12] Open Sewing
+      📸 New image by Tanya Barrow
+      🔍 Search: "Open Sewing 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [9/12] Ukulele Jam Group
+      📸 New image by Jornada Produtora
+      🔍 Search: "Ukulele Jam Group Music Adults (19+ years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [10/12] Early Closure: Christmas Eve
+      📸 New image by Tatjana Dimovska
+      🔍 Search: "Early Closure: Christmas Eve Library Closures Adults (19+ years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [11/12] Adult Knitting Circle
+      📸 New image by Annie Spratt
+      🔍 Search: "Adult Knitting Circle 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [12/12] Maker Exploration
+      📸 New image by Pei Peng
+      🔍 Search: "Maker Exploration 55+ Friendly Arts"
+      ✅ Updated
+
+🖼️  Image used by 14 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/13] Tai Chi
+      📸 New image by Markus Winkler
+      🔍 Search: "Tai Chi 55+ Friendly Health"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
