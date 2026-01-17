@@ -26,11 +26,11 @@ const CollectionSection: React.FC<CollectionSectionProps> = ({
       {/* Collection Header */}
       <Link
         href={href}
-        className="flex items-center justify-between mb-3 group"
+        className="inline-flex items-center gap-1 mb-3 group"
       >
         <h2 className="text-lg font-bold text-malibu-950">{title}</h2>
         <LuChevronRight
-          size={24}
+          size={20}
           className="text-malibu-950 transition-transform group-hover:translate-x-1"
         />
       </Link>
