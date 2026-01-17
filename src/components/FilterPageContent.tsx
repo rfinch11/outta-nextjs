@@ -16,6 +16,7 @@ import {
 import ClickableCard from './ClickableCard';
 import Loader from './Loader';
 import Footer from './Footer';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 interface FilterPageContentProps {
   filterType: string;
@@ -43,6 +44,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
   const [ratingFilter, setRatingFilter] = useState<number>(0);
 
   const isEventsPage = filterType === 'events';
+  const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
   // Calculate histogram data for distance distribution (respects other active filters)
   const distanceHistogram = useMemo(() => {
@@ -702,11 +704,17 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
         </Drawer.Portal>
       </Drawer.Root>
 
-      {/* Filter Drawer */}
+      {/* Filter Drawer/Modal */}
       <Drawer.Root open={filterDrawerOpen} onOpenChange={setFilterDrawerOpen}>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" />
-          <Drawer.Content className="bg-white flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 z-[70] outline-none overflow-hidden">
+          <Drawer.Content
+            className={
+              isLargeScreen
+                ? 'bg-white flex flex-col rounded-xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] outline-none overflow-hidden w-full max-w-md shadow-xl'
+                : 'bg-white flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 z-[70] outline-none overflow-hidden'
+            }
+          >
             <Drawer.Title className="sr-only">Filters</Drawer.Title>
             <Drawer.Description className="sr-only">
               Filter {getTitle()} by {isEventsPage ? 'date' : 'distance and rating'}
