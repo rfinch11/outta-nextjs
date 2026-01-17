@@ -267,10 +267,8 @@ const Homepage: React.FC = () => {
             />
           </div>
 
-          {/* Bento Menu */}
-          <div className="bg-white rounded-[60px] shadow-sm p-2">
-            <BentoMenu onLocationSet={saveLocation} />
-          </div>
+          {/* Menu */}
+          <BentoMenu onLocationSet={saveLocation} />
         </div>
       </header>
 

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { LuLayoutGrid } from 'react-icons/lu';
 import BentoMenuPopover from './BentoMenuPopover';
 
 interface BentoMenuProps {
@@ -71,11 +70,23 @@ const BentoMenu: React.FC<BentoMenuProps> = ({ onLocationSet, className = '' }) 
         className={`w-9 h-9 rounded-full flex items-center justify-center border-none cursor-pointer transition-colors ${
           isOpen ? 'bg-malibu-50' : 'bg-transparent hover:bg-gray-100'
         }`}
-        aria-label="Open menu"
+        aria-label={isOpen ? 'Close menu' : 'Open menu'}
         aria-expanded={isOpen}
         type="button"
       >
-        <LuLayoutGrid size={17} />
+        {/* Animated two-line hamburger to X */}
+        <div className="w-5 h-3 relative flex flex-col justify-between">
+          <span
+            className={`block h-0.5 w-full bg-malibu-950 rounded-full transition-all duration-300 origin-center ${
+              isOpen ? 'rotate-45 translate-y-[5px]' : ''
+            }`}
+          />
+          <span
+            className={`block h-0.5 w-full bg-malibu-950 rounded-full transition-all duration-300 origin-center ${
+              isOpen ? '-rotate-45 -translate-y-[5px]' : ''
+            }`}
+          />
+        </div>
       </button>
 
       {/* Popover */}
