@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
+import { LuMap } from 'react-icons/lu';
 import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
 import {
@@ -185,7 +186,16 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
           </Link>
 
           {/* Page Title */}
-          <h1 className="text-2xl font-bold text-malibu-950">{getTitle()}</h1>
+          <h1 className="text-2xl font-bold text-malibu-950 flex-1">{getTitle()}</h1>
+
+          {/* Map View Button */}
+          <button
+            className="flex items-center justify-center transition-colors hover:opacity-70"
+            aria-label="View on map"
+            type="button"
+          >
+            <LuMap size={24} className="text-malibu-950" />
+          </button>
         </div>
       </header>
 
