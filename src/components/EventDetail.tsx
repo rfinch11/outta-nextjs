@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
-import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe } from 'react-icons/lu';
+import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe, LuArrowUpRight } from 'react-icons/lu';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 
 interface EventDetailProps {
@@ -228,17 +228,36 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
           )}
 
           {street && (
-            <div className="flex items-center gap-3">
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 no-underline hover:opacity-70 transition-opacity"
+            >
               <HiOutlineLocationMarker size={20} className="text-malibu-950/70 flex-shrink-0" />
-              <span className="text-base text-malibu-950/90">{fullAddress}</span>
-            </div>
+              <span className="text-base text-malibu-950/90 truncate">{fullAddress}</span>
+              <LuArrowUpRight size={16} className="text-malibu-950/70 flex-shrink-0 -ml-2" />
+            </a>
           )}
 
           {price && (
-            <div className="flex items-center gap-3">
-              <LuTag size={20} className="text-malibu-950/70 flex-shrink-0" />
-              <span className="text-base text-malibu-950/90">{price}</span>
-            </div>
+            price.toLowerCase() === 'see website' && website ? (
+              <a
+                href={website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 no-underline hover:opacity-70 transition-opacity"
+              >
+                <LuTag size={20} className="text-malibu-950/70 flex-shrink-0" />
+                <span className="text-base text-malibu-950/90">{price}</span>
+                <LuArrowUpRight size={16} className="text-malibu-950/70 flex-shrink-0 -ml-2" />
+              </a>
+            ) : (
+              <div className="flex items-center gap-3">
+                <LuTag size={20} className="text-malibu-950/70 flex-shrink-0" />
+                <span className="text-base text-malibu-950/90">{price}</span>
+              </div>
+            )
           )}
 
           {age_range && (
