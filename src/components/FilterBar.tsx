@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import React, { useRef, useLayoutEffect, useCallback } from 'react';
-import { LuCalendar } from 'react-icons/lu';
+import { LuCalendar, LuLayoutGrid } from 'react-icons/lu';
 import { getPlaceTypeIcon } from '@/lib/placeTypeIcons';
 
 interface FilterBarProps {
@@ -25,8 +25,14 @@ const FilterBar: React.FC<FilterBarProps> = ({
   const activeLayerRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<Map<string, HTMLElement>>(new Map());
 
-  // Build button list: Events first, then place types ordered by count
+  // Build button list: Collections (homepage), Events, then place types ordered by count
   const buttons: ButtonInfo[] = [
+    {
+      id: 'collections',
+      label: 'Collections',
+      href: '/',
+      icon: LuLayoutGrid,
+    },
     {
       id: 'events',
       label: 'Events',
@@ -41,16 +47,15 @@ const FilterBar: React.FC<FilterBarProps> = ({
     })),
   ];
 
+  // Collections is active when no filter is specified (homepage)
+  const effectiveActiveFilter = activeFilter || 'collections';
+
   // Calculate and apply clip-path for active button
   const updateClipPath = useCallback(() => {
-    if (!activeLayerRef.current) return;
+    if (!activeLayerRef.current || !containerRef.current) return;
 
-    if (!activeFilter || !containerRef.current) {
-      activeLayerRef.current.style.clipPath = 'inset(0 100% 0 0 round 17px)';
-      return;
-    }
-
-    const btn = buttonRefs.current.get(activeFilter);
+    const currentFilter = activeFilter || 'collections';
+    const btn = buttonRefs.current.get(currentFilter);
     if (!btn) {
       activeLayerRef.current.style.clipPath = 'inset(0 100% 0 0 round 17px)';
       return;
@@ -78,8 +83,9 @@ const FilterBar: React.FC<FilterBarProps> = ({
 
   // Scroll active button into view
   useLayoutEffect(() => {
-    if (activeFilter && containerRef.current) {
-      const btn = buttonRefs.current.get(activeFilter);
+    const currentFilter = activeFilter || 'collections';
+    if (containerRef.current) {
+      const btn = buttonRefs.current.get(currentFilter);
       if (btn) {
         btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
@@ -89,6 +95,23 @@ const FilterBar: React.FC<FilterBarProps> = ({
   const renderButton = (button: ButtonInfo, isActive: boolean, layerType: 'neutral' | 'active') => {
     const IconComponent = button.icon;
     const isActiveLayer = layerType === 'active';
+    const isCollections = button.id === 'collections';
+
+    // Determine button styling
+    let buttonClasses = 'flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-colors whitespace-nowrap';
+
+    if (isActiveLayer) {
+      if (isCollections) {
+        // Collections active: malibu-950 background, malibu-50 text
+        buttonClasses += ' bg-malibu-950 border-2 border-malibu-950 text-malibu-50';
+      } else {
+        // Other filters active: white background, flamenco border
+        buttonClasses += ' bg-white border-2 border-flamenco-500 text-malibu-950';
+      }
+    } else {
+      // Neutral state
+      buttonClasses += ' bg-transparent border-2 border-transparent text-black-700 hover:text-malibu-950';
+    }
 
     return (
       <Link
@@ -99,15 +122,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
             buttonRefs.current.set(button.id, el);
           }
         }}
-        className={`
-          flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold
-          transition-colors whitespace-nowrap
-          ${
-            isActiveLayer
-              ? 'bg-white border-2 border-flamenco-500 text-malibu-950'
-              : 'bg-transparent border-2 border-transparent text-black-700 hover:text-malibu-950'
-          }
-        `}
+        className={buttonClasses}
         tabIndex={isActiveLayer ? -1 : 0}
         aria-hidden={isActiveLayer}
       >
@@ -126,23 +141,21 @@ const FilterBar: React.FC<FilterBarProps> = ({
           className="flex gap-2 overflow-x-auto hide-scrollbar"
         >
           {buttons.map((button) =>
-            renderButton(button, button.id === activeFilter, 'neutral')
+            renderButton(button, button.id === effectiveActiveFilter, 'neutral')
           )}
         </div>
 
         {/* Active buttons layer (clipped to show only active button) */}
-        {activeFilter && (
-          <div
-            ref={activeLayerRef}
-            className="absolute inset-0 flex gap-2 overflow-x-auto hide-scrollbar pointer-events-none transition-[clip-path] duration-300 ease-out"
-            style={{ clipPath: 'inset(0 100% 0 0 round 17px)' }}
-            aria-hidden="true"
-          >
-            {buttons.map((button) =>
-              renderButton(button, button.id === activeFilter, 'active')
-            )}
-          </div>
-        )}
+        <div
+          ref={activeLayerRef}
+          className="absolute inset-0 flex gap-2 overflow-x-auto hide-scrollbar pointer-events-none transition-[clip-path] duration-300 ease-out"
+          style={{ clipPath: 'inset(0 100% 0 0 round 17px)' }}
+          aria-hidden="true"
+        >
+          {buttons.map((button) =>
+            renderButton(button, button.id === effectiveActiveFilter, 'active')
+          )}
+        </div>
       </div>
     </div>
   );
