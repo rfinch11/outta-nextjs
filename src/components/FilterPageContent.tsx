@@ -535,10 +535,10 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
 
                 {/* Load More Button */}
                 {hasMore && (
-                  <div className="flex justify-center mt-8">
+                  <div className="flex justify-center mt-4">
                     <button
                       onClick={handleLoadMore}
-                      className="w-full max-w-md px-4 py-4 bg-broom-400 border-2 border-malibu-950 rounded-[53px] text-lg font-bold cursor-pointer transition-all shadow-[3px_4px_0px_0px_#06304b] hover:shadow-[1px_2px_0px_0px_#06304b] hover:translate-x-0.5 hover:translate-y-0.5"
+                      className="w-full max-w-md px-4 py-3 bg-malibu-950 text-white rounded-lg text-base font-semibold cursor-pointer transition-colors hover:bg-malibu-900 border-none"
                     >
                       Load more
                     </button>
