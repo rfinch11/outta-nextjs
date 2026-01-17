@@ -225,7 +225,7 @@ export function getRainyDayAdventures(
 }
 
 /**
- * Favorite parks: place_type=Park, ≤30mi, rating high→low, featured only, excludes events
+ * Favorite parks: place_type=Park, ≤30mi, rating high→low, excludes events
  */
 export function getFavoriteParks(
   listings: Listing[],
@@ -236,7 +236,6 @@ export function getFavoriteParks(
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type?.toLowerCase() === 'park')
     .filter((l) => (l.distance || 0) <= 30)
-    .filter((l) => l.scout_pick)
     .sort((a, b) => (b.rating || 0) - (a.rating || 0))
     .slice(0, maxCount);
 }
