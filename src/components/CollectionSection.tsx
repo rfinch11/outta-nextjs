@@ -31,7 +31,7 @@ const CollectionSection: React.FC<CollectionSectionProps> = ({
         <h2 className="text-lg font-bold text-malibu-950">{title}</h2>
         <LuChevronRight
           size={20}
-          className="text-malibu-950 transition-transform group-hover:translate-x-1"
+          className="text-malibu-950 opacity-50 transition-transform group-hover:translate-x-1"
         />
       </Link>
 
