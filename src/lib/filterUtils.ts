@@ -193,7 +193,7 @@ export function getAdvancedPlannerEvents(
 }
 
 /**
- * Most loved playgrounds: place_type=Playground, ≤30mi, rating high→low, featured only, excludes events
+ * Most loved playgrounds: place_type=Playground, ≤30mi, rating high→low, excludes events
  */
 export function getMostLovedPlaygrounds(
   listings: Listing[],
@@ -204,7 +204,6 @@ export function getMostLovedPlaygrounds(
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type?.toLowerCase() === 'playground')
     .filter((l) => (l.distance || 0) <= 30)
-    .filter((l) => l.scout_pick)
     .sort((a, b) => (b.rating || 0) - (a.rating || 0))
     .slice(0, maxCount);
 }
