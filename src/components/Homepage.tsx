@@ -10,6 +10,8 @@ import ClickableCard from './ClickableCard';
 import Footer from './Footer';
 import Loader from './Loader';
 import BentoMenu from './BentoMenu';
+import FilterBar from './FilterBar';
+import { getPlaceTypeCounts } from '@/lib/filterUtils';
 
 // Dynamic imports for modals (code splitting)
 const SearchModal = dynamic(() => import('./SearchModal'), {
@@ -61,6 +63,9 @@ const Homepage: React.FC = () => {
 
   // Submit modal state
   const [showSubmitModal, setShowSubmitModal] = useState(false);
+
+  // FilterBar state
+  const [placeTypeCounts, setPlaceTypeCounts] = useState<Array<{ type: string; count: number }>>([]);
 
   // Calculate distance using Haversine formula
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
@@ -218,6 +223,10 @@ const Homepage: React.FC = () => {
       });
 
       setAllListings(listingsWithDistance);
+
+      // Calculate counts for FilterBar
+      setPlaceTypeCounts(getPlaceTypeCounts(listingsWithDistance));
+
       setLoading(false);
     } catch (error) {
       console.error('Error:', error);
@@ -530,6 +539,13 @@ const Homepage: React.FC = () => {
           </div>
         </div>
       </header>
+
+      {/* Filter Bar */}
+      {!loading && allListings.length > 0 && (
+        <FilterBar
+          placeTypeCounts={placeTypeCounts}
+        />
+      )}
 
       {/* Listings */}
       <div className="px-5 py-6">
