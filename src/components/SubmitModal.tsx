@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { IoMdClose } from 'react-icons/io';
+import { ResponsiveModal } from './ui/ResponsiveModal';
 
 interface SubmitModalProps {
   isOpen: boolean;
@@ -9,58 +9,25 @@ interface SubmitModalProps {
 }
 
 const SubmitModal: React.FC<SubmitModalProps> = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
-
   return (
-    <>
-      {/* Overlay */}
-      <div
-        className="fixed inset-0 bg-black/50 z-[1000] flex items-end sm:items-center justify-center"
-        onClick={onClose}
-      >
-        {/* Modal */}
-        <div
-          className="bg-white rounded-t-[20px] sm:rounded-2xl w-full sm:max-w-[600px] h-[90vh] sm:h-[80vh] relative overflow-hidden animate-slideUp"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Close Button - Fixed in top right */}
-          <div className="absolute top-0 right-0 z-10 px-5 py-4 pointer-events-none">
-            <button
-              onClick={onClose}
-              className="w-10 h-10 rounded-full flex items-center justify-center border-none cursor-pointer transition-all bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg pointer-events-auto"
-              aria-label="Close"
-              type="button"
-            >
-              <IoMdClose size={24} className="text-gray-900" />
-            </button>
-          </div>
-
-          {/* Airtable Form Embed */}
-          <div className="w-full h-full">
-            <iframe
-              className="airtable-embed w-full h-full border-0"
-              src="https://airtable.com/embed/appNEwC9kmw1NTshd/pagOOlOxjijSp6rln/form"
-              style={{ background: 'transparent' }}
-            />
-          </div>
-        </div>
+    <ResponsiveModal
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}
+      title="Submit an Event"
+      description="Submit a new event, activity, or camp"
+      snapPoints={[0.9, 1]}
+      maxWidth="max-w-xl"
+    >
+      {/* Airtable Form Embed */}
+      <div className="w-full h-[70vh] md:h-[60vh] -mx-4 md:-mx-6 -mb-4 md:-mb-6">
+        <iframe
+          className="airtable-embed w-full h-full border-0"
+          src="https://airtable.com/embed/appNEwC9kmw1NTshd/pagOOlOxjijSp6rln/form"
+          style={{ background: 'transparent' }}
+          title="Submit an event form"
+        />
       </div>
-
-      {/* Styles */}
-      <style jsx global>{`
-        @keyframes slideUp {
-          from {
-            transform: translateY(100%);
-          }
-          to {
-            transform: translateY(0);
-          }
-        }
-        .animate-slideUp {
-          animation: slideUp 0.3s ease-out;
-        }
-      `}</style>
-    </>
+    </ResponsiveModal>
   );
 };
 
