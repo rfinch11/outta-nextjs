@@ -194,13 +194,15 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
       </div>
 
       {/* Hero Image */}
-      <div className="relative w-full h-[400px] bg-gray-100">
-        <img
-          src={imgSrc}
-          alt={title}
-          className="w-full h-full object-cover"
-          onError={handleImageError}
-        />
+      <div className="relative w-full max-w-3xl mx-auto px-5 pt-16">
+        <div className="relative w-full h-[400px] bg-gray-100 rounded-3xl overflow-hidden">
+          <img
+            src={imgSrc}
+            alt={title}
+            className="w-full h-full object-cover"
+            onError={handleImageError}
+          />
+        </div>
       </div>
 
       {/* Content */}
