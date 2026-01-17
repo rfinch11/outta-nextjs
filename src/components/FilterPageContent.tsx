@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
+import { Drawer } from 'vaul';
+import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import { IoIosArrowBack } from 'react-icons/io';
-import { LuMap } from 'react-icons/lu';
+import { LuMap, LuX } from 'react-icons/lu';
 import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
 import {
@@ -28,6 +30,16 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
     lat: number;
     lng: number;
   } | null>(null);
+  const [mapDrawerOpen, setMapDrawerOpen] = useState(false);
+  const [selectedListingId, setSelectedListingId] = useState<string | null>(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  // Load Google Maps
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
+  });
 
   // Get location from IP address
   const getIPLocation = useCallback(async () => {
@@ -171,6 +183,90 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
     return filterType;
   };
 
+  // Filter listings with valid coordinates for map
+  const mappableListings = filteredListings.filter(
+    (listing) => listing.latitude && listing.longitude
+  );
+
+  // Get map center
+  const getMapCenter = useCallback(() => {
+    if (userLocation) {
+      return userLocation;
+    }
+    if (mappableListings.length > 0) {
+      const avgLat =
+        mappableListings.reduce((sum, l) => sum + (l.latitude || 0), 0) /
+        mappableListings.length;
+      const avgLng =
+        mappableListings.reduce((sum, l) => sum + (l.longitude || 0), 0) /
+        mappableListings.length;
+      return { lat: avgLat, lng: avgLng };
+    }
+    return { lat: 37.7749, lng: -122.4194 }; // Default to SF
+  }, [userLocation, mappableListings]);
+
+  // Handle map load
+  const onMapLoad = useCallback(
+    (mapInstance: google.maps.Map) => {
+      setMap(mapInstance);
+      // Fit bounds to show all markers
+      if (mappableListings.length > 0) {
+        const bounds = new window.google.maps.LatLngBounds();
+        mappableListings.forEach((listing) => {
+          if (listing.latitude && listing.longitude) {
+            bounds.extend({ lat: listing.latitude, lng: listing.longitude });
+          }
+        });
+        mapInstance.fitBounds(bounds, 50);
+      }
+    },
+    [mappableListings]
+  );
+
+  // Handle marker click
+  const handleMarkerClick = (listingId: string) => {
+    setSelectedListingId(listingId);
+    // Scroll carousel to center the selected card
+    if (carouselRef.current) {
+      const index = mappableListings.findIndex((l) => l.airtable_id === listingId);
+      if (index !== -1) {
+        const cardWidth = 300 + 12; // card width + gap
+        const containerWidth = carouselRef.current.offsetWidth;
+        const scrollPosition = index * cardWidth - (containerWidth - 300) / 2;
+        carouselRef.current.scrollTo({
+          left: scrollPosition,
+          behavior: 'smooth',
+        });
+      }
+    }
+  };
+
+  // Handle carousel scroll to sync with map
+  const handleCarouselScroll = () => {
+    if (!carouselRef.current || !map) return;
+    const scrollLeft = carouselRef.current.scrollLeft;
+    const containerWidth = carouselRef.current.offsetWidth;
+    const cardWidth = 300 + 12;
+    // Calculate which card is centered
+    const centerOffset = (containerWidth - 300) / 2;
+    const index = Math.round((scrollLeft + centerOffset) / cardWidth);
+    const listing = mappableListings[index];
+    if (listing && listing.airtable_id !== selectedListingId) {
+      setSelectedListingId(listing.airtable_id);
+      // Pan map to the marker
+      if (listing.latitude && listing.longitude) {
+        map.panTo({ lat: listing.latitude, lng: listing.longitude });
+      }
+    }
+  };
+
+  // Select first listing when drawer opens
+  useEffect(() => {
+    if (mapDrawerOpen && mappableListings.length > 0 && !selectedListingId) {
+      setSelectedListingId(mappableListings[0].airtable_id);
+    }
+  }, [mapDrawerOpen, mappableListings, selectedListingId]);
+
   return (
     <div className="min-h-screen bg-malibu-50">
       {/* Header */}
@@ -190,6 +286,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
 
           {/* Map View Button */}
           <button
+            onClick={() => setMapDrawerOpen(true)}
             className="flex items-center justify-center transition-colors hover:opacity-70"
             aria-label="View on map"
             type="button"
@@ -301,6 +398,107 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
 
       {/* Footer */}
       <Footer />
+
+      {/* Map Drawer */}
+      <Drawer.Root open={mapDrawerOpen} onOpenChange={setMapDrawerOpen}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" />
+          <Drawer.Content className="bg-white flex flex-col rounded-t-[10px] h-[95vh] fixed bottom-0 left-0 right-0 z-[70] outline-none">
+            <Drawer.Title className="sr-only">Map View</Drawer.Title>
+            <Drawer.Description className="sr-only">
+              View {getTitle()} on a map
+            </Drawer.Description>
+
+            {/* Close Button */}
+            <button
+              onClick={() => setMapDrawerOpen(false)}
+              className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-lg border border-black-100 transition-colors hover:bg-black-50"
+              aria-label="Close map"
+              type="button"
+            >
+              <LuX size={24} className="text-malibu-950" />
+            </button>
+
+            {/* Map */}
+            <div className="flex-1 relative p-4 pt-6">
+              {isLoaded ? (
+                <GoogleMap
+                  mapContainerStyle={{ width: '100%', height: '100%', borderRadius: '12px' }}
+                  center={getMapCenter()}
+                  zoom={12}
+                  onLoad={onMapLoad}
+                  options={{
+                    zoomControl: true,
+                    streetViewControl: false,
+                    mapTypeControl: false,
+                    fullscreenControl: false,
+                  }}
+                >
+                  {mappableListings.map((listing) => (
+                    <Marker
+                      key={listing.airtable_id}
+                      position={{
+                        lat: listing.latitude!,
+                        lng: listing.longitude!,
+                      }}
+                      onClick={() => handleMarkerClick(listing.airtable_id)}
+                      icon={{
+                        path: window.google.maps.SymbolPath.CIRCLE,
+                        scale: selectedListingId === listing.airtable_id ? 10 : 6,
+                        fillColor: selectedListingId === listing.airtable_id ? '#efdb03' : '#feff43',
+                        fillOpacity: 1,
+                        strokeColor: '#06304b',
+                        strokeWeight: 1.5,
+                      }}
+                      zIndex={selectedListingId === listing.airtable_id ? 1000 : 1}
+                    />
+                  ))}
+                </GoogleMap>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-black-50">
+                  <Loader size={60} />
+                </div>
+              )}
+            </div>
+
+            {/* Card Carousel */}
+            <div className="bg-white py-4">
+              <div
+                ref={carouselRef}
+                onScroll={handleCarouselScroll}
+                className="flex gap-3 overflow-x-auto hide-scrollbar snap-x snap-mandatory"
+                style={{ paddingLeft: 'calc(50% - 150px)', paddingRight: 'calc(50% - 150px)' }}
+              >
+                {mappableListings.map((listing) => (
+                  <div
+                    key={listing.airtable_id}
+                    className="flex-shrink-0 w-[300px] snap-center"
+                    onClick={() => handleMarkerClick(listing.airtable_id)}
+                  >
+                    <ClickableCard
+                      airtable_id={listing.airtable_id}
+                      title={listing.title}
+                      type={listing.type}
+                      scout_pick={listing.scout_pick}
+                      deal={listing.deal}
+                      promoted={listing.promoted}
+                      city={listing.city}
+                      distance={listing.distance || 0}
+                      image={listing.image}
+                      place_id={listing.place_id}
+                      start_date={listing.start_date}
+                      place_type={listing.place_type}
+                      description={listing.description}
+                      organizer={listing.organizer}
+                      rating={listing.rating}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
     </div>
   );
 };
