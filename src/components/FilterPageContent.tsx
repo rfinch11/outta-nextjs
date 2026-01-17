@@ -229,22 +229,27 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                     );
 
                     if (showSeparator) {
-                      let dateLabel: string;
+                      let dayLabel: string;
                       if (isToday) {
-                        dateLabel = 'Today';
+                        dayLabel = 'Today';
                       } else if (isTomorrow) {
-                        dateLabel = 'Tomorrow';
+                        dayLabel = 'Tomorrow';
                       } else {
-                        dateLabel = listingDate.toLocaleDateString('en-US', {
-                          weekday: 'long',
-                          month: 'long',
-                          day: 'numeric',
-                        });
+                        dayLabel = listingDate.toLocaleDateString('en-US', { weekday: 'long' });
                       }
+
+                      const dateLabel = listingDate.toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                      });
 
                       dateSeparator = (
                         <div className="flex items-center gap-3 my-3 first:mt-0">
-                          <span className="text-base font-bold text-malibu-950">{dateLabel}</span>
+                          <span className="text-base text-malibu-950">
+                            <span className="font-bold">{dayLabel}</span>
+                            {' '}
+                            <span className="font-normal">{dateLabel}</span>
+                          </span>
                           <div className="flex-1 h-px bg-black-200" />
                         </div>
                       );
