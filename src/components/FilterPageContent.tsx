@@ -287,7 +287,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
           {/* Map View Button - mobile only */}
           <button
             onClick={() => setMapDrawerOpen(true)}
-            className="flex md:hidden items-center justify-center transition-colors hover:opacity-70"
+            className="flex md:hidden items-center justify-center w-8 h-8 transition-colors hover:opacity-70"
             aria-label="View on map"
             type="button"
           >
