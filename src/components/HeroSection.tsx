@@ -30,10 +30,9 @@ const heroImages = [
 const HeroSection: React.FC<HeroSectionProps> = ({ cityName, onLocationClick }) => {
   return (
     <section className="pt-2 pb-6">
-      {/* Hero Carousels - Two rows */}
-      <div className="flex flex-col gap-3 mb-4">
-        <HeroCarousel images={heroImages} direction="left" />
-        <HeroCarousel images={[...heroImages].reverse()} direction="right" />
+      {/* Hero Carousel */}
+      <div className="mb-4">
+        <HeroCarousel images={heroImages} />
       </div>
 
       {/* Hero Copy */}
