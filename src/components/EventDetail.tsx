@@ -410,7 +410,17 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
             {location_name && (
               <p className="text-base font-semibold text-malibu-950 mb-1">{location_name}</p>
             )}
-            {street && <p className="text-sm text-malibu-950/70 mb-4">{fullAddress}</p>}
+            {street && (
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-sm text-malibu-950/70 mb-4 no-underline hover:opacity-70 transition-opacity"
+              >
+                <span className="truncate">{fullAddress}</span>
+                <LuArrowUpRight size={14} className="text-malibu-950/70 flex-shrink-0" />
+              </a>
+            )}
 
             {/* Embedded Map */}
             {latitude && longitude && (
