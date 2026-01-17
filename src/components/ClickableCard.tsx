@@ -114,7 +114,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
           )}
 
           {/* Title */}
-          <h3 className="text-malibu-950 text-base font-bold leading-tight m-0 break-words line-clamp-2">
+          <h3 className="text-malibu-950 text-lg font-semibold leading-tight m-0 break-words line-clamp-2">
             {title}
           </h3>
 
