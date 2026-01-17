@@ -402,6 +402,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                     zoom={12}
                     onLoad={onMapLoad}
                     options={{
+                      mapId: '1844186f958235f75c7e5215',
                       zoomControl: true,
                       streetViewControl: false,
                       mapTypeControl: false,
@@ -473,6 +474,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                   zoom={12}
                   onLoad={onMapLoad}
                   options={{
+                    mapId: '1844186f958235f75c7e5215',
                     zoomControl: true,
                     streetViewControl: false,
                     mapTypeControl: false,
