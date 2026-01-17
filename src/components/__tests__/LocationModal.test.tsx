@@ -3,25 +3,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import LocationModal from '../LocationModal';
 
-// Mock ResponsiveModal to avoid Vaul drawer issues in JSDOM
-jest.mock('@/components/ui/ResponsiveModal', () => ({
-  ResponsiveModal: ({
-    open,
-    children,
-    title,
-  }: {
-    open: boolean;
-    children: React.ReactNode;
-    title?: string;
-  }) =>
-    open ? (
-      <div data-testid="modal">
-        {title && <h2>{title}</h2>}
-        {children}
-      </div>
-    ) : null,
-}));
-
 // Mock fetch
 global.fetch = jest.fn();
 
@@ -57,6 +38,14 @@ describe('LocationModal', () => {
     );
 
     expect(screen.queryByText('Set Your Location')).not.toBeInTheDocument();
+  });
+
+  it('closes when clicking close button', () => {
+    render(<LocationModal isOpen={true} onClose={mockOnClose} onLocationSet={mockOnLocationSet} />);
+
+    const closeButton = screen.getByLabelText('Close');
+    fireEvent.click(closeButton);
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
   it('disables submit button when zip code is empty', () => {

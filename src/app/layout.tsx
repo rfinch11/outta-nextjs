@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
-import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
+import { Bricolage_Grotesque } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import './globals.css';
+
+const bricolageGrotesque = Bricolage_Grotesque({
+  variable: '--font-bricolage-grotesque',
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+});
 
 export const metadata: Metadata = {
   title: 'Outta - Kid-friendly adventures near you',
@@ -23,8 +28,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-      <body className="font-sans antialiased">
+    <html lang="en">
+      <body className={`${bricolageGrotesque.variable} antialiased`}>
         {children}
         <Analytics />
       </body>

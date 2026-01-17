@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { IoIosArrowBack } from 'react-icons/io';
 import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
@@ -10,9 +9,7 @@ import {
   addDistanceToListings,
   filterEvents,
   filterByPlaceType,
-  getPlaceTypeCounts,
 } from '@/lib/filterUtils';
-import FilterBar from './FilterBar';
 import ClickableCard from './ClickableCard';
 import Loader from './Loader';
 import Footer from './Footer';
@@ -30,11 +27,6 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
     lat: number;
     lng: number;
   } | null>(null);
-
-  // Place type counts for FilterBar
-  const [placeTypeCounts, setPlaceTypeCounts] = useState<
-    Array<{ type: string; count: number }>
-  >([]);
 
   // Get location from IP address
   const getIPLocation = useCallback(async () => {
@@ -119,11 +111,6 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
         );
 
         setAllListings(listingsWithDistance);
-
-        // Calculate counts for FilterBar
-        const counts = getPlaceTypeCounts(listingsWithDistance);
-        setPlaceTypeCounts(counts);
-
         setLoading(false);
       } catch (error) {
         console.error('Error:', error);
@@ -178,38 +165,17 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
             <IoIosArrowBack size={24} />
           </Link>
 
-          {/* Logo */}
+          {/* Page Title */}
           <div className="flex-1">
-            <Link href="/">
-              <Image
-                src="/Outta_logo.svg"
-                alt="Outta"
-                width={100}
-                height={33}
-                className="h-8 w-auto"
-              />
-            </Link>
+            <h1 className="text-xl font-bold text-malibu-950">{getTitle()}</h1>
+            {!loading && (
+              <p className="text-sm text-black-500">
+                {filteredListings.length} result{filteredListings.length !== 1 ? 's' : ''}
+              </p>
+            )}
           </div>
         </div>
       </header>
-
-      {/* Filter Bar */}
-      <FilterBar
-        activeFilter={filterType}
-        placeTypeCounts={placeTypeCounts}
-      />
-
-      {/* Page Title */}
-      <div className="px-5 py-4">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-bold text-malibu-950">{getTitle()}</h1>
-          {!loading && (
-            <p className="text-sm text-black-500 mt-1">
-              {filteredListings.length} result{filteredListings.length !== 1 ? 's' : ''}
-            </p>
-          )}
-        </div>
-      </div>
 
       {/* Listings */}
       <div className="px-5 pb-6">
