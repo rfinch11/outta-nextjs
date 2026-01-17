@@ -6,17 +6,10 @@ import BentoMenuPopover from './BentoMenuPopover';
 
 interface BentoMenuProps {
   onLocationSet: (lat: number, lng: number, zipCode: string) => void;
-  onSubmitClick: () => void;
-  onSearch?: (query: string) => void;
   className?: string;
 }
 
-const BentoMenu: React.FC<BentoMenuProps> = ({
-  onLocationSet,
-  onSubmitClick,
-  onSearch,
-  className = '',
-}) => {
+const BentoMenu: React.FC<BentoMenuProps> = ({ onLocationSet, className = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -64,24 +57,9 @@ const BentoMenu: React.FC<BentoMenuProps> = ({
     setIsOpen(!isOpen);
   };
 
-  const handleSearchClick = () => {
-    // Search mode is handled within the popover
-    // This is just a callback to notify parent if needed
-  };
-
   const handleLocationSet = (lat: number, lng: number, zipCode: string) => {
     onLocationSet(lat, lng, zipCode);
     // Popover closes itself after location is set
-  };
-
-  const handleSubmitClick = () => {
-    setIsOpen(false);
-    onSubmitClick();
-  };
-
-  const handleSearch = (query: string) => {
-    onSearch?.(query);
-    // Popover closes itself after search
   };
 
   return (
@@ -104,10 +82,7 @@ const BentoMenu: React.FC<BentoMenuProps> = ({
       {isOpen && (
         <BentoMenuPopover
           ref={menuRef}
-          onSearchClick={handleSearchClick}
           onLocationSet={handleLocationSet}
-          onSubmitClick={handleSubmitClick}
-          onSearch={handleSearch}
           onClose={() => setIsOpen(false)}
         />
       )}

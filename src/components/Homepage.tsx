@@ -269,10 +269,7 @@ const Homepage: React.FC = () => {
 
           {/* Bento Menu */}
           <div className="bg-white rounded-[60px] shadow-sm p-2">
-            <BentoMenu
-              onLocationSet={saveLocation}
-              onSubmitClick={() => setShowSubmitModal(true)}
-            />
+            <BentoMenu onLocationSet={saveLocation} />
           </div>
         </div>
       </header>

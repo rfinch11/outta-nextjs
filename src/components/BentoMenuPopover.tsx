@@ -1,51 +1,29 @@
 'use client';
 
 import React, { forwardRef, useState } from 'react';
-import { LuSearch, LuPlus, LuChevronLeft, LuX, LuBadgeCheck } from 'react-icons/lu';
+import { LuPlus, LuChevronLeft, LuMessageSquare } from 'react-icons/lu';
 import { BiNavigation } from 'react-icons/bi';
 
 interface BentoMenuPopoverProps {
-  onSearchClick: () => void;
   onLocationSet: (lat: number, lng: number, zipCode: string) => void;
-  onSubmitClick: () => void;
-  onSearch: (query: string) => void;
   onClose: () => void;
 }
 
-type MenuMode = 'grid' | 'search' | 'location';
+type MenuMode = 'main' | 'location';
 
 const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
-  ({ onSearchClick, onLocationSet, onSubmitClick, onSearch, onClose }, ref) => {
-    const [mode, setMode] = useState<MenuMode>('grid');
-    const [searchQuery, setSearchQuery] = useState('');
+  ({ onLocationSet, onClose }, ref) => {
+    const [mode, setMode] = useState<MenuMode>('main');
     const [zipCodeInput, setZipCodeInput] = useState('');
     const [loading, setLoading] = useState(false);
-
-    const handleSearchModeClick = () => {
-      setMode('search');
-      onSearchClick();
-    };
 
     const handleLocationModeClick = () => {
       setMode('location');
     };
 
     const handleBackClick = () => {
-      setMode('grid');
-      setSearchQuery('');
+      setMode('main');
       setZipCodeInput('');
-    };
-
-    const handleSearchSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      if (searchQuery.trim()) {
-        onSearch(searchQuery.trim());
-        onClose();
-      }
-    };
-
-    const handleClearSearch = () => {
-      setSearchQuery('');
     };
 
     const geocodeZipCode = async (zipCode: string) => {
@@ -114,8 +92,8 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
       }
     };
 
-    const handleBecomeScout = () => {
-      window.location.href = 'mailto:rfinch@outta.events?subject=Become a Scout';
+    const handleShareFeedback = () => {
+      window.location.href = 'mailto:rfinch@outta.events?subject=Feedback';
     };
 
     const handlePartner = () => {
@@ -125,140 +103,76 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
     return (
       <div
         ref={ref}
-        className="absolute top-full right-0 mt-3 bg-white rounded-xl shadow-xl border border-black-100 z-50 min-w-[280px] max-w-[320px]"
+        className="absolute top-full right-0 mt-3 bg-white rounded-xl shadow-xl border border-black-100 z-50 min-w-[300px]"
         style={{
           animation: 'slideInDown 0.2s ease-out',
         }}
       >
-        {mode === 'grid' ? (
+        {mode === 'main' ? (
           <>
-            {/* Main actions grid */}
-            <div className="grid grid-cols-2 gap-3 p-4">
-              {/* Set location */}
+            {/* Main menu items */}
+            <div className="p-3">
+              {/* Submit an activity - disabled */}
+              <button
+                disabled
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-base text-black-400 border-none bg-transparent cursor-not-allowed"
+                type="button"
+              >
+                <LuPlus size={18} className="text-black-400" />
+                <span>Submit an activity</span>
+              </button>
+
+              {/* Change location */}
               <button
                 onClick={handleLocationModeClick}
-                className="flex flex-col items-center justify-center gap-2 p-6 rounded-3xl bg-broom-400 border border-malibu-950 shadow-[2px_2px_0_0_#06304b] cursor-pointer transition-all hover:shadow-[1px_1px_0_0_#06304b] hover:translate-x-[1px] hover:translate-y-[1px]"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-base text-malibu-950 border-none bg-transparent cursor-pointer transition-colors hover:bg-black-50"
                 type="button"
               >
-                <BiNavigation size={24} className="text-malibu-950" />
-                <span className="text-sm font-semibold text-malibu-950 text-center leading-tight">
-                  Set location
-                </span>
+                <BiNavigation size={18} className="text-malibu-950" />
+                <span>Change location</span>
               </button>
 
-              {/* Search events */}
+              {/* Share feedback */}
               <button
-                onClick={handleSearchModeClick}
-                className="flex flex-col items-center justify-center gap-2 p-6 rounded-3xl bg-flamenco-500 border border-malibu-950 shadow-[2px_2px_0_0_#06304b] cursor-pointer transition-all hover:shadow-[1px_1px_0_0_#06304b] hover:translate-x-[1px] hover:translate-y-[1px]"
+                onClick={handleShareFeedback}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-base text-malibu-950 border-none bg-transparent cursor-pointer transition-colors hover:bg-black-50"
                 type="button"
               >
-                <LuSearch size={24} className="text-malibu-950" />
-                <span className="text-sm font-semibold text-malibu-950 text-center leading-tight">
-                  Search events
-                </span>
-              </button>
-
-              {/* Submit event */}
-              <button
-                onClick={onSubmitClick}
-                className="flex flex-col items-center justify-center gap-2 p-6 rounded-3xl bg-lavender-magenta-300 border border-malibu-950 shadow-[2px_2px_0_0_#06304b] cursor-pointer transition-all hover:shadow-[1px_1px_0_0_#06304b] hover:translate-x-[1px] hover:translate-y-[1px]"
-                type="button"
-              >
-                <LuPlus size={24} className="text-malibu-950" />
-                <span className="text-sm font-semibold text-malibu-950 text-center leading-tight">
-                  Submit event
-                </span>
-              </button>
-
-              {/* Become a Scout */}
-              <button
-                onClick={handleBecomeScout}
-                className="flex flex-col items-center justify-center gap-2 p-6 rounded-3xl bg-emerald-500 border border-malibu-950 shadow-[2px_2px_0_0_#06304b] cursor-pointer transition-all hover:shadow-[1px_1px_0_0_#06304b] hover:translate-x-[1px] hover:translate-y-[1px]"
-                type="button"
-              >
-                <LuBadgeCheck size={24} className="text-malibu-950" />
-                <span className="text-sm font-semibold text-malibu-950 text-center leading-tight">
-                  Become a Scout
-                </span>
+                <LuMessageSquare size={18} className="text-malibu-950" />
+                <span>Share feedback</span>
               </button>
             </div>
 
             {/* Divider */}
-            <div className="border-t border-black-200" />
+            <div className="border-t border-black-100 mx-3" />
 
-            {/* More options */}
-            <div className="p-4 pt-3">
-              <span className="text-xs font-semibold text-black-500 uppercase mb-2 block">
-                More options
-              </span>
-              <div className="flex flex-col gap-1">
-                {/* Sign in - disabled */}
-                <button
-                  disabled
-                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-black-900 transition-colors border-none bg-transparent opacity-50 cursor-not-allowed"
-                  type="button"
-                >
-                  Sign in
-                </button>
-
-                {/* Partner with Outta */}
-                <button
-                  onClick={handlePartner}
-                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-black-900 transition-colors hover:bg-black-50 border-none bg-transparent cursor-pointer"
-                  type="button"
-                >
-                  Partner with Outta
-                </button>
-              </div>
-            </div>
-          </>
-        ) : mode === 'search' ? (
-          <>
-            {/* Search mode */}
-            <div className="p-4">
-              <div className="flex items-center gap-3 mb-3">
-                {/* Back button */}
-                <button
-                  onClick={handleBackClick}
-                  className="w-10 h-10 rounded-full flex items-center justify-center border-none bg-transparent hover:bg-black-100 cursor-pointer transition-colors"
-                  type="button"
-                  aria-label="Back to menu"
-                >
-                  <LuChevronLeft size={20} className="text-black-900" />
-                </button>
-                <span className="text-sm font-semibold text-black-900">Search</span>
-              </div>
-
-              {/* Search form */}
-              <form onSubmit={handleSearchSubmit}>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Find something amazing"
-                    className="w-full px-4 py-3 pr-10 text-base border border-black-200 rounded-lg outline-none focus:border-malibu-950 focus:ring-1 focus:ring-malibu-950"
-                    autoFocus
-                  />
-                  {searchQuery && (
-                    <button
-                      type="button"
-                      onClick={handleClearSearch}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center border-none bg-black-200 hover:bg-black-300 cursor-pointer transition-colors"
-                      aria-label="Clear search"
-                    >
-                      <LuX size={14} className="text-black-700" />
-                    </button>
-                  )}
+            {/* Partner section */}
+            <div className="p-3">
+              <button
+                onClick={handlePartner}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border-none bg-transparent cursor-pointer transition-colors hover:bg-black-50"
+                type="button"
+              >
+                <div className="flex flex-col items-start text-left">
+                  <span className="text-base font-semibold text-malibu-950">Partner with Outta</span>
+                  <span className="text-sm text-black-500">Create new memories for local families</span>
                 </div>
-                <button
-                  type="submit"
-                  disabled={!searchQuery.trim()}
-                  className="w-full px-4 py-3 mt-3 bg-malibu-950 text-white rounded-lg text-base font-semibold cursor-pointer transition-colors hover:bg-malibu-900 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-malibu-950 border-none"
-                >
-                  Search
-                </button>
-              </form>
+                <span className="text-5xl ml-3">🤝</span>
+              </button>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-black-100 mx-3" />
+
+            {/* Auth link */}
+            <div className="p-3">
+              <button
+                disabled
+                className="w-full text-left px-3 py-2.5 rounded-lg text-base text-black-400 border-none bg-transparent cursor-not-allowed"
+                type="button"
+              >
+                Log in or sign up
+              </button>
             </div>
           </>
         ) : (
@@ -275,7 +189,7 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
                 >
                   <LuChevronLeft size={20} className="text-black-900" />
                 </button>
-                <span className="text-sm font-semibold text-black-900">Set Location</span>
+                <span className="text-base font-semibold text-malibu-950">Change location</span>
               </div>
 
               {/* Use Current Location Button */}
