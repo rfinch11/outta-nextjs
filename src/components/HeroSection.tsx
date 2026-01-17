@@ -68,9 +68,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ cityName, onLocationClick }) 
         {/* Hero Copy */}
         <div className="text-center">
           <h1 className="text-[28px] font-bold text-malibu-950 leading-tight mb-3">
-            Hundreds of Family
+            Hundreds of family
             <br />
-            Adventures Near
+            adventures near
           </h1>
 
           {/* Location Button */}
