@@ -210,25 +210,69 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
           ) : (
             <>
               <div className="flex flex-col gap-1.5">
-                {filteredListings.slice(0, displayCount).map((listing) => (
-                  <ClickableCard
-                    key={listing.airtable_id}
-                    airtable_id={listing.airtable_id}
-                    title={listing.title}
-                    type={listing.type}
-                    scout_pick={listing.scout_pick}
-                    deal={listing.deal}
-                    promoted={listing.promoted}
-                    city={listing.city}
-                    distance={listing.distance || 0}
-                    image={listing.image}
-                    place_id={listing.place_id}
-                    start_date={listing.start_date}
-                    place_type={listing.place_type}
-                    description={listing.description}
-                    rating={listing.rating}
-                  />
-                ))}
+                {filteredListings.slice(0, displayCount).map((listing, index) => {
+                  // For events, show date separators
+                  let dateSeparator = null;
+                  if (filterType === 'events' && listing.start_date) {
+                    const listingDate = new Date(listing.start_date);
+                    const today = new Date();
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+
+                    const isToday = listingDate.toDateString() === today.toDateString();
+                    const isTomorrow = listingDate.toDateString() === tomorrow.toDateString();
+
+                    // Check if this is the first item or date changed from previous
+                    const showSeparator = index === 0 || (
+                      filteredListings[index - 1]?.start_date &&
+                      new Date(filteredListings[index - 1].start_date!).toDateString() !== listingDate.toDateString()
+                    );
+
+                    if (showSeparator) {
+                      let dateLabel: string;
+                      if (isToday) {
+                        dateLabel = 'Today';
+                      } else if (isTomorrow) {
+                        dateLabel = 'Tomorrow';
+                      } else {
+                        dateLabel = listingDate.toLocaleDateString('en-US', {
+                          weekday: 'long',
+                          month: 'long',
+                          day: 'numeric',
+                        });
+                      }
+
+                      dateSeparator = (
+                        <div className="flex items-center gap-3 my-3 first:mt-0">
+                          <span className="text-base font-bold text-malibu-950">{dateLabel}</span>
+                          <div className="flex-1 h-px bg-black-200" />
+                        </div>
+                      );
+                    }
+                  }
+
+                  return (
+                    <React.Fragment key={listing.airtable_id}>
+                      {dateSeparator}
+                      <ClickableCard
+                        airtable_id={listing.airtable_id}
+                        title={listing.title}
+                        type={listing.type}
+                        scout_pick={listing.scout_pick}
+                        deal={listing.deal}
+                        promoted={listing.promoted}
+                        city={listing.city}
+                        distance={listing.distance || 0}
+                        image={listing.image}
+                        place_id={listing.place_id}
+                        start_date={listing.start_date}
+                        place_type={listing.place_type}
+                        description={listing.description}
+                        rating={listing.rating}
+                      />
+                    </React.Fragment>
+                  );
+                })}
               </div>
 
               {/* Load More Button */}
