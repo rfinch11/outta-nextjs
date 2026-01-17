@@ -1,6 +1,6 @@
 # CLAUDE.md - Project Context for AI Assistance
 
-**Last Updated:** January 10, 2026
+**Last Updated:** January 17, 2026
 **Project:** Outta - Kid-Friendly Adventures Discovery Platform
 **Production URL:** [outta.events](https://outta.events)
 **Status:** ✅ Live in Production
@@ -33,7 +33,9 @@ Outta is a production-grade Next.js application that helps families discover kid
 - **Testing:** Jest + Playwright
 
 ### Key Dependencies
-- **UI:** React 19, React Icons (Lucide)
+- **UI:** React 19, React Icons (Lucide, Bi)
+- **Animation:** Framer Motion (card stack hero, transitions)
+- **Modals:** Vaul (responsive drawer/modal system)
 - **Data:** @supabase/supabase-js, rss-parser, cheerio
 - **Maps:** @react-google-maps/api, Google Maps API
 - **Time:** luxon (Pacific Time → ISO 8601 conversion)
@@ -55,19 +57,24 @@ Outta is a production-grade Next.js application that helps families discover kid
 outta-nextjs/
 ├── src/
 │   ├── app/                          # Next.js App Router
-│   │   ├── layout.tsx                # Root layout (Bricolage Grotesque font)
+│   │   ├── layout.tsx                # Root layout (Geist font)
 │   │   ├── page.tsx                  # Homepage
 │   │   ├── globals.css               # Design system colors + global styles
 │   │   ├── listings/[id]/page.tsx    # Dynamic event detail pages
+│   │   ├── filter/[type]/page.tsx    # Filter pages (events, place types)
 │   │   └── api/                      # API routes + Vercel cron jobs
 │   │       ├── listings/route.ts     # Fetch listings
 │   │       ├── search/route.ts       # Search endpoint
+│   │       ├── place-photo/route.ts  # Google Places photo proxy
 │   │       ├── ingest-rss/route.ts   # RSS feed cron (8 AM UTC)
 │   │       ├── fetch-unsplash-images/route.ts  # Image cron (10 AM UTC)
 │   │       └── geocode-listings/route.ts       # Geocoding cron (11 AM UTC)
 │   │
-│   ├── components/                   # React components (25 total)
-│   │   ├── Homepage.tsx              # Main page component (1,283 lines)
+│   ├── components/                   # React components (32 total)
+│   │   ├── Homepage.tsx              # Main page component
+│   │   ├── DraggableHero.tsx         # Card stack hero with Framer Motion
+│   │   ├── FilterBar.tsx             # Horizontal filter button bar
+│   │   ├── FilterPageContent.tsx     # Filter page with drawer/modal filters
 │   │   ├── ClickableCard.tsx         # Event card with badge overlays
 │   │   ├── EventDetail.tsx           # Detail page view
 │   │   ├── FilterModal.tsx           # Advanced filtering UI
@@ -75,7 +82,7 @@ outta-nextjs/
 │   │   ├── LocationModal.tsx         # Location picker (geolocation + zip)
 │   │   ├── MapView.tsx               # Google Maps integration
 │   │   ├── TabBar.tsx                # Events/Activities/Camps tabs
-│   │   ├── BentoMenu.tsx             # Navigation component
+│   │   ├── MenuPopover.tsx           # Navigation popover menu
 │   │   ├── Chip.tsx                  # Badge system (6 variants)
 │   │   ├── Footer.tsx                # Site footer
 │   │   └── __tests__/                # Component tests
@@ -318,32 +325,51 @@ CRON_SECRET=[secret-for-cron-authentication]
 ## 🎯 Key Features
 
 ### User-Facing Features
-1. **Tab Navigation:** Events, Activities, Camps
-2. **Advanced Filtering:**
-   - Distance: 10, 20, 40 miles
-   - Date: Today, Tomorrow, Next Week, Next Month
+1. **Card Stack Hero:** Animated card carousel with family activity images
+   - Auto-rotates every 2 seconds until user interaction
+   - Click to cycle through cards
+   - Framer Motion spring animations
+   - Responsive: centered on mobile, side-by-side on desktop
+
+2. **Filter Pages:** `/filter/[type]` routes for filtered views
+   - Events page with date-based sorting
+   - Place type pages (Museum, Park, etc.) sorted by distance
+   - FilterBar with animated button selection
+   - Filter drawer (mobile) / modal (desktop) with:
+     - Date filter (events only)
+     - Distance slider with Airbnb-style histogram
+     - Rating filter (activities only)
+
+3. **Tab Navigation:** Events, Activities, Camps (on homepage)
+
+4. **Advanced Filtering:**
+   - Distance: 10, 20, 40 miles (homepage) or slider 0-50 miles (filter pages)
+   - Date: Today, Tomorrow, This Week, This Month
    - Price: Free, Paid, Any
    - Type: Events, Activities, Camps
    - Tags: Multi-select
    - Rating: 3+, 4+, 4.5+
    - Recommended only toggle
 
-3. **Search:** Real-time client-side search across title, description, city, tags, organizer
-4. **Location Services:**
+5. **Search:** Real-time client-side search across title, description, city, tags, organizer
+
+6. **Location Services:**
    - Browser geolocation with permission
    - Zip code manual entry
    - Distance calculation (client-side)
 
-5. **Event Details:** Rich detail pages with images, maps, metadata, sharing
-6. **Pagination:** Load 15 items initially, infinite scroll with "Load More"
-7. **Responsive Design:** Mobile-first with bottom sheet modals
+7. **Event Details:** Rich detail pages with images, maps, metadata, sharing
+8. **Pagination:** Load 15 items initially, "Load More" button
+9. **Responsive Design:** Mobile-first with Vaul drawers on mobile, modals on desktop
 
 ### Technical Features
 - **Client-side filtering:** All filters applied instantly without API calls
+- **Framer Motion:** Smooth animations for hero cards and UI transitions
 - **React Server Components:** Used in layout and page routes
 - **Dynamic imports:** Modals loaded on-demand to reduce bundle size
 - **Image optimization:** Next.js Image component with Unsplash CDN
 - **State management:** React hooks + URL parameters
+- **Responsive modals:** Vaul drawers on mobile, centered modals on desktop
 
 ---
 
@@ -413,9 +439,13 @@ CRON_SECRET=[secret-for-cron-authentication]
 
 | File | Purpose |
 |------|---------|
-| `src/components/Homepage.tsx` | Main page component with all filtering logic (1,283 lines) |
+| `src/components/Homepage.tsx` | Main page component with filtering logic |
+| `src/components/DraggableHero.tsx` | Card stack hero with Framer Motion animations |
+| `src/components/FilterBar.tsx` | Horizontal filter button navigation bar |
+| `src/components/FilterPageContent.tsx` | Filter page with drawer/modal filters |
 | `src/lib/supabase.ts` | Supabase client configuration and TypeScript types |
-| `src/app/globals.css` | Design system colors and global styles |
+| `src/app/globals.css` | Design system colors (6 palettes) and global styles |
+| `src/app/filter/[type]/page.tsx` | Dynamic filter page route |
 | `src/app/api/ingest-rss/route.ts` | Daily RSS feed ingestion cron job |
 | `src/app/api/fetch-unsplash-images/route.ts` | Daily image automation cron job |
 | `src/app/api/geocode-listings/route.ts` | Daily geocoding cron job |
@@ -545,4 +575,4 @@ CRON_SECRET=[secret-for-cron-authentication]
 
 **Built with ❤️ by Ryan Finch**
 
-*This file was last updated: January 10, 2026*
+*This file was last updated: January 17, 2026*
