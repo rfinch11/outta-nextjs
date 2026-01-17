@@ -10,6 +10,7 @@ import Loader from './Loader';
 import BentoMenu from './BentoMenu';
 import FilterBar from './FilterBar';
 import CollectionSection from './CollectionSection';
+import HeroSection from './HeroSection';
 import {
   getPlaceTypeCounts,
   getUpcomingEvents,
@@ -23,6 +24,9 @@ import {
 const SubmitModal = dynamic(() => import('./SubmitModal'), {
   ssr: false,
 });
+const LocationModal = dynamic(() => import('./LocationModal'), {
+  ssr: false,
+});
 
 const Homepage: React.FC = () => {
   const [allListings, setAllListings] = useState<Listing[]>([]);
@@ -33,10 +37,12 @@ const Homepage: React.FC = () => {
     lat: number;
     lng: number;
     zipCode: string;
+    city?: string;
   } | null>(null);
 
-  // Submit modal state
+  // Modal states
   const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const [showLocationModal, setShowLocationModal] = useState(false);
 
   // FilterBar state
   const [placeTypeCounts, setPlaceTypeCounts] = useState<Array<{ type: string; count: number }>>([]);
@@ -57,8 +63,19 @@ const Homepage: React.FC = () => {
   };
 
   // Save location to state and localStorage
-  const saveLocation = (lat: number, lng: number, zipCode: string) => {
-    const location = { lat, lng, zipCode };
+  const saveLocation = async (lat: number, lng: number, zipCode: string) => {
+    // Try to get city name via reverse geocoding
+    let city = zipCode;
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
+      );
+      const data = await response.json();
+      city = data.address?.city || data.address?.town || data.address?.village || zipCode;
+    } catch (error) {
+      console.error('Error reverse geocoding for city:', error);
+    }
+    const location = { lat, lng, zipCode, city };
     setUserLocation(location);
     localStorage.setItem('userLocation', JSON.stringify(location));
   };
@@ -72,17 +89,20 @@ const Homepage: React.FC = () => {
       if (data.latitude && data.longitude) {
         const lat = data.latitude;
         const lng = data.longitude;
-        const zipCode = data.postal || data.city || 'Unknown';
+        const zipCode = data.postal || 'Unknown';
+        const city = data.city || 'Unknown';
 
         console.log('Using IP-based location:', data.city, data.region);
-        saveLocation(lat, lng, zipCode);
+        const location = { lat, lng, zipCode, city };
+        setUserLocation(location);
+        localStorage.setItem('userLocation', JSON.stringify(location));
       } else {
         throw new Error('No location data from IP service');
       }
     } catch (error) {
       console.error('Error getting IP location:', error);
-      // Final fallback to San Francisco (more central than Mountain View)
-      const defaultLocation = { lat: 37.7749, lng: -122.4194, zipCode: '94102' };
+      // Final fallback to San Francisco
+      const defaultLocation = { lat: 37.7749, lng: -122.4194, zipCode: '94102', city: 'San Francisco' };
       setUserLocation(defaultLocation);
     }
   }, []);
@@ -238,6 +258,12 @@ const Homepage: React.FC = () => {
         </div>
       </header>
 
+      {/* Hero Section */}
+      <HeroSection
+        cityName={userLocation?.city || userLocation?.zipCode || 'your area'}
+        onLocationClick={() => setShowLocationModal(true)}
+      />
+
       {/* Filter Bar */}
       {!loading && allListings.length > 0 && (
         <FilterBar
@@ -293,6 +319,11 @@ const Homepage: React.FC = () => {
 
       {/* Modals */}
       <SubmitModal isOpen={showSubmitModal} onClose={() => setShowSubmitModal(false)} />
+      <LocationModal
+        isOpen={showLocationModal}
+        onClose={() => setShowLocationModal(false)}
+        onLocationSet={saveLocation}
+      />
     </div>
   );
 };
