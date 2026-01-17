@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import React, { useRef, useLayoutEffect, useCallback } from 'react';
-import { LuCalendar, LuLayoutGrid } from 'react-icons/lu';
+import { LuCalendar, LuRows2 } from 'react-icons/lu';
 import { getPlaceTypeIcon } from '@/lib/placeTypeIcons';
 
 interface FilterBarProps {
@@ -31,7 +31,7 @@ const FilterBar: React.FC<FilterBarProps> = ({
       id: 'collections',
       label: 'Collections',
       href: '/',
-      icon: LuLayoutGrid,
+      icon: LuRows2,
     },
     {
       id: 'events',
