@@ -7,7 +7,7 @@ import BentoMenuPopover from './BentoMenuPopover';
 interface BentoMenuProps {
   onLocationSet: (lat: number, lng: number, zipCode: string) => void;
   onSubmitClick: () => void;
-  onSearch: (query: string) => void;
+  onSearch?: (query: string) => void;
   className?: string;
 }
 
@@ -80,7 +80,7 @@ const BentoMenu: React.FC<BentoMenuProps> = ({
   };
 
   const handleSearch = (query: string) => {
-    onSearch(query);
+    onSearch?.(query);
     // Popover closes itself after search
   };
 

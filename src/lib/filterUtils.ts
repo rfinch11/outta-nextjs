@@ -137,3 +137,103 @@ export function addDistanceToListings(
     return { ...listing, distance };
   });
 }
+
+// ============================================
+// Collection Filter Functions
+// ============================================
+
+/**
+ * Upcoming events: type=Event, ≤30mi, future only, earliest first, prioritize featured
+ */
+export function getUpcomingEvents(
+  listings: Listing[],
+  maxCount: number = 4
+): Listing[] {
+  const now = new Date();
+
+  return listings
+    .filter((l) => l.type === 'Event')
+    .filter((l) => l.latitude && l.longitude)
+    .filter((l) => l.start_date && new Date(l.start_date) >= now)
+    .filter((l) => (l.distance || 0) <= 30)
+    .sort((a, b) => {
+      // Prioritize featured (scout_pick) first
+      if (a.scout_pick && !b.scout_pick) return -1;
+      if (!a.scout_pick && b.scout_pick) return 1;
+      // Then sort by date
+      const dateA = new Date(a.start_date!).getTime();
+      const dateB = new Date(b.start_date!).getTime();
+      return dateA - dateB;
+    })
+    .slice(0, maxCount);
+}
+
+/**
+ * For advanced planners: type=Event, ≤50mi, start_date > 6 days from now, featured only
+ */
+export function getAdvancedPlannerEvents(
+  listings: Listing[],
+  maxCount: number = 4
+): Listing[] {
+  const sixDaysFromNow = new Date();
+  sixDaysFromNow.setDate(sixDaysFromNow.getDate() + 6);
+
+  return listings
+    .filter((l) => l.type === 'Event')
+    .filter((l) => l.latitude && l.longitude)
+    .filter((l) => l.start_date && new Date(l.start_date) > sixDaysFromNow)
+    .filter((l) => (l.distance || 0) <= 50)
+    .filter((l) => l.scout_pick)
+    .sort((a, b) => {
+      const dateA = new Date(a.start_date!).getTime();
+      const dateB = new Date(b.start_date!).getTime();
+      return dateA - dateB;
+    })
+    .slice(0, maxCount);
+}
+
+/**
+ * Most loved playgrounds: place_type=Playground, ≤30mi, rating high→low, featured only
+ */
+export function getMostLovedPlaygrounds(
+  listings: Listing[],
+  maxCount: number = 4
+): Listing[] {
+  return listings
+    .filter((l) => l.latitude && l.longitude)
+    .filter((l) => l.place_type?.toLowerCase() === 'playground')
+    .filter((l) => (l.distance || 0) <= 30)
+    .filter((l) => l.scout_pick)
+    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    .slice(0, maxCount);
+}
+
+/**
+ * Rainy day adventures: place_type=Indoor Playground, sorted by distance
+ */
+export function getRainyDayAdventures(
+  listings: Listing[],
+  maxCount: number = 3
+): Listing[] {
+  return listings
+    .filter((l) => l.latitude && l.longitude)
+    .filter((l) => l.place_type?.toLowerCase() === 'indoor playground')
+    .sort((a, b) => (a.distance || 0) - (b.distance || 0))
+    .slice(0, maxCount);
+}
+
+/**
+ * Favorite parks: place_type=Park, ≤30mi, rating high→low, featured only
+ */
+export function getFavoriteParks(
+  listings: Listing[],
+  maxCount: number = 3
+): Listing[] {
+  return listings
+    .filter((l) => l.latitude && l.longitude)
+    .filter((l) => l.place_type?.toLowerCase() === 'park')
+    .filter((l) => (l.distance || 0) <= 30)
+    .filter((l) => l.scout_pick)
+    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    .slice(0, maxCount);
+}
