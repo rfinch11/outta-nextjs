@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe } from 'react-icons/lu';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
-import ActionBar from './ActionBar';
 
 interface EventDetailProps {
   // Core fields
@@ -247,6 +246,39 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
           )}
         </div>
 
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-3 mb-8">
+          <button
+            onClick={handleShare}
+            className="flex items-center gap-2 px-4 py-3 bg-malibu-950 text-white rounded-lg text-base font-semibold cursor-pointer transition-colors hover:bg-malibu-900 border-none"
+          >
+            <LuShare size={18} />
+            <span>Share</span>
+          </button>
+
+          {start_date && (
+            <button
+              onClick={handleAddToCalendar}
+              className="flex items-center gap-2 px-4 py-3 bg-malibu-50 text-malibu-950 rounded-lg text-base font-semibold cursor-pointer transition-colors hover:bg-malibu-100 border-none"
+            >
+              <LuCalendar size={18} />
+              <span>Add</span>
+            </button>
+          )}
+
+          {website && (
+            <a
+              href={website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-3 bg-malibu-50 text-malibu-950 rounded-lg text-base font-semibold cursor-pointer transition-colors hover:bg-malibu-100 border-none no-underline"
+            >
+              <LuGlobe size={18} />
+              <span>Website</span>
+            </a>
+          )}
+        </div>
+
         {/* Details Section */}
         {description && (
           <div className="mb-8">
@@ -318,29 +350,6 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         </div>
       </div>
 
-      {/* Fixed Action Bar - Top Right */}
-      <ActionBar position="top-right">
-        <ActionBar.Button onClick={handleShare} aria-label="Share">
-          <LuShare size={17} />
-        </ActionBar.Button>
-
-        {start_date && (
-          <ActionBar.Button onClick={handleAddToCalendar} aria-label="Add to calendar">
-            <LuCalendar size={17} />
-          </ActionBar.Button>
-        )}
-
-        {website && (
-          <ActionBar.Button
-            href={website}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit website"
-          >
-            <LuGlobe size={17} />
-          </ActionBar.Button>
-        )}
-      </ActionBar>
     </div>
   );
 };
