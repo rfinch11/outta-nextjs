@@ -1,10 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe, LuArrowUpRight } from 'react-icons/lu';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
+import { supabase } from '@/lib/supabase';
+import type { Listing } from '@/lib/supabase';
+import { calculateDistance } from '@/lib/filterUtils';
+import ClickableCard from './ClickableCard';
 
 interface EventDetailProps {
   // Core fields
@@ -60,16 +64,61 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   } = props;
 
   // State to track if we should use the fallback image
-  const [imgSrc, setImgSrc] = React.useState<string>(
+  const [imgSrc, setImgSrc] = useState<string>(
     place_id ? `/api/place-photo?place_id=${place_id}&width=800` : image
   );
 
   // State to track current page URL
-  const [currentUrl, setCurrentUrl] = React.useState<string>('');
+  const [currentUrl, setCurrentUrl] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.href;
+    }
+    return '';
+  });
 
-  React.useEffect(() => {
-    setCurrentUrl(window.location.href);
-  }, []);
+  // State for nearby activities
+  const [nearbyActivities, setNearbyActivities] = useState<Listing[]>([]);
+
+  // Fetch nearby activities
+  useEffect(() => {
+    if (!latitude || !longitude) return;
+
+    const fetchNearbyActivities = async () => {
+      const { data, error } = await supabase
+        .from('listings')
+        .select('*')
+        .eq('type', 'Activity')
+        .gte('rating', 4)
+        .not('latitude', 'is', null)
+        .not('longitude', 'is', null)
+        .neq('airtable_id', airtable_id);
+
+      if (error) {
+        console.error('Error fetching nearby activities:', error);
+        return;
+      }
+
+      if (data) {
+        // Calculate distances and sort by proximity
+        const withDistances = data
+          .map((listing) => ({
+            ...listing,
+            distance: calculateDistance(
+              latitude,
+              longitude,
+              listing.latitude!,
+              listing.longitude!
+            ),
+          }))
+          .sort((a, b) => (a.distance || 0) - (b.distance || 0))
+          .slice(0, 3);
+
+        setNearbyActivities(withDistances);
+      }
+    };
+
+    fetchNearbyActivities();
+  }, [latitude, longitude, airtable_id]);
 
   // Format date
   const formatDate = (dateString: string) => {
@@ -322,6 +371,35 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
                 {tag}
               </span>
             ))}
+          </div>
+        )}
+
+        {/* Nearby Activities */}
+        {nearbyActivities.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-malibu-950 mb-3">Nearby activities</h2>
+            <div className="flex flex-col gap-1.5">
+              {nearbyActivities.map((activity) => (
+                <ClickableCard
+                  key={activity.airtable_id}
+                  airtable_id={activity.airtable_id}
+                  title={activity.title}
+                  type={activity.type}
+                  scout_pick={activity.scout_pick}
+                  deal={activity.deal}
+                  promoted={activity.promoted}
+                  city={activity.city}
+                  distance={activity.distance || 0}
+                  image={activity.image}
+                  place_id={activity.place_id}
+                  start_date={activity.start_date}
+                  place_type={activity.place_type}
+                  description={activity.description}
+                  organizer={activity.organizer}
+                  rating={activity.rating}
+                />
+              ))}
+            </div>
           </div>
         )}
 
