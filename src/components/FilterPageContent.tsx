@@ -245,7 +245,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
 
                       dateSeparator = (
                         <div className="my-3 first:mt-0">
-                          <span className="text-base text-malibu-950">
+                          <span className="text-lg text-malibu-950">
                             <span className="font-bold">{dayLabel}</span>
                             {' '}
                             <span className="font-normal">{dateLabel}</span>
