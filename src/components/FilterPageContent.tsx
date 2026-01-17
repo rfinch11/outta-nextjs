@@ -178,21 +178,14 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
           {/* Back Button */}
           <Link
             href="/"
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 hover:bg-white shadow-sm transition-all"
+            className="flex items-center justify-center transition-colors hover:opacity-70"
             aria-label="Back to home"
           >
-            <IoIosArrowBack size={24} />
+            <IoIosArrowBack size={24} className="text-malibu-950" />
           </Link>
 
           {/* Page Title */}
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-malibu-950">{getTitle()}</h1>
-            {!loading && (
-              <p className="text-sm text-black-500">
-                {filteredListings.length} result{filteredListings.length !== 1 ? 's' : ''}
-              </p>
-            )}
-          </div>
+          <h1 className="text-2xl font-bold text-malibu-950">{getTitle()}</h1>
         </div>
       </header>
 
