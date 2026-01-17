@@ -1,10 +1,8 @@
 'use client';
 
 import React, { forwardRef, useState } from 'react';
-import { LuSearch, LuPlus } from 'react-icons/lu';
-import { TbLocation } from 'react-icons/tb';
-import { MdVerified } from 'react-icons/md';
-import { IoIosArrowBack, IoMdClose } from 'react-icons/io';
+import { LuSearch, LuPlus, LuChevronLeft, LuX, LuBadgeCheck } from 'react-icons/lu';
+import { BiNavigation } from 'react-icons/bi';
 
 interface BentoMenuPopoverProps {
   onSearchClick: () => void;
@@ -127,7 +125,7 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
     return (
       <div
         ref={ref}
-        className="absolute top-full right-0 mt-3 bg-white rounded-xl shadow-lg border border-gray-200 z-50 min-w-[280px] max-w-[320px]"
+        className="absolute top-full right-0 mt-3 bg-white rounded-xl shadow-xl border border-black-100 z-50 min-w-[280px] max-w-[320px]"
         style={{
           animation: 'slideInDown 0.2s ease-out',
         }}
@@ -142,7 +140,7 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
                 className="flex flex-col items-center justify-center gap-2 p-6 rounded-3xl bg-broom-400 border border-malibu-950 shadow-[2px_2px_0_0_#06304b] cursor-pointer transition-all hover:shadow-[1px_1px_0_0_#06304b] hover:translate-x-[1px] hover:translate-y-[1px]"
                 type="button"
               >
-                <TbLocation size={24} className="text-malibu-950" />
+                <BiNavigation size={24} className="text-malibu-950" />
                 <span className="text-sm font-semibold text-malibu-950 text-center leading-tight">
                   Set location
                 </span>
@@ -178,7 +176,7 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
                 className="flex flex-col items-center justify-center gap-2 p-6 rounded-3xl bg-emerald-500 border border-malibu-950 shadow-[2px_2px_0_0_#06304b] cursor-pointer transition-all hover:shadow-[1px_1px_0_0_#06304b] hover:translate-x-[1px] hover:translate-y-[1px]"
                 type="button"
               >
-                <MdVerified size={24} className="text-malibu-950" />
+                <LuBadgeCheck size={24} className="text-malibu-950" />
                 <span className="text-sm font-semibold text-malibu-950 text-center leading-tight">
                   Become a Scout
                 </span>
@@ -186,18 +184,18 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
             </div>
 
             {/* Divider */}
-            <div className="border-t border-gray-200" />
+            <div className="border-t border-black-200" />
 
             {/* More options */}
             <div className="p-4 pt-3">
-              <span className="text-xs font-semibold text-gray-500 uppercase mb-2 block">
+              <span className="text-xs font-semibold text-black-500 uppercase mb-2 block">
                 More options
               </span>
               <div className="flex flex-col gap-1">
                 {/* Sign in - disabled */}
                 <button
                   disabled
-                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-900 transition-colors border-none bg-transparent opacity-50 cursor-not-allowed"
+                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-black-900 transition-colors border-none bg-transparent opacity-50 cursor-not-allowed"
                   type="button"
                 >
                   Sign in
@@ -206,7 +204,7 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
                 {/* Partner with Outta */}
                 <button
                   onClick={handlePartner}
-                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-900 transition-colors hover:bg-gray-50 border-none bg-transparent cursor-pointer"
+                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-black-900 transition-colors hover:bg-black-50 border-none bg-transparent cursor-pointer"
                   type="button"
                 >
                   Partner with Outta
@@ -222,13 +220,13 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
                 {/* Back button */}
                 <button
                   onClick={handleBackClick}
-                  className="w-10 h-10 rounded-full flex items-center justify-center border-none bg-transparent hover:bg-gray-100 cursor-pointer transition-colors"
+                  className="w-10 h-10 rounded-full flex items-center justify-center border-none bg-transparent hover:bg-black-100 cursor-pointer transition-colors"
                   type="button"
                   aria-label="Back to menu"
                 >
-                  <IoIosArrowBack size={20} className="text-gray-900" />
+                  <LuChevronLeft size={20} className="text-black-900" />
                 </button>
-                <span className="text-sm font-semibold text-gray-900">Search</span>
+                <span className="text-sm font-semibold text-black-900">Search</span>
               </div>
 
               {/* Search form */}
@@ -239,17 +237,17 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Find something amazing"
-                    className="w-full px-4 py-3 pr-10 text-base border border-gray-300 rounded-lg outline-none focus:border-malibu-950 focus:ring-1 focus:ring-malibu-950"
+                    className="w-full px-4 py-3 pr-10 text-base border border-black-200 rounded-lg outline-none focus:border-malibu-950 focus:ring-1 focus:ring-malibu-950"
                     autoFocus
                   />
                   {searchQuery && (
                     <button
                       type="button"
                       onClick={handleClearSearch}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center border-none bg-gray-200 hover:bg-gray-300 cursor-pointer transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center border-none bg-black-200 hover:bg-black-300 cursor-pointer transition-colors"
                       aria-label="Clear search"
                     >
-                      <IoMdClose size={14} className="text-gray-700" />
+                      <LuX size={14} className="text-black-700" />
                     </button>
                   )}
                 </div>
@@ -271,13 +269,13 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
                 {/* Back button */}
                 <button
                   onClick={handleBackClick}
-                  className="w-10 h-10 rounded-full flex items-center justify-center border-none bg-transparent hover:bg-gray-100 cursor-pointer transition-colors"
+                  className="w-10 h-10 rounded-full flex items-center justify-center border-none bg-transparent hover:bg-black-100 cursor-pointer transition-colors"
                   type="button"
                   aria-label="Back to menu"
                 >
-                  <IoIosArrowBack size={20} className="text-gray-900" />
+                  <LuChevronLeft size={20} className="text-black-900" />
                 </button>
-                <span className="text-sm font-semibold text-gray-900">Set Location</span>
+                <span className="text-sm font-semibold text-black-900">Set Location</span>
               </div>
 
               {/* Use Current Location Button */}
@@ -287,20 +285,20 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
                 className="w-full px-4 py-3 mb-3 bg-malibu-50 text-malibu-950 rounded-lg text-base font-semibold cursor-pointer transition-colors hover:bg-malibu-100 disabled:opacity-50 disabled:cursor-not-allowed border-none flex items-center justify-center gap-2"
                 type="button"
               >
-                <TbLocation size={20} />
+                <BiNavigation size={20} />
                 Use my location
               </button>
 
               {/* Divider */}
               <div className="flex items-center gap-3 mb-3">
-                <div className="flex-1 h-px bg-gray-200"></div>
-                <span className="text-sm text-gray-500">or</span>
-                <div className="flex-1 h-px bg-gray-200"></div>
+                <div className="flex-1 h-px bg-black-200"></div>
+                <span className="text-sm text-black-500">or</span>
+                <div className="flex-1 h-px bg-black-200"></div>
               </div>
 
               {/* Zip Code Form */}
               <form onSubmit={handleLocationSubmit}>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-black-700 mb-2">
                   Enter zip code
                 </label>
                 <input
@@ -308,7 +306,7 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
                   value={zipCodeInput}
                   onChange={(e) => setZipCodeInput(e.target.value)}
                   placeholder="e.g., 94043"
-                  className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg outline-none focus:border-malibu-950 focus:ring-1 focus:ring-malibu-950 mb-3"
+                  className="w-full px-4 py-3 text-base border border-black-200 rounded-lg outline-none focus:border-malibu-950 focus:ring-1 focus:ring-malibu-950 mb-3"
                   autoFocus
                 />
                 <button

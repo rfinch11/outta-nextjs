@@ -2,8 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { LuCalendar } from 'react-icons/lu';
-import { HiOutlineLocationMarker } from 'react-icons/hi';
+import { LuCalendar, LuMapPin } from 'react-icons/lu';
 import { getPlaceTypeIcon } from '@/lib/placeTypeIcons';
 import Chip from './Chip';
 
@@ -68,7 +67,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
   return (
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
-      <div className="flex w-full p-2 gap-2.5 rounded-2xl bg-transparent relative cursor-pointer transition-all hover:opacity-90">
+      <div className="flex w-full p-2 gap-3 rounded-xl bg-white relative cursor-pointer transition-all hover:bg-black-50 hover:shadow-sm">
         {/* Image on the left with chips overlay */}
         <div className="relative w-[96px] h-[96px] flex-shrink-0">
           <img
@@ -122,7 +121,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
           {/* Location */}
           <div className="text-black-600 text-sm leading-5 flex items-center gap-1.5">
-            <HiOutlineLocationMarker size={16} className="flex-shrink-0 text-black-500" />
+            <LuMapPin size={16} className="flex-shrink-0 text-black-500" />
             <span className="truncate">{locationText}</span>
           </div>
         </div>
