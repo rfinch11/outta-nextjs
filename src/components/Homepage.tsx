@@ -113,7 +113,23 @@ const Homepage: React.FC = () => {
     if (stored) {
       try {
         const location = JSON.parse(stored);
-        setUserLocation(location);
+
+        // If city is missing (legacy data), fetch it via reverse geocoding
+        if (!location.city && location.lat && location.lng) {
+          fetch(`https://nominatim.openstreetmap.org/reverse?lat=${location.lat}&lon=${location.lng}&format=json`)
+            .then(res => res.json())
+            .then(data => {
+              const city = data.address?.city || data.address?.town || data.address?.village || location.zipCode;
+              const updatedLocation = { ...location, city };
+              setUserLocation(updatedLocation);
+              localStorage.setItem('userLocation', JSON.stringify(updatedLocation));
+            })
+            .catch(() => {
+              setUserLocation(location);
+            });
+        } else {
+          setUserLocation(location);
+        }
       } catch (e) {
         console.error('Error parsing stored location:', e);
         // Try IP geolocation if stored location is invalid
@@ -127,14 +143,17 @@ const Homepage: React.FC = () => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
 
-            // Reverse geocode to get zip code
+            // Reverse geocode to get city name
             try {
               const response = await fetch(
                 `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`
               );
               const data = await response.json();
               const zipCode = data.address?.postcode || 'Unknown';
-              saveLocation(lat, lng, zipCode);
+              const city = data.address?.city || data.address?.town || data.address?.village || 'Unknown';
+              const location = { lat, lng, zipCode, city };
+              setUserLocation(location);
+              localStorage.setItem('userLocation', JSON.stringify(location));
             } catch (error) {
               console.error('Error reverse geocoding:', error);
               saveLocation(lat, lng, 'Unknown');
