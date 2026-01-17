@@ -150,21 +150,34 @@ const Homepage: React.FC = () => {
   const fetchAllListings = async () => {
     setLoading(true);
     try {
-      // Fetch ALL listings at once
-      const query = supabase.from('listings').select('*').limit(10000);
+      // Fetch all listings in batches to bypass 1000 row limit
+      const pageSize = 1000;
+      let allData: Listing[] = [];
+      let page = 0;
+      let hasMore = true;
 
-      const { data, error } = await query;
+      while (hasMore) {
+        const { data: pageData, error: pageError } = await supabase
+          .from('listings')
+          .select('*')
+          .range(page * pageSize, (page + 1) * pageSize - 1);
 
-      if (error) {
-        console.error('Error fetching listings:', error);
-        setLoading(false);
-        return;
+        if (pageError) {
+          console.error('Error fetching listings:', pageError);
+          setLoading(false);
+          return;
+        }
+
+        if (pageData && pageData.length > 0) {
+          allData = [...allData, ...pageData];
+          page++;
+          hasMore = pageData.length === pageSize;
+        } else {
+          hasMore = false;
+        }
       }
 
-      if (!data) {
-        setLoading(false);
-        return;
-      }
+      const data = allData;
 
       // Calculate distances for all listings
       const listingsWithDistance = data.map((listing) => {

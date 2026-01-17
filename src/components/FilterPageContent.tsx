@@ -90,22 +90,41 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
     const fetchListings = async () => {
       setLoading(true);
       try {
-        const { data, error } = await supabase.from('listings').select('*').limit(10000);
+        // Fetch all listings in batches to bypass 1000 row limit
+        const pageSize = 1000;
+        let allData: Listing[] = [];
+        let page = 0;
+        let hasMore = true;
 
-        if (error) {
-          console.error('Error fetching listings:', error);
-          setLoading(false);
-          return;
+        while (hasMore) {
+          const { data: pageData, error: pageError } = await supabase
+            .from('listings')
+            .select('*')
+            .range(page * pageSize, (page + 1) * pageSize - 1);
+
+          if (pageError) {
+            console.error('Error fetching listings:', pageError);
+            setLoading(false);
+            return;
+          }
+
+          if (pageData && pageData.length > 0) {
+            allData = [...allData, ...pageData];
+            page++;
+            hasMore = pageData.length === pageSize;
+          } else {
+            hasMore = false;
+          }
         }
 
-        if (!data) {
+        if (allData.length === 0) {
           setLoading(false);
           return;
         }
 
         // Add distance to all listings
         const listingsWithDistance = addDistanceToListings(
-          data,
+          allData,
           userLocation.lat,
           userLocation.lng
         );
