@@ -187,7 +187,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
       <div className="fixed top-5 left-5 z-50 mt-2.5">
         <Link
           href="/"
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg transition-all no-underline text-gray-900"
+          className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg transition-all no-underline text-malibu-950"
         >
           <IoIosArrowBack size={24} />
         </Link>
@@ -207,42 +207,42 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
 
       {/* Content */}
       <div className="max-w-3xl mx-auto px-5 py-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6 mt-0">{title}</h1>
+        <h1 className="text-3xl font-bold text-malibu-950 mb-6 mt-0">{title}</h1>
 
         {/* Event Info Grid */}
         <div className="flex flex-col gap-4 mb-8">
           {start_date && (
             <div className="flex items-center gap-3">
-              <LuCalendar size={20} className="text-gray-600 flex-shrink-0" />
-              <span className="text-base text-gray-800">{formatDate(start_date)}</span>
+              <LuCalendar size={20} className="text-malibu-950/70 flex-shrink-0" />
+              <span className="text-base text-malibu-950/90">{formatDate(start_date)}</span>
             </div>
           )}
 
           {start_date && (
             <div className="flex items-center gap-3">
-              <LuClock3 size={20} className="text-gray-600 flex-shrink-0" />
-              <span className="text-base text-gray-800">{formatTime(start_date)}</span>
+              <LuClock3 size={20} className="text-malibu-950/70 flex-shrink-0" />
+              <span className="text-base text-malibu-950/90">{formatTime(start_date)}</span>
             </div>
           )}
 
           {street && (
             <div className="flex items-center gap-3">
-              <HiOutlineLocationMarker size={20} className="text-gray-600 flex-shrink-0" />
-              <span className="text-base text-gray-800">{fullAddress}</span>
+              <HiOutlineLocationMarker size={20} className="text-malibu-950/70 flex-shrink-0" />
+              <span className="text-base text-malibu-950/90">{fullAddress}</span>
             </div>
           )}
 
           {price && (
             <div className="flex items-center gap-3">
-              <LuTag size={20} className="text-gray-600 flex-shrink-0" />
-              <span className="text-base text-gray-800">{price}</span>
+              <LuTag size={20} className="text-malibu-950/70 flex-shrink-0" />
+              <span className="text-base text-malibu-950/90">{price}</span>
             </div>
           )}
 
           {age_range && (
             <div className="flex items-center gap-3">
-              <LuUsers size={20} className="text-gray-600 flex-shrink-0" />
-              <span className="text-base text-gray-800">{age_range}</span>
+              <LuUsers size={20} className="text-malibu-950/70 flex-shrink-0" />
+              <span className="text-base text-malibu-950/90">{age_range}</span>
             </div>
           )}
         </div>
@@ -250,8 +250,8 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         {/* Details Section */}
         {description && (
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">Details</h2>
-            <p className="text-base text-gray-700 leading-relaxed whitespace-pre-wrap">
+            <h2 className="text-xl font-bold text-malibu-950 mb-3">Details</h2>
+            <p className="text-base text-malibu-950/80 leading-relaxed whitespace-pre-wrap">
               {description}
             </p>
           </div>
@@ -263,7 +263,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
             {tagArray.map((tag, index) => (
               <span
                 key={index}
-                className="inline-block px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm"
+                className="inline-block px-3 py-1.5 bg-gray-100 text-malibu-950/80 rounded-full text-sm"
               >
                 {tag}
               </span>
@@ -274,11 +274,11 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         {/* Location Section */}
         {(location_name || street || latitude) && (
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">Location</h2>
+            <h2 className="text-xl font-bold text-malibu-950 mb-3">Location</h2>
             {location_name && (
-              <p className="text-base font-semibold text-gray-900 mb-1">{location_name}</p>
+              <p className="text-base font-semibold text-malibu-950 mb-1">{location_name}</p>
             )}
-            {street && <p className="text-sm text-gray-600 mb-4">{fullAddress}</p>}
+            {street && <p className="text-sm text-malibu-950/70 mb-4">{fullAddress}</p>}
 
             {/* Embedded Map */}
             {latitude && longitude && (
@@ -301,8 +301,8 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         {/* Organizer */}
         {organizer && (
           <div className="mb-8">
-            <h2 className="text-xl font-bold text-gray-900 mb-3">Event organizer</h2>
-            <p className="text-base text-gray-700">{organizer}</p>
+            <h2 className="text-xl font-bold text-malibu-950 mb-3">Event organizer</h2>
+            <p className="text-base text-malibu-950/80">{organizer}</p>
           </div>
         )}
 
@@ -310,7 +310,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         <div className="text-center mt-6 mb-8">
           <a
             href={`mailto:rfinch@outta.events?subject=Report listing ${currentUrl || `https://outta.events/listings/${airtable_id}`}`}
-            className="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center gap-1.5"
+            className="text-sm text-malibu-950/50 hover:text-malibu-950/80 flex items-center justify-center gap-1.5"
           >
             <LuFlag size={16} />
             Report listing
