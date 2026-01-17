@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { Drawer } from 'vaul';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import { IoIosArrowBack } from 'react-icons/io';
-import { LuMap, LuX } from 'react-icons/lu';
+import { LuMap, LuX, LuSlidersHorizontal } from 'react-icons/lu';
 import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
 import {
@@ -31,9 +31,89 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
     lng: number;
   } | null>(null);
   const [mapDrawerOpen, setMapDrawerOpen] = useState(false);
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const [selectedListingId, setSelectedListingId] = useState<string | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
+
+  // Filter state
+  const [dateFilter, setDateFilter] = useState<string>('all');
+  const [minDistanceFilter, setMinDistanceFilter] = useState<number>(0);
+  const [maxDistanceFilter, setMaxDistanceFilter] = useState<number>(50);
+  const [ratingFilter, setRatingFilter] = useState<number>(0);
+
+  const isEventsPage = filterType === 'events';
+
+  // Calculate histogram data for distance distribution (respects other active filters)
+  const distanceHistogram = useMemo(() => {
+    // Get the relevant listings based on filter type
+    let relevantListings = isEventsPage
+      ? allListings.filter((l) => l.type === 'Event')
+      : allListings.filter((l) => l.place_type === filterType);
+
+    // For events, apply date filter
+    if (isEventsPage && dateFilter !== 'all') {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const dayAfterTomorrow = new Date(today);
+      dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+      const endOfWeek = new Date(today);
+      endOfWeek.setDate(endOfWeek.getDate() + (7 - endOfWeek.getDay()));
+      const thisSaturday = new Date(today);
+      thisSaturday.setDate(thisSaturday.getDate() + (6 - thisSaturday.getDay()));
+      const thisSunday = new Date(thisSaturday);
+      thisSunday.setDate(thisSunday.getDate() + 1);
+      const afterWeekend = new Date(thisSunday);
+      afterWeekend.setDate(afterWeekend.getDate() + 1);
+      const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+
+      relevantListings = relevantListings.filter((listing) => {
+        if (!listing.start_date) return false;
+        const eventDate = new Date(listing.start_date);
+        switch (dateFilter) {
+          case 'today':
+            return eventDate >= today && eventDate < tomorrow;
+          case 'tomorrow':
+            return eventDate >= tomorrow && eventDate < dayAfterTomorrow;
+          case 'this-week':
+            return eventDate >= today && eventDate < endOfWeek;
+          case 'this-weekend':
+            return eventDate >= thisSaturday && eventDate < afterWeekend;
+          case 'this-month':
+            return eventDate >= today && eventDate < endOfMonth;
+          default:
+            return true;
+        }
+      });
+    }
+
+    // For non-events, apply rating filter
+    if (!isEventsPage && ratingFilter > 0) {
+      relevantListings = relevantListings.filter((listing) => {
+        return (listing.rating || 0) >= ratingFilter;
+      });
+    }
+
+    // Create 20 buckets from 0 to 100 miles (5 miles each)
+    const buckets = Array(20).fill(0);
+    const bucketSize = 5;
+
+    relevantListings.forEach((listing) => {
+      const distance = listing.distance || 0;
+      const bucketIndex = Math.min(Math.floor(distance / bucketSize), 19);
+      buckets[bucketIndex]++;
+    });
+
+    // Find max for normalization
+    const maxCount = Math.max(...buckets, 1);
+
+    return buckets.map((count) => ({
+      count,
+      height: (count / maxCount) * 100,
+    }));
+  }, [allListings, filterType, isEventsPage, dateFilter, ratingFilter]);
 
   // Load Google Maps
   const { isLoaded } = useJsApiLoader({
@@ -153,23 +233,86 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
     fetchListings();
   }, [userLocation]);
 
-  // Apply filtering when listings or filterType changes
+  // Apply filtering when listings or filterType or filter states change
   useEffect(() => {
     if (allListings.length === 0) return;
 
     let filtered: Listing[];
 
     if (filterType === 'events') {
-      // Events: future only, max 50mi, sorted by date then distance
-      filtered = filterEvents(allListings, 50);
+      // Events: future only, sorted by date then distance
+      filtered = filterEvents(allListings, maxDistanceFilter);
+
+      // Apply min distance filter
+      filtered = filtered.filter((listing) => {
+        return (listing.distance || 0) >= minDistanceFilter;
+      });
+
+      // Apply date filter
+      if (dateFilter !== 'all') {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const dayAfterTomorrow = new Date(today);
+        dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 2);
+
+        // Get end of week (Sunday)
+        const endOfWeek = new Date(today);
+        endOfWeek.setDate(endOfWeek.getDate() + (7 - endOfWeek.getDay()));
+
+        // Get weekend (Saturday and Sunday)
+        const thisSaturday = new Date(today);
+        thisSaturday.setDate(thisSaturday.getDate() + (6 - thisSaturday.getDay()));
+        const thisSunday = new Date(thisSaturday);
+        thisSunday.setDate(thisSunday.getDate() + 1);
+        const afterWeekend = new Date(thisSunday);
+        afterWeekend.setDate(afterWeekend.getDate() + 1);
+
+        // Get end of month
+        const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+
+        filtered = filtered.filter((listing) => {
+          if (!listing.start_date) return false;
+          const eventDate = new Date(listing.start_date);
+
+          switch (dateFilter) {
+            case 'today':
+              return eventDate >= today && eventDate < tomorrow;
+            case 'tomorrow':
+              return eventDate >= tomorrow && eventDate < dayAfterTomorrow;
+            case 'this-week':
+              return eventDate >= today && eventDate < endOfWeek;
+            case 'this-weekend':
+              return eventDate >= thisSaturday && eventDate < afterWeekend;
+            case 'this-month':
+              return eventDate >= today && eventDate < endOfMonth;
+            default:
+              return true;
+          }
+        });
+      }
     } else {
       // Place type: sorted by distance
       filtered = filterByPlaceType(allListings, filterType);
+
+      // Apply distance filter (min and max)
+      filtered = filtered.filter((listing) => {
+        const distance = listing.distance || 0;
+        return distance >= minDistanceFilter && distance <= maxDistanceFilter;
+      });
+
+      // Apply rating filter
+      if (ratingFilter > 0) {
+        filtered = filtered.filter((listing) => {
+          return (listing.rating || 0) >= ratingFilter;
+        });
+      }
     }
 
     setFilteredListings(filtered);
     setDisplayCount(15);
-  }, [allListings, filterType]);
+  }, [allListings, filterType, dateFilter, minDistanceFilter, maxDistanceFilter, ratingFilter]);
 
   const hasMore = filteredListings.length > displayCount;
 
@@ -283,6 +426,16 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
 
           {/* Page Title */}
           <h1 className="text-2xl font-bold text-malibu-950 flex-1">{getTitle()}</h1>
+
+          {/* Filter Button */}
+          <button
+            onClick={() => setFilterDrawerOpen(true)}
+            className="flex items-center justify-center w-8 h-8 transition-colors hover:opacity-70"
+            aria-label="Filter"
+            type="button"
+          >
+            <LuSlidersHorizontal size={24} className="text-malibu-950" />
+          </button>
 
           {/* Map View Button - mobile only */}
           <button
@@ -543,6 +696,222 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                     />
                   </div>
                 ))}
+              </div>
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+
+      {/* Filter Drawer */}
+      <Drawer.Root open={filterDrawerOpen} onOpenChange={setFilterDrawerOpen}>
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" />
+          <Drawer.Content className="bg-white flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 z-[70] outline-none overflow-hidden">
+            <Drawer.Title className="sr-only">Filters</Drawer.Title>
+            <Drawer.Description className="sr-only">
+              Filter {getTitle()} by {isEventsPage ? 'date' : 'distance and rating'}
+            </Drawer.Description>
+
+            {/* Header with Close Button */}
+            <div className="flex items-center justify-between px-5 pt-4 pb-4">
+              <h2 className="text-xl font-bold text-malibu-950">Filters</h2>
+              <button
+                onClick={() => setFilterDrawerOpen(false)}
+                className="flex items-center justify-center transition-colors hover:opacity-70"
+                aria-label="Close filters"
+                type="button"
+              >
+                <LuX size={24} className="text-malibu-950" />
+              </button>
+            </div>
+
+            {/* Filter Content */}
+            <div className="px-5 pb-6 flex flex-col gap-6">
+              {/* Date Filter - Events only */}
+              {isEventsPage && (
+                <>
+                  <div>
+                    <h3 className="text-base font-semibold text-malibu-950 mb-3">Date</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { value: 'all', label: 'All' },
+                        { value: 'today', label: 'Today' },
+                        { value: 'tomorrow', label: 'Tomorrow' },
+                        { value: 'this-week', label: 'This Week' },
+                        { value: 'this-weekend', label: 'This Weekend' },
+                        { value: 'this-month', label: 'This Month' },
+                      ].map((option) => (
+                        <button
+                          key={option.value}
+                          onClick={() => setDateFilter(option.value)}
+                          className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                            dateFilter === option.value
+                              ? 'bg-malibu-950 text-white'
+                              : 'bg-malibu-50 text-malibu-950 hover:bg-malibu-100'
+                          }`}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="h-px bg-malibu-950/10" />
+                </>
+              )}
+
+              {/* Distance Filter - All pages */}
+              <div>
+                <h3 className="text-base font-semibold text-malibu-950 mb-3">Distance</h3>
+
+                {/* Histogram with slider */}
+                <div className="relative px-4">
+                  {/* Histogram bars */}
+                  <div className="flex items-end gap-[2px] h-20 mb-2">
+                    {distanceHistogram.map((bucket, index) => {
+                      const bucketStartMiles = index * 5;
+                      const bucketEndMiles = (index + 1) * 5;
+                      const isWithinFilter = bucketStartMiles >= minDistanceFilter && bucketEndMiles <= maxDistanceFilter;
+                      return (
+                        <div
+                          key={index}
+                          className="flex-1 rounded-t-sm transition-colors"
+                          style={{
+                            height: `${Math.max(bucket.height, 2)}%`,
+                            backgroundColor: isWithinFilter ? '#06304b' : 'rgba(6, 48, 75, 0.2)',
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+
+                  {/* Dual slider track and handles */}
+                  <div className="relative h-8 flex items-center">
+                    {/* Track background */}
+                    <div className="absolute inset-x-0 h-[2px] bg-malibu-950/20 rounded-full" />
+
+                    {/* Active track between handles */}
+                    <div
+                      className="absolute h-[2px] bg-malibu-950 rounded-full"
+                      style={{
+                        left: `${(minDistanceFilter / 100) * 100}%`,
+                        width: `${((maxDistanceFilter - minDistanceFilter) / 100) * 100}%`,
+                      }}
+                    />
+
+                    {/* Min range input - only interactive on left portion */}
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      step="5"
+                      value={minDistanceFilter}
+                      onChange={(e) => {
+                        const val = Math.min(Number(e.target.value), maxDistanceFilter - 5);
+                        setMinDistanceFilter(val);
+                      }}
+                      className="absolute inset-0 w-full opacity-0 cursor-pointer z-20"
+                      style={{
+                        clipPath: `inset(0 ${100 - (minDistanceFilter + maxDistanceFilter) / 2}% 0 0)`,
+                      }}
+                    />
+
+                    {/* Max range input - only interactive on right portion */}
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      step="5"
+                      value={maxDistanceFilter}
+                      onChange={(e) => {
+                        const val = Math.max(Number(e.target.value), minDistanceFilter + 5);
+                        setMaxDistanceFilter(val);
+                      }}
+                      className="absolute inset-0 w-full opacity-0 cursor-pointer z-20"
+                      style={{
+                        clipPath: `inset(0 0 0 ${(minDistanceFilter + maxDistanceFilter) / 2}%)`,
+                      }}
+                    />
+
+                    {/* Min handle */}
+                    <div
+                      className="absolute w-7 h-7 bg-white rounded-full border border-malibu-950/20 shadow-lg pointer-events-none z-40"
+                      style={{
+                        left: `calc(${(minDistanceFilter / 100) * 100}% - 14px)`,
+                      }}
+                    />
+
+                    {/* Max handle */}
+                    <div
+                      className="absolute w-7 h-7 bg-white rounded-full border border-malibu-950/20 shadow-lg pointer-events-none z-40"
+                      style={{
+                        left: `calc(${(maxDistanceFilter / 100) * 100}% - 14px)`,
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Min and Max distance labels */}
+                <div className="mt-4 flex justify-between">
+                  <div>
+                    <span className="text-sm text-malibu-950/70">Minimum</span>
+                    <p className="text-lg font-medium text-malibu-950">{minDistanceFilter} mi</p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-sm text-malibu-950/70">Maximum</span>
+                    <p className="text-lg font-medium text-malibu-950">{maxDistanceFilter} mi</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Rating Filter - Non-events only */}
+              {!isEventsPage && (
+                <>
+                  <div className="h-px bg-malibu-950/10" />
+                  <div>
+                  <h3 className="text-base font-semibold text-malibu-950 mb-3">Minimum Rating</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { value: 0, label: 'Any' },
+                      { value: 3, label: '3+' },
+                      { value: 4, label: '4+' },
+                      { value: 4.5, label: '4.5+' },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => setRatingFilter(option.value)}
+                        className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                          ratingFilter === option.value
+                            ? 'bg-malibu-950 text-white'
+                            : 'bg-malibu-50 text-malibu-950 hover:bg-malibu-100'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                </>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setDateFilter('all');
+                    setMinDistanceFilter(0);
+                    setMaxDistanceFilter(50);
+                    setRatingFilter(0);
+                  }}
+                  className="flex-1 py-3 bg-transparent text-malibu-950 rounded-lg text-base font-semibold transition-colors hover:bg-malibu-950/5"
+                >
+                  Clear
+                </button>
+                <button
+                  onClick={() => setFilterDrawerOpen(false)}
+                  className="flex-1 py-3 bg-malibu-950 text-white rounded-lg text-base font-semibold transition-colors hover:bg-malibu-900"
+                >
+                  Show {filteredListings.length} {isEventsPage ? 'events' : 'activities'}
+                </button>
               </div>
             </div>
           </Drawer.Content>
