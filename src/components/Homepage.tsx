@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
 import Footer from './Footer';
 import Loader from './Loader';
-import BentoMenu from './BentoMenu';
+import Menu from './Menu';
 import FilterBar from './FilterBar';
 import CollectionSection from './CollectionSection';
 import HeroSection from './HeroSection';
@@ -268,7 +268,7 @@ const Homepage: React.FC = () => {
           </div>
 
           {/* Menu */}
-          <BentoMenu onLocationSet={saveLocation} />
+          <Menu onLocationSet={saveLocation} />
         </div>
       </header>
 

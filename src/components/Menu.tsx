@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import BentoMenuPopover from './BentoMenuPopover';
+import MenuPopover from './MenuPopover';
 
-interface BentoMenuProps {
+interface MenuProps {
   onLocationSet: (lat: number, lng: number, zipCode: string) => void;
   className?: string;
 }
 
-const BentoMenu: React.FC<BentoMenuProps> = ({ onLocationSet, className = '' }) => {
+const Menu: React.FC<MenuProps> = ({ onLocationSet, className = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -91,7 +91,7 @@ const BentoMenu: React.FC<BentoMenuProps> = ({ onLocationSet, className = '' }) 
 
       {/* Popover */}
       {isOpen && (
-        <BentoMenuPopover
+        <MenuPopover
           ref={menuRef}
           onLocationSet={handleLocationSet}
           onClose={() => setIsOpen(false)}
@@ -101,4 +101,4 @@ const BentoMenu: React.FC<BentoMenuProps> = ({ onLocationSet, className = '' }) 
   );
 };
 
-export default BentoMenu;
+export default Menu;

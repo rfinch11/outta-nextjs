@@ -4,14 +4,14 @@ import React, { forwardRef, useState } from 'react';
 import { LuPlus, LuChevronLeft, LuMessageSquare } from 'react-icons/lu';
 import { BiNavigation } from 'react-icons/bi';
 
-interface BentoMenuPopoverProps {
+interface MenuPopoverProps {
   onLocationSet: (lat: number, lng: number, zipCode: string) => void;
   onClose: () => void;
 }
 
 type MenuMode = 'main' | 'location';
 
-const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
+const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
   ({ onLocationSet, onClose }, ref) => {
     const [mode, setMode] = useState<MenuMode>('main');
     const [zipCodeInput, setZipCodeInput] = useState('');
@@ -239,6 +239,6 @@ const BentoMenuPopover = forwardRef<HTMLDivElement, BentoMenuPopoverProps>(
   }
 );
 
-BentoMenuPopover.displayName = 'BentoMenuPopover';
+MenuPopover.displayName = 'MenuPopover';
 
-export default BentoMenuPopover;
+export default MenuPopover;
