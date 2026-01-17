@@ -182,18 +182,21 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
 
   return (
     <div className="min-h-screen bg-malibu-50">
-      {/* Fixed Back Button - Always visible */}
-      <div className="fixed top-5 left-5 z-50 mt-2.5">
-        <Link
-          href="/"
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white shadow-lg transition-all no-underline text-malibu-950"
-        >
-          <IoIosArrowBack size={24} />
-        </Link>
-      </div>
+      {/* Header */}
+      <header className="bg-malibu-50 px-5 py-4">
+        <div className="max-w-3xl mx-auto flex items-center gap-3">
+          <Link
+            href="/"
+            className="flex items-center justify-center transition-colors hover:opacity-70"
+            aria-label="Back to home"
+          >
+            <IoIosArrowBack size={24} className="text-malibu-950" />
+          </Link>
+        </div>
+      </header>
 
       {/* Hero Image */}
-      <div className="relative w-full max-w-3xl mx-auto px-5 pt-16">
+      <div className="relative w-full max-w-3xl mx-auto px-5">
         <div className="relative w-full h-[400px] bg-gray-100 rounded-3xl overflow-hidden">
           <img
             src={imgSrc}
