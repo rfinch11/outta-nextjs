@@ -8,6 +8,7 @@ import { BiNavigation } from 'react-icons/bi';
 interface CardStackHeroProps {
   cityName: string;
   onLocationClick: () => void;
+  listingCount?: number;
 }
 
 const heroImages = [
@@ -131,7 +132,9 @@ const CardStack: React.FC<{ onSwipe?: () => void }> = ({ onSwipe }) => {
   );
 };
 
-const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick }) => {
+const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick, listingCount }) => {
+  const countText = listingCount !== undefined ? listingCount.toLocaleString() : 'Hundreds of';
+
   return (
     <section className="w-full py-8 md:py-12">
       {/* Mobile: Stack on top, centered */}
@@ -139,7 +142,7 @@ const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick
         <CardStack />
         <div className="text-center">
           <h1 className="text-[28px] font-semibold text-malibu-950 leading-tight mb-4">
-            Hundreds of family adventures near
+            Discover <span className="text-malibu-600">{countText}</span> family adventures near
           </h1>
           <button
             onClick={onLocationClick}
@@ -158,7 +161,7 @@ const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick
         <CardStack />
         <div className="text-left">
           <h1 className="text-[36px] lg:text-[40px] font-semibold text-malibu-950 leading-tight mb-4">
-            Hundreds of family<br />adventures near
+            Discover <span className="text-malibu-600">{countText}</span> family<br />adventures near
           </h1>
           <button
             onClick={onLocationClick}

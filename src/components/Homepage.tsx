@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
@@ -251,6 +251,22 @@ const Homepage: React.FC = () => {
   const rainyDayAdventures = getRainyDayAdventures(allListings, 6);
   const parks = getFavoriteParks(allListings, 6);
 
+  // Calculate hero count: listings within 50 miles that aren't stale
+  const heroCount = useMemo(() => {
+    const now = new Date();
+    return allListings.filter((listing) => {
+      // Must be within 50 miles
+      if ((listing.distance || Infinity) > 50) return false;
+      // Events must have future start_date
+      if (listing.type === 'Event') {
+        if (!listing.start_date) return false;
+        return new Date(listing.start_date) >= now;
+      }
+      // Activities and Camps always count
+      return true;
+    }).length;
+  }, [allListings]);
+
   return (
     <div className="min-h-screen bg-malibu-50">
       {/* Header */}
@@ -276,6 +292,7 @@ const Homepage: React.FC = () => {
       <HeroSection
         cityName={userLocation?.city || userLocation?.zipCode || 'your area'}
         onLocationClick={() => setShowLocationModal(true)}
+        listingCount={heroCount > 0 ? heroCount : undefined}
       />
 
       {/* Filter Bar */}
