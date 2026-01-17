@@ -207,6 +207,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                     start_date={listing.start_date}
                     place_type={listing.place_type}
                     description={listing.description}
+                    rating={listing.rating}
                   />
                 ))}
               </div>

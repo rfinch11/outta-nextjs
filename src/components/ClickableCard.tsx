@@ -2,8 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { LuCalendar, LuMapPin } from 'react-icons/lu';
-import { getPlaceTypeIcon } from '@/lib/placeTypeIcons';
+import { LuCalendar, LuMapPin, LuStar, LuStarHalf } from 'react-icons/lu';
 
 interface ClickableCardProps {
   airtable_id: string;
@@ -20,6 +19,7 @@ interface ClickableCardProps {
   place_type?: string;
   description?: string;
   organizer?: string | null;
+  rating?: number | null;
 }
 
 const ClickableCard: React.FC<ClickableCardProps> = ({
@@ -30,9 +30,8 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
   image,
   place_id,
   start_date,
-  place_type,
-  description,
   organizer,
+  rating,
 }) => {
   // State to track if we should use the fallback image
   const [imgSrc, setImgSrc] = React.useState<string>(
@@ -47,6 +46,31 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
       day: 'numeric',
     };
     return date.toLocaleDateString('en-US', options);
+  };
+
+  // Render star rating with fractional stars
+  const renderStars = (ratingValue: number) => {
+    const stars = [];
+    const fullStars = Math.floor(ratingValue);
+    const hasHalfStar = ratingValue % 1 >= 0.25 && ratingValue % 1 < 0.75;
+    const roundUp = ratingValue % 1 >= 0.75;
+
+    for (let i = 0; i < 5; i++) {
+      if (i < fullStars || (i === fullStars && roundUp)) {
+        stars.push(
+          <LuStar key={i} size={14} className="text-flamenco-500 fill-flamenco-500" />
+        );
+      } else if (i === fullStars && hasHalfStar) {
+        stars.push(
+          <LuStarHalf key={i} size={14} className="text-flamenco-500 fill-flamenco-500" />
+        );
+      } else {
+        stars.push(
+          <LuStar key={i} size={14} className="text-black-300" />
+        );
+      }
+    }
+    return stars;
   };
 
   // Handle image load error by falling back to the original image
@@ -84,50 +108,48 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
           {/* Date & Location row for Events */}
           {type === 'Event' && start_date && (
-            <div className="text-black-600 text-sm leading-5 flex items-center gap-3">
-              <div className="flex items-center gap-1">
+            <div className="text-black-600 text-sm leading-5 flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-1 flex-shrink-0">
                 <LuCalendar size={14} className="flex-shrink-0 text-black-500" />
                 <span>{formatDate(start_date)}</span>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 min-w-0">
                 <LuMapPin size={14} className="flex-shrink-0 text-black-500" />
-                <span>{city}</span>
+                <span className="truncate">{city}</span>
               </div>
             </div>
           )}
 
-          {/* Place type & Location row for Activities */}
+          {/* Rating & Location row for Activities */}
           {type === 'Activity' && (
-            <div className="text-black-600 text-sm leading-5 flex items-center gap-3">
-              {place_type && (
-                <div className="flex items-center gap-1">
-                  {React.createElement(getPlaceTypeIcon(place_type), {
-                    size: 14,
-                    className: 'flex-shrink-0 text-black-500',
-                  })}
-                  <span className="truncate">{place_type}</span>
+            <div className="text-black-600 text-sm leading-5 flex items-center gap-3 min-w-0">
+              {rating && (
+                <div className="flex items-center gap-0.5 flex-shrink-0">
+                  {renderStars(rating)}
+                  <span className="ml-1 text-black-600">{rating.toFixed(1)}</span>
                 </div>
               )}
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1 min-w-0">
                 <LuMapPin size={14} className="flex-shrink-0 text-black-500" />
-                <span>{city}</span>
+                <span className="truncate">{city}</span>
               </div>
             </div>
           )}
 
-          {/* Description & Location for Camps */}
+          {/* Rating & Location for Camps */}
           {type === 'Camp' && (
-            <>
-              {description && (
-                <div className="text-black-600 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-1">
-                  {description}
+            <div className="text-black-600 text-sm leading-5 flex items-center gap-3 min-w-0">
+              {rating && (
+                <div className="flex items-center gap-0.5 flex-shrink-0">
+                  {renderStars(rating)}
+                  <span className="ml-1 text-black-600">{rating.toFixed(1)}</span>
                 </div>
               )}
-              <div className="text-black-600 text-sm leading-5 flex items-center gap-1">
+              <div className="flex items-center gap-1 min-w-0">
                 <LuMapPin size={14} className="flex-shrink-0 text-black-500" />
-                <span>{city}</span>
+                <span className="truncate">{city}</span>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
