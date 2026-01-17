@@ -56,6 +56,7 @@ export function filterByPlaceType(
   placeType: string
 ): Listing[] {
   const now = new Date();
+  console.log(`filterByPlaceType: total=${listings.length}, placeType="${placeType}"`);
 
   return listings
     .filter((l) => l.latitude && l.longitude)
