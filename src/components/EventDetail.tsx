@@ -182,7 +182,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   const tagArray = tags?.split(',').map((t) => t.trim()) || [];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-malibu-50">
       {/* Fixed Back Button - Always visible */}
       <div className="fixed top-5 left-5 z-50 mt-2.5">
         <Link
