@@ -278,3 +278,21 @@ export function getFavoriteParks(
     .sort((a, b) => getEffectiveRating(b) - getEffectiveRating(a))
     .slice(0, maxCount);
 }
+
+/**
+ * Top farmers markets: place_type=Farmers Market, ≤20mi, 4+ stars, >5 reviews, rating high→low
+ */
+export function getTopFarmersMarkets(
+  listings: Listing[],
+  maxCount: number = 6
+): Listing[] {
+  return listings
+    .filter((l) => l.type !== 'Event')
+    .filter((l) => l.latitude && l.longitude)
+    .filter((l) => l.place_type?.toLowerCase() === 'farmers market')
+    .filter((l) => (l.distance || 0) <= 20)
+    .filter((l) => getEffectiveRating(l) >= 4)
+    .filter((l) => getReviewCount(l) > 5)
+    .sort((a, b) => getEffectiveRating(b) - getEffectiveRating(a))
+    .slice(0, maxCount);
+}

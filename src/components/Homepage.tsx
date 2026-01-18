@@ -18,6 +18,7 @@ import {
   getMostLovedPlaygrounds,
   getRainyDayAdventures,
   getFavoriteParks,
+  getTopFarmersMarkets,
 } from '@/lib/filterUtils';
 
 // Dynamic imports for modals (code splitting)
@@ -251,6 +252,7 @@ const Homepage: React.FC = () => {
   const playgrounds = getMostLovedPlaygrounds(allListings, 6);
   const rainyDayAdventures = getRainyDayAdventures(allListings, 6);
   const parks = getFavoriteParks(allListings, 6);
+  const farmersMarkets = getTopFarmersMarkets(allListings, 6);
 
   // Calculate hero count: listings within 50 miles that aren't stale
   const heroCount = useMemo(() => {
@@ -328,6 +330,12 @@ const Homepage: React.FC = () => {
                 title="Most loved playgrounds"
                 href="/filter/Playground"
                 listings={playgrounds}
+              />
+
+              <CollectionSection
+                title="Top farmers markets"
+                href="/filter/Farmers%20Market"
+                listings={farmersMarkets}
               />
 
               <CollectionSection
