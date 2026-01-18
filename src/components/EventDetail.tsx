@@ -399,13 +399,13 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
                 className="flex items-center gap-3 no-underline hover:opacity-70 transition-opacity"
               >
                 <LuTag size={20} className="text-emerald-600 flex-shrink-0" />
-                <span className="text-base text-emerald-600">{price}</span>
+                <span className="text-base text-emerald-600 font-semibold">{price}</span>
                 <LuArrowUpRight size={16} className="text-emerald-600 flex-shrink-0 -ml-2" />
               </a>
             ) : (
               <div className="flex items-center gap-3">
                 <LuTag size={20} className="text-emerald-600 flex-shrink-0" />
-                <span className="text-base text-emerald-600">{price}</span>
+                <span className="text-base text-emerald-600 font-semibold">{price}</span>
               </div>
             )
           )}
