@@ -125,7 +125,7 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
               {/* Change location */}
               <button
                 onClick={handleLocationModeClick}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-base text-malibu-950 border-none bg-transparent cursor-pointer transition-colors hover:bg-black-50"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-base text-malibu-950 border-none bg-transparent cursor-pointer transition-colors hover:bg-malibu-50"
                 type="button"
               >
                 <BiNavigation size={18} className="text-malibu-950" />
@@ -135,7 +135,7 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
               {/* Share feedback */}
               <button
                 onClick={handleShareFeedback}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-base text-malibu-950 border-none bg-transparent cursor-pointer transition-colors hover:bg-black-50"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-base text-malibu-950 border-none bg-transparent cursor-pointer transition-colors hover:bg-malibu-50"
                 type="button"
               >
                 <LuMessageSquare size={18} className="text-malibu-950" />
