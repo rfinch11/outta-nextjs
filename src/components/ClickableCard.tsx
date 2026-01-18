@@ -114,7 +114,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
           {type === 'Event' && (organizer || (price && !['see website', 'free'].includes(price.toLowerCase()))) && (
             <div className="text-sm leading-5 flex items-center gap-2 min-w-0">
               {organizer && (
-                <span className="text-malibu-950/80 truncate">{organizer}</span>
+                <span className="text-malibu-950/80 truncate min-w-0">{organizer}</span>
               )}
               {price && !['see website', 'free'].includes(price.toLowerCase()) && (
                 <span className="flex items-center gap-1 text-emerald-600 flex-shrink-0">
@@ -127,8 +127,8 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
           {/* Organizer for Activity and Camp */}
           {(type === 'Activity' || type === 'Camp') && organizer && (
-            <div className="text-sm leading-5 min-w-0">
-              <span className="text-malibu-950/80 truncate">{organizer}</span>
+            <div className="text-sm leading-5 text-malibu-950/80 truncate">
+              {organizer}
             </div>
           )}
 
