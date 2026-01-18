@@ -66,7 +66,7 @@ const OpenStatusBadge: React.FC<{ openingHours: PlaceOpeningHours }> = ({ openin
   }
 
   return isOpen ? (
-    <span className="text-base text-emerald-700">{statusText}</span>
+    <span className="text-base text-emerald-600">{statusText}</span>
   ) : (
     <span className="text-base text-malibu-950/60">{statusText}</span>
   );
@@ -398,14 +398,14 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 no-underline hover:opacity-70 transition-opacity"
               >
-                <LuTag size={20} className="text-emerald-700 flex-shrink-0" />
-                <span className="text-base text-emerald-700">{price}</span>
-                <LuArrowUpRight size={16} className="text-emerald-700 flex-shrink-0 -ml-2" />
+                <LuTag size={20} className="text-emerald-600 flex-shrink-0" />
+                <span className="text-base text-emerald-600">{price}</span>
+                <LuArrowUpRight size={16} className="text-emerald-600 flex-shrink-0 -ml-2" />
               </a>
             ) : (
               <div className="flex items-center gap-3">
-                <LuTag size={20} className="text-emerald-700 flex-shrink-0" />
-                <span className="text-base text-emerald-700">{price}</span>
+                <LuTag size={20} className="text-emerald-600 flex-shrink-0" />
+                <span className="text-base text-emerald-600">{price}</span>
               </div>
             )
           )}
