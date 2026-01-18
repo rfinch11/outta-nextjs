@@ -118,7 +118,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
               )}
               {price && !['see website', 'free'].includes(price.toLowerCase()) && (
                 <span className="flex items-center gap-1 text-emerald-600 flex-shrink-0">
-                  <LuTag size={14} />
+                  <LuTag size={14} strokeWidth={2.5} />
                   <span className="font-semibold">{formatCardPrice(price)}</span>
                 </span>
               )}
