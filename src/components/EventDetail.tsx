@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe, LuArrowUpRight } from 'react-icons/lu';
@@ -9,6 +9,62 @@ import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
 import { calculateDistance } from '@/lib/filterUtils';
 import ClickableCard from './ClickableCard';
+import { usePlaceDetails } from '@/hooks/usePlaceDetails';
+import {
+  GoogleRating,
+  BusinessHours,
+  PhotoGallery,
+  Reviews,
+} from '@/components/place-details';
+
+import type { PlaceOpeningHours } from '@/lib/googlePlaces';
+
+// Helper component for inline open status badge
+const OpenStatusBadge: React.FC<{ openingHours: PlaceOpeningHours }> = ({ openingHours }) => {
+  const { weekdayText } = openingHours;
+
+  // Calculate if currently open based on weekdayText (client-side for accuracy)
+  const now = new Date();
+  const dayIndex = now.getDay();
+  const googleDayIndex = dayIndex === 0 ? 6 : dayIndex - 1;
+  const todayHours = weekdayText[googleDayIndex];
+
+  let isOpen = false;
+  let statusText = 'Closed';
+
+  if (todayHours && !todayHours.toLowerCase().includes('closed')) {
+    const timeMatch = todayHours.match(
+      /(\d{1,2}):?(\d{2})?\s*(AM|PM)\s*[–-]\s*(\d{1,2}):?(\d{2})?\s*(AM|PM)/i
+    );
+
+    if (timeMatch) {
+      const [, openHour, openMin = '00', openPeriod, closeHour, closeMin = '00', closePeriod] = timeMatch;
+
+      const parseTime = (hour: string, min: string, period: string) => {
+        let h = parseInt(hour, 10);
+        if (period.toUpperCase() === 'PM' && h !== 12) h += 12;
+        if (period.toUpperCase() === 'AM' && h === 12) h = 0;
+        return h * 60 + parseInt(min, 10);
+      };
+
+      const openTime = parseTime(openHour, openMin, openPeriod);
+      const closeTime = parseTime(closeHour, closeMin, closePeriod);
+      const currentTime = now.getHours() * 60 + now.getMinutes();
+
+      isOpen = currentTime >= openTime && currentTime < closeTime;
+
+      if (isOpen) {
+        statusText = `Open · Closes ${closeHour}${closeMin !== '00' ? ':' + closeMin : ''} ${closePeriod}`;
+      }
+    }
+  }
+
+  return isOpen ? (
+    <span className="text-base text-emerald-700">{statusText}</span>
+  ) : (
+    <span className="text-base text-malibu-950/60">{statusText}</span>
+  );
+};
 
 interface EventDetailProps {
   // Core fields
@@ -63,7 +119,13 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     longitude,
   } = props;
 
-  // State to track if we should use the fallback image
+  // Fetch Google Place details
+  const { data: placeDetails, isLoading: placeDetailsLoading } = usePlaceDetails(place_id);
+
+  // Ref to the reviews section for scroll-to functionality
+  const reviewsSectionRef = useRef<HTMLDivElement>(null);
+
+  // State to track if we should use the fallback image (only for non-gallery fallback)
   const [imgSrc, setImgSrc] = useState<string>(
     place_id ? `/api/place-photo?place_id=${place_id}&width=800` : image
   );
@@ -146,6 +208,11 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     if (imgSrc !== image) {
       setImgSrc(image);
     }
+  };
+
+  // Scroll to reviews section
+  const scrollToReviews = () => {
+    reviewsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   // Handle share
@@ -244,21 +311,41 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         </div>
       </header>
 
-      {/* Hero Image */}
-      <div className="relative w-full max-w-3xl mx-auto px-5">
-        <div className="relative w-full h-[400px] bg-gray-100 rounded-3xl overflow-hidden shadow-lg">
-          <img
-            src={imgSrc}
-            alt={title}
-            className="w-full h-full object-cover"
-            onError={handleImageError}
-          />
+      {/* Photo Gallery or Hero Image */}
+      {placeDetails && placeDetails.photos.length > 0 ? (
+        <PhotoGallery
+          photos={placeDetails.photos}
+          fallbackImage={imgSrc}
+          title={title}
+        />
+      ) : (
+        <div className="relative w-full max-w-3xl mx-auto px-5">
+          <div className="relative w-full h-[400px] bg-gray-100 rounded-3xl overflow-hidden shadow-lg">
+            <img
+              src={imgSrc}
+              alt={title}
+              className="w-full h-full object-cover"
+              onError={handleImageError}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Content */}
       <div className="max-w-3xl mx-auto px-5 py-6">
-        <h1 className="text-3xl font-bold text-malibu-950 mb-6 mt-0">{title}</h1>
+        <h1 className="text-3xl font-bold text-malibu-950 mb-2 mt-0">{title}</h1>
+
+        {/* Google Rating */}
+        {placeDetails && placeDetails.rating && placeDetails.userRatingsTotal && (
+          <div className="mb-6">
+            <GoogleRating
+              rating={placeDetails.rating}
+              reviewCount={placeDetails.userRatingsTotal}
+              onReviewsClick={placeDetails.reviews.length > 0 ? scrollToReviews : undefined}
+            />
+          </div>
+        )}
+        {!placeDetails && !placeDetailsLoading && <div className="mb-4" />}
 
         {/* Event Info Grid */}
         <div className="flex flex-col gap-4 mb-8">
@@ -287,6 +374,14 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
               <span className="text-base text-malibu-950/90 truncate">{fullAddress}</span>
               <LuArrowUpRight size={16} className="text-malibu-950/70 flex-shrink-0 -ml-2" />
             </a>
+          )}
+
+          {/* Open/Closed Status (inline) */}
+          {placeDetails?.openingHours && placeDetails.openingHours.weekdayText.length > 0 && (
+            <div className="flex items-center gap-3">
+              <LuClock3 size={20} className="text-malibu-950/70 flex-shrink-0" />
+              <OpenStatusBadge openingHours={placeDetails.openingHours} />
+            </div>
           )}
 
           {price && (
@@ -350,6 +445,14 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
           )}
         </div>
 
+        {/* Hours Section */}
+        {placeDetails?.openingHours && placeDetails.openingHours.weekdayText.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-bold text-malibu-950 mb-3">Hours</h2>
+            <BusinessHours openingHours={placeDetails.openingHours} />
+          </div>
+        )}
+
         {/* Details Section */}
         {description && (
           <div className="mb-8">
@@ -357,6 +460,14 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
             <p className="text-base text-malibu-950/80 leading-relaxed whitespace-pre-wrap">
               {description}
             </p>
+          </div>
+        )}
+
+        {/* Reviews Section */}
+        {placeDetails && placeDetails.reviews.length > 0 && place_id && (
+          <div className="mb-8" ref={reviewsSectionRef}>
+            <h2 className="text-xl font-bold text-malibu-950 mb-3">Reviews</h2>
+            <Reviews reviews={placeDetails.reviews} placeId={place_id} />
           </div>
         )}
 
