@@ -627,7 +627,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
       <Drawer.Root open={mapDrawerOpen} onOpenChange={setMapDrawerOpen}>
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" />
-          <Drawer.Content className="bg-white flex flex-col rounded-t-[10px] h-[95dvh] max-h-[95dvh] fixed bottom-0 left-0 right-0 z-[70] outline-none overflow-hidden">
+          <Drawer.Content className="bg-white flex flex-col rounded-t-[20px] h-[95dvh] max-h-[95dvh] fixed bottom-0 left-0 right-0 z-[70] outline-none overflow-hidden">
             <Drawer.Title className="sr-only">Map View</Drawer.Title>
             <Drawer.Description className="sr-only">
               View {getTitle()} on a map
@@ -736,7 +736,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
             className={
               isLargeScreen
                 ? 'bg-white flex flex-col rounded-xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] outline-none overflow-hidden w-full max-w-md shadow-xl'
-                : 'bg-white flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 z-[70] outline-none overflow-hidden'
+                : 'bg-white flex flex-col rounded-t-[20px] fixed bottom-0 left-0 right-0 z-[70] outline-none overflow-hidden'
             }
           >
             <Drawer.Title className="sr-only">Filters</Drawer.Title>
