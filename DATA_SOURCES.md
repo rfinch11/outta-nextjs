@@ -275,6 +275,46 @@ Automated enrichment ensures complete data quality.
 
 ---
 
+### 10. Google Place Details (Manual Refresh)
+
+**Production Status:** Live (manual refresh only)
+
+| Property | Value |
+|----------|-------|
+| **Schedule** | Manual (run as needed) |
+| **Script** | `scripts/refresh-place-details.js` |
+| **API Route** | `src/app/api/place-details/route.ts` |
+| **Purpose** | Photos, hours, ratings, reviews for Activities |
+
+**Manual Refresh Process:**
+
+The API route only returns cached data from Supabase. Google Places API is never called automatically.
+
+```bash
+# Preview what would be refreshed
+node scripts/refresh-place-details.js --dry-run
+
+# Refresh listings with no cached data (limit 50)
+node scripts/refresh-place-details.js --limit 50
+
+# Refresh stale cache (>7 days old)
+node scripts/refresh-place-details.js --stale --limit 50
+
+# Refresh specific place_id
+node scripts/refresh-place-details.js --place-id ChIJxxxxxxxx
+```
+
+**Cost Control:**
+- Each refresh = ~$0.017 (Place Details API)
+- Use `--dry-run` to preview count before refreshing
+- Recommended: Run weekly or after adding new Activities
+
+**Data Cached:**
+- `google_place_details` (JSONB) - photos, hours, rating, reviews
+- `place_details_updated_at` (TIMESTAMP) - last refresh time
+
+---
+
 ## 📈 Production Statistics
 
 ### Coverage Metrics

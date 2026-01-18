@@ -66,6 +66,7 @@ outta-nextjs/
 │   │       ├── listings/route.ts     # Fetch listings
 │   │       ├── search/route.ts       # Search endpoint
 │   │       ├── place-photo/route.ts  # Google Places photo proxy
+│   │       ├── place-details/route.ts # Cached Google Place details (manual refresh)
 │   │       ├── ingest-rss/route.ts   # RSS feed cron (8 AM UTC)
 │   │       ├── fetch-unsplash-images/route.ts  # Image cron (10 AM UTC)
 │   │       └── geocode-listings/route.ts       # Geocoding cron (11 AM UTC)
@@ -95,6 +96,7 @@ outta-nextjs/
 │   ├── import-santa-cruz-library.js  # Santa Cruz Library import
 │   ├── import-badm-events.js         # Bay Area Discovery Museum scraper
 │   ├── import-eventbrite-events.js   # Eventbrite Bay Area scraper
+│   ├── refresh-place-details.js      # Manual Google Place details refresh
 │   ├── backfill-images.js            # Image backfill utilities
 │   └── [45+ utility scripts]
 │
@@ -531,6 +533,28 @@ CRON_SECRET=[secret-for-cron-authentication]
 2. Test endpoint manually: `curl https://outta.events/api/[endpoint]?cron_secret=XXX`
 3. Review Supabase logs for database errors
 4. Check external API rate limits (Unsplash, Google Maps)
+
+### Refreshing Google Place Details (Manual Process)
+Google Place details (photos, hours, ratings, reviews) are cached in Supabase and must be manually refreshed to control API costs.
+
+```bash
+# Preview what would be refreshed (dry run)
+node scripts/refresh-place-details.js --dry-run
+
+# Refresh listings with no cached data
+node scripts/refresh-place-details.js --limit 50
+
+# Refresh stale cache (>7 days old)
+node scripts/refresh-place-details.js --stale --limit 50
+
+# Refresh specific place
+node scripts/refresh-place-details.js --place-id ChIJxxxxxxxx
+
+# Refresh all listings (use sparingly)
+node scripts/refresh-place-details.js --all
+```
+
+**Cost:** ~$0.017 per listing. Run `--dry-run` first to estimate costs.
 
 ---
 
