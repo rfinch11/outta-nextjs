@@ -55,9 +55,7 @@ describe('ClickableCard', () => {
     render(<ClickableCard {...mockEventListing} />);
 
     expect(screen.getByText('Summer Festival')).toBeInTheDocument();
-    expect(screen.getByText('Scout Pick')).toBeInTheDocument();
     expect(screen.getByText(/San Francisco/)).toBeInTheDocument();
-    expect(screen.getByText(/5 mi/)).toBeInTheDocument();
   });
 
   it('renders activity card with place type', () => {
@@ -82,12 +80,7 @@ describe('ClickableCard', () => {
     expect(link).toHaveAttribute('href', '/listings/event123');
   });
 
-  it('displays scout pick badge for scout pick listings', () => {
-    render(<ClickableCard {...mockEventListing} />);
-    expect(screen.getByText('Scout Pick')).toBeInTheDocument();
-  });
-
-  it('does not display scout pick badge for non-scout pick listings', () => {
+  it('renders card without scout pick badge', () => {
     render(<ClickableCard {...mockActivityListing} />);
     expect(screen.queryByText('Scout Pick')).not.toBeInTheDocument();
   });

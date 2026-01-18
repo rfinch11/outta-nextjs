@@ -1,8 +1,13 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import PrivacyPolicyDrawer from './PrivacyPolicyDrawer';
 
 const Footer: React.FC = () => {
+  const [privacyDrawerOpen, setPrivacyDrawerOpen] = useState(false);
+
   return (
     <footer className="bg-gray-100 border-t border-gray-300 px-5 pt-12 pb-8 mt-2">
       <div className="max-w-7xl mx-auto">
@@ -23,12 +28,12 @@ const Footer: React.FC = () => {
           {/* Legal */}
           <div className="flex flex-col gap-3">
             <h3 className="text-sm font-bold text-black m-0 mb-2 uppercase tracking-wide">Legal</h3>
-            <Link
-              href="/privacy"
-              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
+            <button
+              onClick={() => setPrivacyDrawerOpen(true)}
+              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors text-left bg-transparent border-none cursor-pointer p-0"
             >
               Privacy Policy
-            </Link>
+            </button>
             <Link
               href="/terms"
               className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
@@ -76,6 +81,12 @@ const Footer: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Privacy Policy Drawer */}
+      <PrivacyPolicyDrawer
+        open={privacyDrawerOpen}
+        onOpenChange={setPrivacyDrawerOpen}
+      />
     </footer>
   );
 };

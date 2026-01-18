@@ -1,15 +1,32 @@
 import { render, screen } from '@testing-library/react';
 import Footer from '../Footer';
 
+// Mock window.matchMedia for useMediaQuery hook
+beforeAll(() => {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: jest.fn().mockImplementation((query) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+      addEventListener: jest.fn(),
+      removeEventListener: jest.fn(),
+      dispatchEvent: jest.fn(),
+    })),
+  });
+});
+
 describe('Footer', () => {
-  it('renders the footer with all links', () => {
+  it('renders the footer with all links and buttons', () => {
     render(<Footer />);
 
     // Check for company name/logo
     expect(screen.getByText(/Outta/i)).toBeInTheDocument();
 
-    // Check for privacy link
-    expect(screen.getByRole('link', { name: /privacy/i })).toBeInTheDocument();
+    // Check for privacy button (opens drawer)
+    expect(screen.getByRole('button', { name: /privacy/i })).toBeInTheDocument();
 
     // Check for terms link
     expect(screen.getByRole('link', { name: /terms/i })).toBeInTheDocument();
@@ -21,10 +38,7 @@ describe('Footer', () => {
   it('has correct href attributes for links', () => {
     render(<Footer />);
 
-    const privacyLink = screen.getByRole('link', { name: /privacy/i });
     const termsLink = screen.getByRole('link', { name: /terms/i });
-
-    expect(privacyLink).toHaveAttribute('href', '/privacy');
     expect(termsLink).toHaveAttribute('href', '/terms');
   });
 });
