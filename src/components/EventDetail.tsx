@@ -16,6 +16,7 @@ import {
   PhotoGallery,
   Reviews,
 } from '@/components/place-details';
+import { InstagramSection } from './InstagramSection';
 
 import type { PlaceOpeningHours } from '@/lib/googlePlaces';
 
@@ -102,6 +103,9 @@ interface EventDetailProps {
   recommended?: boolean;
   place_type?: string;
 
+  // Social
+  instagram_posts?: string[] | null;
+
   // Google Place details (cached in database)
   google_place_details?: {
     photos?: { url: string; width: number; height: number }[];
@@ -133,6 +137,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     latitude,
     longitude,
     google_place_details,
+    instagram_posts,
   } = props;
 
   // Use cached Google Place details from props (database), fall back to API hook if not available
@@ -491,6 +496,11 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
               {description}
             </p>
           </div>
+        )}
+
+        {/* Instagram Posts Section */}
+        {instagram_posts && instagram_posts.length > 0 && (
+          <InstagramSection posts={instagram_posts} />
         )}
 
         {/* Reviews Section */}

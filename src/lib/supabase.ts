@@ -44,6 +44,7 @@ export type Listing = {
   google_place_details?: GooglePlaceDetails | null;
   place_details_updated_at?: string | null;
   hidden?: boolean;
+  instagram_posts?: string[] | null;
 };
 
 export type Source = {
