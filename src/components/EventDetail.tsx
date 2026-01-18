@@ -101,6 +101,15 @@ interface EventDetailProps {
   // Meta
   recommended?: boolean;
   place_type?: string;
+
+  // Google Place details (cached in database)
+  google_place_details?: {
+    photos?: { url: string; width: number; height: number }[];
+    openingHours?: { isOpen: boolean | null; weekdayText: string[] } | null;
+    rating?: number | null;
+    userRatingsTotal?: number | null;
+    reviews?: { authorName: string; rating: number; text: string; relativeTimeDescription: string }[];
+  } | null;
 }
 
 const EventDetail: React.FC<EventDetailProps> = (props) => {
@@ -123,10 +132,16 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     tags,
     latitude,
     longitude,
+    google_place_details,
   } = props;
 
-  // Fetch Google Place details
-  const { data: placeDetails, isLoading: placeDetailsLoading } = usePlaceDetails(place_id);
+  // Use cached Google Place details from props (database), fall back to API hook if not available
+  const { data: fetchedPlaceDetails, isLoading: placeDetailsLoading } = usePlaceDetails(
+    google_place_details ? null : place_id // Only fetch if not already cached
+  );
+
+  // Prefer cached data from props, fall back to fetched data
+  const placeDetails = google_place_details || fetchedPlaceDetails;
 
   // Scroll to top on mount
   useEffect(() => {
@@ -327,7 +342,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
       </header>
 
       {/* Photo Gallery or Hero Image */}
-      {placeDetails && placeDetails.photos.length > 0 ? (
+      {placeDetails && placeDetails.photos && placeDetails.photos.length > 0 ? (
         <PhotoGallery
           photos={placeDetails.photos}
           fallbackImage={imgSrc}
@@ -356,7 +371,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
             <GoogleRating
               rating={placeDetails.rating}
               reviewCount={placeDetails.userRatingsTotal}
-              onReviewsClick={placeDetails.reviews.length > 0 ? scrollToReviews : undefined}
+              onReviewsClick={placeDetails.reviews && placeDetails.reviews.length > 0 ? scrollToReviews : undefined}
             />
           </div>
         )}
@@ -479,7 +494,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         )}
 
         {/* Reviews Section */}
-        {placeDetails && placeDetails.reviews.length > 0 && place_id && (
+        {placeDetails && placeDetails.reviews && placeDetails.reviews.length > 0 && place_id && (
           <div className="mb-8" ref={reviewsSectionRef}>
             <h2 className="text-xl font-bold text-malibu-950 mb-3">Reviews</h2>
             <Reviews reviews={placeDetails.reviews} placeId={place_id} />

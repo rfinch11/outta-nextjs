@@ -191,21 +191,22 @@ export function getUpcomingEvents(
 }
 
 /**
- * For advanced planners: type=Event, ≤50mi, start_date > 6 days from now, featured only
+ * Nearby paid events: has a price (not "free" or "see website"), hidden=false, ordered by date
+ * Excludes East Bay Regional Park District events
  */
-export function getAdvancedPlannerEvents(
+export function getNearbyPaidEvents(
   listings: Listing[],
   maxCount: number = 6
 ): Listing[] {
-  const sixDaysFromNow = new Date();
-  sixDaysFromNow.setDate(sixDaysFromNow.getDate() + 6);
-
   return listings
     .filter((l) => l.type === 'Event')
-    .filter((l) => l.latitude && l.longitude)
-    .filter((l) => l.start_date && new Date(l.start_date) > sixDaysFromNow)
-    .filter((l) => (l.distance || 0) <= 50)
-    .filter((l) => l.scout_pick)
+    .filter((l) => !l.hidden)
+    .filter((l) => l.organizer !== 'East Bay Regional Park District')
+    .filter((l) => {
+      const price = l.price?.toLowerCase().trim();
+      return price && price !== 'free' && price !== 'see website';
+    })
+    .filter((l) => l.start_date)
     .sort((a, b) => {
       const dateA = new Date(a.start_date!).getTime();
       const dateB = new Date(b.start_date!).getTime();

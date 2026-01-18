@@ -14,7 +14,7 @@ import HeroSection from './HeroSection';
 import {
   getPlaceTypeCounts,
   getUpcomingEvents,
-  getAdvancedPlannerEvents,
+  getNearbyPaidEvents,
   getMostLovedPlaygrounds,
   getRainyDayAdventures,
   getFavoriteParks,
@@ -248,7 +248,7 @@ const Homepage: React.FC = () => {
 
   // Generate collections from listings
   const upcomingEvents = getUpcomingEvents(allListings, 6);
-  const advancedPlannerEvents = getAdvancedPlannerEvents(allListings, 6);
+  const nearbyPaidEvents = getNearbyPaidEvents(allListings, 6);
   const playgrounds = getMostLovedPlaygrounds(allListings, 6);
   const rainyDayAdventures = getRainyDayAdventures(allListings, 6);
   const parks = getFavoriteParks(allListings, 6);
@@ -321,9 +321,9 @@ const Homepage: React.FC = () => {
               />
 
               <CollectionSection
-                title="For advanced planners"
+                title="Nearby paid events"
                 href="/filter/events"
-                listings={advancedPlannerEvents}
+                listings={nearbyPaidEvents}
               />
 
               <CollectionSection
