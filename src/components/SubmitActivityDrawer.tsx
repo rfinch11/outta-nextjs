@@ -274,7 +274,7 @@ const SubmitActivityDrawer: React.FC<SubmitActivityDrawerProps> = ({
                 </div>
 
                 {/* Date and Time Row */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label htmlFor="startDate" className={labelClassName}>
                       Start date
