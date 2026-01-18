@@ -122,6 +122,7 @@ Custom Playwright-based scrapers that import events directly to Supabase.
 - Full description scraping from event pages
 - Kid-friendly event filtering
 - **Organizer extraction** with multi-strategy approach
+- **Price extraction** from JSON-LD offers data
 
 **Organizer Extraction (January 2026):**
 
@@ -131,16 +132,21 @@ Extracts actual event organizer names using three strategies:
 3. **JSON-LD** - From structured data `"organizer":{"@type":"Organization","name":"..."}`
 4. Falls back to "Eventbrite" if no organizer found
 
-**Backfill Script:**
+**Price Extraction (January 2026):**
+
+Extracts actual ticket prices from event pages:
+1. **isFree indicator** - Checks `"isFree":true` in page data
+2. **JSON-LD offers** - Extracts `lowPrice` and `highPrice` from structured data
+3. Formats as "$X" (single price) or "$X - $Y" (range)
+4. Falls back to title check for "free", then "See website"
+
+**Backfill Scripts:**
 ```bash
-# Update all Eventbrite events with default "Eventbrite" organizer
-node scripts/backfill-eventbrite-organizers.js
+# Backfill organizers
+node scripts/backfill-eventbrite-organizers.js [--all] [--limit N]
 
-# Update all Eventbrite events (including those already updated)
-node scripts/backfill-eventbrite-organizers.js --all
-
-# Test with limited events
-node scripts/backfill-eventbrite-organizers.js --limit 10
+# Backfill prices
+node scripts/backfill-eventbrite-prices.js [--all] [--limit N]
 ```
 
 **Migration Notes:**
@@ -148,6 +154,7 @@ node scripts/backfill-eventbrite-organizers.js --limit 10
 - Updated all database operations
 - Changed field mappings to lowercase
 - Added organizer extraction January 2026 (250/275 events updated)
+- Added price extraction January 2026 (109/227 events updated)
 
 ---
 
