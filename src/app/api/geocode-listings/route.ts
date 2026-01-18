@@ -10,14 +10,18 @@ const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY!;
 
 /**
  * Build address string from listing fields
+ * Prioritizes: street > location_name > city for specificity
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function buildAddress(listing: any): string | null {
   const parts: string[] = [];
 
-  // Add street if available
+  // Add street if available (most specific)
   if (listing.street) {
     parts.push(listing.street);
+  } else if (listing.location_name) {
+    // Use location_name if no street (e.g., "Coyote Hills", "Ardenwood")
+    parts.push(listing.location_name);
   }
 
   // Add city, state, zip
@@ -33,18 +37,14 @@ function buildAddress(listing: any): string | null {
     parts.push(listing.zip);
   }
 
-  // If we have at least city or street, return the address
-  if (parts.length > 0) {
+  // Return address if we have at least a location identifier + city/state
+  if (parts.length >= 2) {
     return parts.join(', ');
   }
 
-  // Fallback to location_name if no address parts
+  // If we only have location_name, try it alone
   if (listing.location_name) {
-    // Add city/state to location name for better geocoding
-    const locationParts = [listing.location_name];
-    if (listing.city) locationParts.push(listing.city);
-    if (listing.state) locationParts.push(listing.state);
-    return locationParts.join(', ');
+    return listing.location_name;
   }
 
   return null;

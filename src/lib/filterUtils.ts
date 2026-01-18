@@ -24,18 +24,26 @@ export function calculateDistance(
 }
 
 /**
- * Filter events: future only, within maxDistance, sorted by date then distance
+ * Filter events: today and future (in local time), within maxDistance, sorted by date then distance
  */
 export function filterEvents(
   listings: Listing[],
   maxDistanceMiles: number = 50
 ): Listing[] {
-  const now = new Date();
+  // Get start of today in LOCAL time
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   return listings
     .filter((l) => l.type === 'Event')
     .filter((l) => l.latitude && l.longitude)
-    .filter((l) => l.start_date && new Date(l.start_date) >= now)
+    .filter((l) => {
+      if (!l.start_date) return false;
+      // Get the event date and normalize to start of day in LOCAL time
+      const eventDate = new Date(l.start_date);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate >= today;
+    })
     .filter((l) => (l.distance || 0) <= maxDistanceMiles)
     .sort((a, b) => {
       // Sort by date first
@@ -49,21 +57,24 @@ export function filterEvents(
 
 /**
  * Filter listings by place_type, sorted by distance (closest first)
- * Excludes past events (listings with start_date before now)
+ * Excludes past events (listings with start_date before today in local time)
  */
 export function filterByPlaceType(
   listings: Listing[],
   placeType: string
 ): Listing[] {
-  const now = new Date();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   return listings
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type?.toLowerCase() === placeType.toLowerCase())
     .filter((l) => {
-      // Exclude past events (if it has a start_date and it's in the past)
+      // Exclude past events (if it has a start_date and it's before today)
       if (l.start_date) {
-        return new Date(l.start_date) >= now;
+        const eventDate = new Date(l.start_date);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate >= today;
       }
       // Keep listings without start_date (activities, camps, etc.)
       return true;
@@ -78,14 +89,19 @@ export function filterByPlaceType(
 export function getPlaceTypeCounts(
   listings: Listing[]
 ): Array<{ type: string; count: number }> {
-  const now = new Date();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const counts = new Map<string, number>();
 
   for (const listing of listings) {
     if (listing.place_type && listing.latitude && listing.longitude) {
-      // Skip past events
-      if (listing.start_date && new Date(listing.start_date) < now) {
-        continue;
+      // Skip past events (before today in local time)
+      if (listing.start_date) {
+        const eventDate = new Date(listing.start_date);
+        eventDate.setHours(0, 0, 0, 0);
+        if (eventDate < today) {
+          continue;
+        }
       }
       counts.set(listing.place_type, (counts.get(listing.place_type) || 0) + 1);
     }
@@ -97,23 +113,23 @@ export function getPlaceTypeCounts(
 }
 
 /**
- * Get count of future events within max distance
+ * Get count of today's and future events within max distance
  */
 export function getEventCount(
   listings: Listing[],
   maxDistanceMiles: number = 50
 ): number {
-  const now = new Date();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-  return listings.filter(
-    (l) =>
-      l.type === 'Event' &&
-      l.latitude &&
-      l.longitude &&
-      l.start_date &&
-      new Date(l.start_date) >= now &&
-      (l.distance || 0) <= maxDistanceMiles
-  ).length;
+  return listings.filter((l) => {
+    if (l.type !== 'Event' || !l.latitude || !l.longitude || !l.start_date) {
+      return false;
+    }
+    const eventDate = new Date(l.start_date);
+    eventDate.setHours(0, 0, 0, 0);
+    return eventDate >= today && (l.distance || 0) <= maxDistanceMiles;
+  }).length;
 }
 
 /**
@@ -143,18 +159,24 @@ export function addDistanceToListings(
 // ============================================
 
 /**
- * Upcoming events: type=Event, ≤30mi, future only, earliest first, prioritize featured
+ * Upcoming events: type=Event, ≤30mi, today and future, earliest first, prioritize featured
  */
 export function getUpcomingEvents(
   listings: Listing[],
   maxCount: number = 6
 ): Listing[] {
-  const now = new Date();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   return listings
     .filter((l) => l.type === 'Event')
     .filter((l) => l.latitude && l.longitude)
-    .filter((l) => l.start_date && new Date(l.start_date) >= now)
+    .filter((l) => {
+      if (!l.start_date) return false;
+      const eventDate = new Date(l.start_date);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate >= today;
+    })
     .filter((l) => (l.distance || 0) <= 30)
     .sort((a, b) => {
       // Prioritize featured (scout_pick) first

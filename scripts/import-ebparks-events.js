@@ -18,6 +18,7 @@ require('dotenv').config({ path: '.env.local' });
 const { createClient } = require('@supabase/supabase-js');
 const cheerio = require('cheerio');
 const { chromium } = require('playwright');
+const { DateTime } = require('luxon');
 
 // Configuration
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -326,7 +327,11 @@ async function scrapeEventDetails(browser, event) {
 }
 
 /**
- * Parse date text to ISO format
+ * Parse date text to ISO format with Pacific timezone awareness
+ *
+ * IMPORTANT: Event times from EBRPD are in Pacific time. We must parse them
+ * as Pacific time and store with proper timezone offset to avoid the GitHub
+ * Actions UTC timezone issue (events showing 8 hours earlier than expected).
  */
 function parseDateText(dateText) {
   if (!dateText) return null;
@@ -343,18 +348,28 @@ function parseDateText(dateText) {
       const minutes = parseInt(match[3]);
       const period = match[4].toUpperCase();
 
-      // Parse date
-      const parsedDate = new Date(dateStr);
-
       // Convert to 24-hour format
       let hour24 = hours;
       if (period === 'PM' && hours !== 12) hour24 += 12;
       if (period === 'AM' && hours === 12) hour24 = 0;
 
-      parsedDate.setHours(hour24, minutes, 0, 0);
+      // Parse the date string to get month, day, year
+      // Handle formats like "Dec. 31, 2025" or "January 18, 2026"
+      const tempDate = new Date(dateStr);
+      const month = tempDate.getMonth() + 1; // 0-indexed
+      const day = tempDate.getDate();
+      const year = tempDate.getFullYear();
 
-      // Return ISO string (Supabase handles timestamps)
-      return parsedDate.toISOString();
+      // Create DateTime in Pacific timezone using luxon
+      // This correctly handles PST/PDT transitions
+      const pacificDateTime = DateTime.fromObject(
+        { year, month, day, hour: hour24, minute: minutes, second: 0 },
+        { zone: 'America/Los_Angeles' }
+      );
+
+      // Return ISO string with timezone offset (e.g., "2026-01-18T09:30:00-08:00")
+      // This preserves the Pacific time correctly regardless of server timezone
+      return pacificDateTime.toISO();
     }
   } catch (error) {
     console.error(`  ⚠️  Could not parse date: ${dateText}`);
