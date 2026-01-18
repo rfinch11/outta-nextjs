@@ -77,7 +77,11 @@ const FilterBar: React.FC<FilterBarProps> = ({
       }
     } else {
       // Neutral state
-      buttonClasses += ' bg-transparent border-2 border-transparent text-malibu-950/90 hover:text-malibu-950';
+      if (isCollections) {
+        buttonClasses += ' bg-transparent border-2 border-transparent text-malibu-950/90 hover:text-malibu-950';
+      } else {
+        buttonClasses += ' bg-malibu-950/5 border-2 border-transparent text-malibu-950/90 hover:bg-malibu-950/10 hover:text-malibu-950';
+      }
     }
 
     return (
