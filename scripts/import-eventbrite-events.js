@@ -149,6 +149,52 @@ function extractOrganizer(html, serverData = null) {
 }
 
 /**
+ * Extract price from HTML using multiple strategies
+ */
+function extractPrice(html, serverData = null) {
+  // Strategy 1: Check isFree indicator in HTML
+  const isFreeMatch = html.match(/"isFree"\s*:\s*(true|false)/i);
+  if (isFreeMatch && isFreeMatch[1].toLowerCase() === 'true') {
+    return 'Free';
+  }
+
+  // Strategy 2: Check is_free in serverData
+  if (serverData?.is_free === true) {
+    return 'Free';
+  }
+
+  // Strategy 3: From JSON-LD offers
+  const offersMatch = html.match(/"offers"\s*:\s*\[([^\]]+)\]/);
+  if (offersMatch) {
+    const offersStr = offersMatch[1];
+
+    // Look for lowPrice and highPrice (can be quoted string or unquoted number)
+    const lowPriceMatch = offersStr.match(/"lowPrice"\s*:\s*"?(\d+(?:\.\d+)?)(?:"|,|\})/);
+    const highPriceMatch = offersStr.match(/"highPrice"\s*:\s*"?(\d+(?:\.\d+)?)(?:"|,|\})/);
+
+    if (lowPriceMatch) {
+      const lowPrice = parseFloat(lowPriceMatch[1]);
+      const highPrice = highPriceMatch ? parseFloat(highPriceMatch[1]) : lowPrice;
+
+      // Check if free (price is 0)
+      if (lowPrice === 0 && highPrice === 0) {
+        return 'Free';
+      }
+
+      // Format price (round to nearest dollar)
+      if (lowPrice === highPrice) {
+        return `$${Math.round(lowPrice)}`;
+      } else {
+        return `$${Math.round(lowPrice)} - $${Math.round(highPrice)}`;
+      }
+    }
+  }
+
+  // Fallback
+  return null;
+}
+
+/**
  * Extract description from HTML using multiple strategies
  */
 function extractDescription(html, serverData = null) {
@@ -220,8 +266,8 @@ function cleanHtmlToText(html) {
 }
 
 /**
- * Scrape individual event page for full description and organizer
- * @returns {Promise<{description: string|null, organizer: string|null}>}
+ * Scrape individual event page for full description, organizer, and price
+ * @returns {Promise<{description: string|null, organizer: string|null, price: string|null}>}
  */
 async function scrapeEventDetails(eventUrl) {
   try {
@@ -232,7 +278,7 @@ async function scrapeEventDetails(eventUrl) {
     });
 
     if (!response.ok) {
-      return { description: null, organizer: null };
+      return { description: null, organizer: null, price: null };
     }
 
     const html = await response.text();
@@ -248,21 +294,22 @@ async function scrapeEventDetails(eventUrl) {
       }
     }
 
-    // Extract organizer and description using multiple strategies
+    // Extract organizer, description, and price using multiple strategies
     const organizer = extractOrganizer(html, serverData);
     const description = extractDescription(html, serverData);
+    const price = extractPrice(html, serverData);
 
-    return { description, organizer };
+    return { description, organizer, price };
   } catch (error) {
     console.error(`    ⚠️  Error scraping event details:`, error.message);
-    return { description: null, organizer: null };
+    return { description: null, organizer: null, price: null };
   }
 }
 
 /**
  * Map Eventbrite event to Supabase fields
  */
-function mapEventToSupabase(event, fullDescription = null, organizerName = null) {
+function mapEventToSupabase(event, fullDescription = null, organizerName = null, scrapedPrice = null) {
   const venue = event.primary_venue || {};
   const address = venue.address || {};
 
@@ -311,10 +358,14 @@ function mapEventToSupabase(event, fullDescription = null, organizerName = null)
   else if (venueName.includes('studio') || venueName.includes('maker')) placeType = 'Studio';
   else if (event.is_online_event) placeType = 'Online';
 
-  // Price info
-  let price = 'See website';
-  if (event.name.toLowerCase().includes('free') || (event.summary || '').toLowerCase().includes('free')) {
-    price = 'Free';
+  // Price info - use scraped price first, then infer from title/description, fallback to "See website"
+  let price = scrapedPrice;
+  if (!price) {
+    if (event.name.toLowerCase().includes('free') || (event.summary || '').toLowerCase().includes('free')) {
+      price = 'Free';
+    } else {
+      price = 'See website';
+    }
   }
 
   // Format datetime with Pacific timezone
@@ -488,21 +539,21 @@ async function importEvents() {
       continue;
     }
 
-    // Scrape full description and organizer from event page
+    // Scrape full description, organizer, and price from event page
     console.log(`  🔍 Fetching event details...`);
-    const { description, organizer } = await scrapeEventDetails(event.url);
+    const { description, organizer, price } = await scrapeEventDetails(event.url);
 
     // Map to Supabase format
-    const eventData = mapEventToSupabase(event, description, organizer);
+    const eventData = mapEventToSupabase(event, description, organizer, price);
 
     // Create or update in Supabase
     const result = await createOrUpdateEvent(eventData);
 
     if (result.action === 'created') {
-      console.log(`  ✅ Created new record (organizer: ${organizer || 'Eventbrite'})`);
+      console.log(`  ✅ Created (${eventData.price}) by ${organizer || 'Eventbrite'}`);
       created++;
     } else if (result.action === 'updated') {
-      console.log(`  ♻️  Updated existing record (organizer: ${organizer || 'Eventbrite'})`);
+      console.log(`  ♻️  Updated (${eventData.price}) by ${organizer || 'Eventbrite'}`);
       updated++;
     } else {
       console.log(`  ❌ Error: ${result.error}`);
