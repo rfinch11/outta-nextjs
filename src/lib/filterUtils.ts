@@ -226,7 +226,7 @@ export function getMostLovedPlaygrounds(
 }
 
 /**
- * Rainy day adventures: place_type=Indoor Playground, sorted by distance, excludes events
+ * Rainy day adventures: place_type=Indoor play, sorted by distance, excludes events
  */
 export function getRainyDayAdventures(
   listings: Listing[],
@@ -235,7 +235,7 @@ export function getRainyDayAdventures(
   return listings
     .filter((l) => l.type !== 'Event')
     .filter((l) => l.latitude && l.longitude)
-    .filter((l) => l.place_type?.toLowerCase() === 'indoor playground')
+    .filter((l) => l.place_type?.toLowerCase() === 'indoor play')
     .sort((a, b) => (a.distance || 0) - (b.distance || 0))
     .slice(0, maxCount);
 }
