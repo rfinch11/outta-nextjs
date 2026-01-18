@@ -200,7 +200,16 @@ function getEffectiveRating(listing: Listing): number {
 }
 
 /**
- * Most loved playgrounds: place_type=Playground, ≤30mi, rating high→low, excludes events
+ * Get review count from Google Places data
+ */
+function getReviewCount(listing: Listing): number {
+  return listing.google_place_details?.userRatingsTotal ?? listing.reviews ?? 0;
+}
+
+const MIN_REVIEWS_FOR_RANKING = 5;
+
+/**
+ * Most loved playgrounds: place_type=Playground, ≤30mi, rating high→low, min 5 reviews, excludes events
  */
 export function getMostLovedPlaygrounds(
   listings: Listing[],
@@ -211,6 +220,7 @@ export function getMostLovedPlaygrounds(
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type?.toLowerCase() === 'playground')
     .filter((l) => (l.distance || 0) <= 30)
+    .filter((l) => getReviewCount(l) >= MIN_REVIEWS_FOR_RANKING)
     .sort((a, b) => getEffectiveRating(b) - getEffectiveRating(a))
     .slice(0, maxCount);
 }
@@ -231,7 +241,7 @@ export function getRainyDayAdventures(
 }
 
 /**
- * Favorite parks: place_type=Park, ≤30mi, rating high→low, excludes events
+ * Favorite parks: place_type=Park, ≤30mi, rating high→low, min 5 reviews, excludes events
  */
 export function getFavoriteParks(
   listings: Listing[],
@@ -242,6 +252,7 @@ export function getFavoriteParks(
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type?.toLowerCase() === 'park')
     .filter((l) => (l.distance || 0) <= 30)
+    .filter((l) => getReviewCount(l) >= MIN_REVIEWS_FOR_RANKING)
     .sort((a, b) => getEffectiveRating(b) - getEffectiveRating(a))
     .slice(0, maxCount);
 }
