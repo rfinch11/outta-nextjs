@@ -3,6 +3,7 @@
 import React, { forwardRef, useState } from 'react';
 import { LuPlus, LuChevronLeft, LuMessageSquare } from 'react-icons/lu';
 import { BiNavigation } from 'react-icons/bi';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 interface MenuPopoverProps {
   onLocationSet: (lat: number, lng: number, zipCode: string) => void;
@@ -16,6 +17,7 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
     const [mode, setMode] = useState<MenuMode>('main');
     const [zipCodeInput, setZipCodeInput] = useState('');
     const [loading, setLoading] = useState(false);
+    const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
     const handleLocationModeClick = () => {
       setMode('location');
@@ -100,6 +102,20 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
       window.location.href = 'mailto:rfinch@outta.events?subject=Partner with Outta';
     };
 
+    const handleShare = async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Outta - Kid-friendly activities near you',
+            url: window.location.origin,
+          });
+        } catch (error) {
+          // User cancelled or share failed
+          console.log('Share cancelled or failed:', error);
+        }
+      }
+    };
+
     return (
       <div
         ref={ref}
@@ -110,6 +126,35 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
       >
         {mode === 'main' ? (
           <>
+            {/* Add to Home Screen section - mobile/tablet only */}
+            {!isLargeScreen && (
+              <>
+                <div className="p-3">
+                  <div className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors hover:bg-malibu-50 cursor-pointer">
+                    <div className="flex flex-col items-start text-left">
+                      <span className="text-base font-semibold text-malibu-950">Get the shortcut</span>
+                      <span className="text-sm text-black-500">Tap the icon then &quot;Add to Home Screen&quot; →</span>
+                    </div>
+                    <button
+                      onClick={handleShare}
+                      className="ml-3 p-0 border-none bg-transparent cursor-pointer flex-shrink-0"
+                      type="button"
+                      aria-label="Share Outta"
+                    >
+                      <img
+                        src="/favicon.png"
+                        alt="Outta icon"
+                        className="w-12 h-12 rounded-xl shadow-xl"
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Divider */}
+                <div className="border-t border-black-100 mx-3" />
+              </>
+            )}
+
             {/* Main menu items */}
             <div className="p-3">
               {/* Submit an activity - disabled */}
