@@ -1,6 +1,6 @@
 # Outta Data Sources Documentation
 
-**Last Updated:** December 31, 2025
+**Last Updated:** January 17, 2026
 **Status:** ✅ All sources migrated to Supabase
 **Architecture:** Direct Supabase imports, zero Airtable dependency
 
@@ -109,23 +109,45 @@ Custom Playwright-based scrapers that import events directly to Supabase.
 
 | Property | Value |
 |----------|-------|
-| **Schedule** | Daily at 7 AM UTC (11 PM PT) |
+| **Schedule** | Daily at 6:30 AM UTC (10:30 PM PT) |
 | **Script** | `scripts/import-eventbrite-events.js` |
 | **Workflow** | `.github/workflows/import-eventbrite-events.yml` |
 | **Method** | JSON extraction from embedded data |
 | **Source URL** | Eventbrite search (SF Bay Area) |
-| **Documentation** | `scripts/README-eventbrite.md` |
+| **Backfill Script** | `scripts/backfill-eventbrite-organizers.js` |
 
 **Features:**
-- JSON extraction from page scripts
-- Multi-city support (SF Bay Area)
+- JSON extraction from page scripts (`__SERVER_DATA__` or `__NEXT_DATA__`)
+- Multi-city support (16 Bay Area cities)
 - Full description scraping from event pages
 - Kid-friendly event filtering
+- **Organizer extraction** with multi-strategy approach
+
+**Organizer Extraction (January 2026):**
+
+Extracts actual event organizer names using three strategies:
+1. **`__SERVER_DATA__`** - From `serverData.organizer.name` (older Eventbrite pages)
+2. **JSON pattern** - Regex for `"organizer":{"...","name":"OrgName"}` (Next.js pages)
+3. **JSON-LD** - From structured data `"organizer":{"@type":"Organization","name":"..."}`
+4. Falls back to "Eventbrite" if no organizer found
+
+**Backfill Script:**
+```bash
+# Update all Eventbrite events with default "Eventbrite" organizer
+node scripts/backfill-eventbrite-organizers.js
+
+# Update all Eventbrite events (including those already updated)
+node scripts/backfill-eventbrite-organizers.js --all
+
+# Test with limited events
+node scripts/backfill-eventbrite-organizers.js --limit 10
+```
 
 **Migration Notes:**
 - Migrated from Airtable December 2025
 - Updated all database operations
 - Changed field mappings to lowercase
+- Added organizer extraction January 2026 (250/275 events updated)
 
 ---
 
@@ -446,6 +468,6 @@ For issues with data sources:
 
 ---
 
-**Last Updated:** December 31, 2025
+**Last Updated:** January 17, 2026
 **Maintained By:** Ryan Finch
 **Project:** [outta-nextjs](https://github.com/rfinch11/outta-nextjs)

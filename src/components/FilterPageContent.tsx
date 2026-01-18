@@ -46,6 +46,13 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
   const isEventsPage = filterType === 'events';
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
+  // Check if any filters are active (not at default values)
+  const hasActiveFilters =
+    dateFilter !== 'all' ||
+    minDistanceFilter !== 0 ||
+    maxDistanceFilter !== 50 ||
+    ratingFilter !== 0;
+
   // Calculate histogram data for distance distribution (respects other active filters)
   const distanceHistogram = useMemo(() => {
     // Get the relevant listings based on filter type
@@ -436,7 +443,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
             aria-label="Filter"
             type="button"
           >
-            <LuSlidersHorizontal size={24} className="text-malibu-950" />
+            <LuSlidersHorizontal size={24} className={hasActiveFilters ? 'text-flamenco-500' : 'text-malibu-950'} />
           </button>
 
           {/* Map View Button - mobile only */}
