@@ -574,12 +574,13 @@ node scripts/refresh-place-details.js --all
 - Run `npm run type-check` before committing
 - Follow existing patterns and conventions
 - Update documentation when making architectural changes
-- Test locally before pushing to main
+- **Always test locally first** before any deployment
 - Use design system colors (no arbitrary color values)
 - Write TypeScript interfaces for all props
 - Add comments for complex logic
 
 ### Don't:
+- **NEVER push to production (`git push`) without explicit user approval** - commit locally and wait for "push to prod" instruction
 - Commit `.env.local` or API keys
 - Push directly to `main` without testing
 - Skip pre-commit hooks
