@@ -102,20 +102,6 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
       window.location.href = 'mailto:rfinch@outta.events?subject=Partner with Outta';
     };
 
-    const handleShare = async () => {
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: 'Outta - Kid-friendly activities near you',
-            url: window.location.origin,
-          });
-        } catch (error) {
-          // User cancelled or share failed
-          console.log('Share cancelled or failed:', error);
-        }
-      }
-    };
-
     return (
       <div
         ref={ref}
@@ -126,34 +112,23 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
       >
         {mode === 'main' ? (
           <>
-            {/* Add to Home Screen section - mobile/tablet only */}
-            {!isLargeScreen && (
-              <>
-                <div className="p-3">
-                  <div className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-colors hover:bg-malibu-50 cursor-pointer">
-                    <div className="flex flex-col items-start text-left">
-                      <span className="text-base font-semibold text-malibu-950">Get the shortcut</span>
-                      <span className="text-sm text-black-500">Tap the icon then &quot;Add to Home Screen&quot; →</span>
-                    </div>
-                    <button
-                      onClick={handleShare}
-                      className="ml-3 p-0 border-none bg-transparent cursor-pointer flex-shrink-0"
-                      type="button"
-                      aria-label="Share Outta"
-                    >
-                      <img
-                        src="/favicon.png"
-                        alt="Outta icon"
-                        className="w-12 h-12 rounded-xl shadow-xl"
-                      />
-                    </button>
-                  </div>
+            {/* Partner section */}
+            <div className="p-3">
+              <button
+                onClick={handlePartner}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border-none bg-transparent cursor-pointer transition-colors hover:bg-malibu-50"
+                type="button"
+              >
+                <div className="flex flex-col items-start text-left">
+                  <span className="text-base font-semibold text-malibu-950">Partner with Outta</span>
+                  <span className="text-sm text-black-500">Create new memories for local families</span>
                 </div>
+                <span className="text-5xl ml-3">🤝</span>
+              </button>
+            </div>
 
-                {/* Divider */}
-                <div className="border-t border-black-100 mx-3" />
-              </>
-            )}
+            {/* Divider */}
+            <div className="border-t border-black-100 mx-3" />
 
             {/* Main menu items */}
             <div className="p-3">
@@ -188,23 +163,27 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
               </button>
             </div>
 
-            {/* Divider */}
-            <div className="border-t border-black-100 mx-3" />
+            {/* Add to Home Screen section - mobile/tablet only */}
+            {!isLargeScreen && (
+              <>
+                {/* Divider */}
+                <div className="border-t border-black-100 mx-3" />
 
-            {/* Partner section */}
-            <div className="p-3">
-              <button
-                onClick={handlePartner}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border-none bg-transparent cursor-pointer transition-colors hover:bg-malibu-50"
-                type="button"
-              >
-                <div className="flex flex-col items-start text-left">
-                  <span className="text-base font-semibold text-malibu-950">Partner with Outta</span>
-                  <span className="text-sm text-black-500">Create new memories for local families</span>
+                <div className="p-3">
+                  <div className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg">
+                    <div className="flex flex-col items-start text-left">
+                      <span className="text-base font-semibold text-malibu-950">Get the shortcut</span>
+                      <span className="text-sm text-black-500">Tap your browser&apos;s share button, then &quot;Add to Home Screen&quot;</span>
+                    </div>
+                    <img
+                      src="/favicon.png"
+                      alt="Outta icon"
+                      className="w-12 h-12 rounded-xl shadow-xl flex-shrink-0 ml-3"
+                    />
+                  </div>
                 </div>
-                <span className="text-5xl ml-3">🤝</span>
-              </button>
-            </div>
+              </>
+            )}
 
             {/* Divider */}
             <div className="border-t border-black-100 mx-3" />
