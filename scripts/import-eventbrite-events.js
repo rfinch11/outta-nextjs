@@ -120,9 +120,110 @@ async function fetchEventbriteEvents(city, maxPages = 5) {
 }
 
 /**
- * Scrape individual event page for full description
+ * Extract organizer name from HTML using multiple strategies
  */
-async function scrapeEventDescription(eventUrl) {
+function extractOrganizer(html, serverData = null) {
+  // Strategy 1: From __SERVER_DATA__ organizer object
+  if (serverData?.organizer?.name) {
+    return serverData.organizer.name;
+  }
+  if (serverData?.organizer?.displayOrganizationName) {
+    return serverData.organizer.displayOrganizationName;
+  }
+
+  // Strategy 2: From JSON in the page (handles __NEXT_DATA__ and other formats)
+  // Look for "organizer":{"...","name":"OrgName"} pattern
+  const orgJsonMatch = html.match(/"organizer"\s*:\s*\{[^}]*"name"\s*:\s*"([^"]+)"/);
+  if (orgJsonMatch && orgJsonMatch[1]) {
+    return orgJsonMatch[1];
+  }
+
+  // Strategy 3: From JSON-LD structured data
+  // Look for "organizer":{"@type":"Organization","name":"OrgName"} pattern
+  const jsonLdMatch = html.match(/"organizer"\s*:\s*\{\s*"@type"\s*:\s*"Organization"\s*,\s*"name"\s*:\s*"([^"]+)"/);
+  if (jsonLdMatch && jsonLdMatch[1]) {
+    return jsonLdMatch[1];
+  }
+
+  return null;
+}
+
+/**
+ * Extract description from HTML using multiple strategies
+ */
+function extractDescription(html, serverData = null) {
+  // Strategy 1: From __SERVER_DATA__ structured content
+  if (serverData) {
+    const modules = serverData.components?.eventDescription?.structuredContent?.modules || [];
+    let fullHtml = '';
+    modules.forEach(module => {
+      if (module.type === 'text' && module.text) {
+        fullHtml += module.text + '\n\n';
+      }
+    });
+
+    if (fullHtml) {
+      return cleanHtmlToText(fullHtml);
+    }
+
+    // Fallback to summary
+    if (serverData.components?.eventDescription?.summary) {
+      return serverData.components.eventDescription.summary;
+    }
+  }
+
+  // Strategy 2: From meta description tag
+  const metaMatch = html.match(/<meta\s+name="description"\s+content="([^"]+)"/i);
+  if (metaMatch && metaMatch[1]) {
+    // Decode HTML entities
+    return metaMatch[1]
+      .replace(/&#x27;/g, "'")
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>');
+  }
+
+  return null;
+}
+
+/**
+ * Convert HTML to formatted text
+ */
+function cleanHtmlToText(html) {
+  let text = html
+    .replace(/<\/p>/gi, '\n\n')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/div>/gi, '\n\n')
+    .replace(/<\/h[1-6]>/gi, '\n\n')
+    .replace(/<li>/gi, '• ')
+    .replace(/<\/li>/gi, '\n')
+    .replace(/<\/ul>/gi, '\n')
+    .replace(/<\/ol>/gi, '\n')
+    .replace(/<strong>/gi, '')
+    .replace(/<\/strong>/gi, '')
+    .replace(/<em>/gi, '')
+    .replace(/<\/em>/gi, '')
+    .replace(/<[^>]+>/g, '');  // Remove all remaining tags
+
+  // Clean up whitespace
+  text = text
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n /g, '\n')
+    .trim();
+
+  // Remove hashtags
+  text = text.replace(/#\w+/g, '').trim();
+
+  return text || null;
+}
+
+/**
+ * Scrape individual event page for full description and organizer
+ * @returns {Promise<{description: string|null, organizer: string|null}>}
+ */
+async function scrapeEventDetails(eventUrl) {
   try {
     const response = await fetch(eventUrl, {
       headers: {
@@ -131,75 +232,37 @@ async function scrapeEventDescription(eventUrl) {
     });
 
     if (!response.ok) {
-      return null;
+      return { description: null, organizer: null };
     }
 
     const html = await response.text();
 
-    // Extract __SERVER_DATA__ JSON which has the complete description
-    const match = html.match(/__SERVER_DATA__ = ({.*?});/s);
-
-    if (!match) {
-      return null;
-    }
-
-    const serverData = JSON.parse(match[1]);
-    const modules = serverData.components?.eventDescription?.structuredContent?.modules || [];
-
-    // Combine all text modules
-    let fullHtml = '';
-    modules.forEach(module => {
-      if (module.type === 'text' && module.text) {
-        fullHtml += module.text + '\n\n';
+    // Try to extract __SERVER_DATA__ JSON (older Eventbrite pages)
+    let serverData = null;
+    const serverDataMatch = html.match(/__SERVER_DATA__ = ({.*?});/s);
+    if (serverDataMatch) {
+      try {
+        serverData = JSON.parse(serverDataMatch[1]);
+      } catch (e) {
+        // JSON parse failed, continue without serverData
       }
-    });
-
-    if (!fullHtml) {
-      // Fallback to summary if no structured content
-      return serverData.components?.eventDescription?.summary || null;
     }
 
-    // Convert HTML to formatted text
-    let description = fullHtml
-      .replace(/<\/p>/gi, '\n\n')
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(/<\/div>/gi, '\n\n')
-      .replace(/<\/h[1-6]>/gi, '\n\n')
-      .replace(/<li>/gi, '• ')
-      .replace(/<\/li>/gi, '\n')
-      .replace(/<\/ul>/gi, '\n')
-      .replace(/<\/ol>/gi, '\n')
-      .replace(/<strong>/gi, '')
-      .replace(/<\/strong>/gi, '')
-      .replace(/<em>/gi, '')
-      .replace(/<\/em>/gi, '')
-      .replace(/<[^>]+>/g, '');  // Remove all remaining tags
+    // Extract organizer and description using multiple strategies
+    const organizer = extractOrganizer(html, serverData);
+    const description = extractDescription(html, serverData);
 
-    if (description) {
-      // Clean up whitespace
-      description = description
-        .replace(/\n{3,}/g, '\n\n')
-        .replace(/[ \t]+/g, ' ')
-        .replace(/\n /g, '\n')
-        .trim();
-
-      // Remove hashtags
-      description = description.replace(/#\w+/g, '').trim();
-
-      return description;
-    }
-
-    return null;
+    return { description, organizer };
   } catch (error) {
-    console.error(`    ⚠️  Error scraping description:`, error.message);
-    return null;
+    console.error(`    ⚠️  Error scraping event details:`, error.message);
+    return { description: null, organizer: null };
   }
 }
 
 /**
  * Map Eventbrite event to Supabase fields
  */
-function mapEventToSupabase(event, fullDescription = null) {
+function mapEventToSupabase(event, fullDescription = null, organizerName = null) {
   const venue = event.primary_venue || {};
   const address = venue.address || {};
 
@@ -278,7 +341,7 @@ function mapEventToSupabase(event, fullDescription = null) {
     state: address.region || 'CA',
     street: address.address_1 || null,
     zip: address.postal_code ? parseInt(address.postal_code) : null,
-    organizer: 'Eventbrite',
+    organizer: organizerName || 'Eventbrite',
     website: event.url,
     image: event.image?.url || null,
     price: price,
@@ -425,21 +488,21 @@ async function importEvents() {
       continue;
     }
 
-    // Scrape full description from event page
-    console.log(`  🔍 Fetching full description...`);
-    const fullDescription = await scrapeEventDescription(event.url);
+    // Scrape full description and organizer from event page
+    console.log(`  🔍 Fetching event details...`);
+    const { description, organizer } = await scrapeEventDetails(event.url);
 
     // Map to Supabase format
-    const eventData = mapEventToSupabase(event, fullDescription);
+    const eventData = mapEventToSupabase(event, description, organizer);
 
     // Create or update in Supabase
     const result = await createOrUpdateEvent(eventData);
 
     if (result.action === 'created') {
-      console.log(`  ✅ Created new record`);
+      console.log(`  ✅ Created new record (organizer: ${organizer || 'Eventbrite'})`);
       created++;
     } else if (result.action === 'updated') {
-      console.log(`  ♻️  Updated existing record`);
+      console.log(`  ♻️  Updated existing record (organizer: ${organizer || 'Eventbrite'})`);
       updated++;
     } else {
       console.log(`  ❌ Error: ${result.error}`);
