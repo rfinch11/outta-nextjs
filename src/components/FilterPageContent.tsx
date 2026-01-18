@@ -42,6 +42,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
   const [minDistanceFilter, setMinDistanceFilter] = useState<number>(0);
   const [maxDistanceFilter, setMaxDistanceFilter] = useState<number>(50);
   const [ratingFilter, setRatingFilter] = useState<number>(0);
+  const [priceFilter, setPriceFilter] = useState<string>('all');
 
   const isEventsPage = filterType === 'events';
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
@@ -51,7 +52,8 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
     dateFilter !== 'all' ||
     minDistanceFilter !== 0 ||
     maxDistanceFilter !== 50 ||
-    ratingFilter !== 0;
+    ratingFilter !== 0 ||
+    priceFilter !== 'all';
 
   // Calculate histogram data for distance distribution (respects other active filters)
   const distanceHistogram = useMemo(() => {
@@ -319,9 +321,22 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
       }
     }
 
+    // Apply price filter (both events and non-events)
+    if (priceFilter !== 'all') {
+      filtered = filtered.filter((listing) => {
+        const price = listing.price?.toLowerCase() || '';
+        if (priceFilter === 'free') {
+          return price === 'free' || price === '';
+        } else if (priceFilter === 'paid') {
+          return price !== 'free' && price !== '';
+        }
+        return true;
+      });
+    }
+
     setFilteredListings(filtered);
     setDisplayCount(15);
-  }, [allListings, filterType, dateFilter, minDistanceFilter, maxDistanceFilter, ratingFilter]);
+  }, [allListings, filterType, dateFilter, minDistanceFilter, maxDistanceFilter, ratingFilter, priceFilter]);
 
   const hasMore = filteredListings.length > displayCount;
 
@@ -744,6 +759,31 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
 
             {/* Filter Content */}
             <div className="px-5 pb-6 flex flex-col gap-6">
+              {/* Price Filter */}
+              <div>
+                <h3 className="text-base font-semibold text-malibu-950 mb-3">Price</h3>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { value: 'all', label: 'Any' },
+                    { value: 'free', label: 'Free' },
+                    { value: 'paid', label: 'Paid' },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => setPriceFilter(option.value)}
+                      className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                        priceFilter === option.value
+                          ? 'bg-malibu-950 text-white'
+                          : 'bg-malibu-50 text-malibu-950 hover:bg-malibu-100'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="h-px bg-malibu-950/10" />
+
               {/* Date Filter - Events only */}
               {isEventsPage && (
                 <>
@@ -918,6 +958,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                     setMinDistanceFilter(0);
                     setMaxDistanceFilter(50);
                     setRatingFilter(0);
+                    setPriceFilter('all');
                   }}
                   className="flex-1 py-3 bg-transparent text-malibu-950 rounded-lg text-base font-semibold transition-colors hover:bg-malibu-950/5"
                 >
