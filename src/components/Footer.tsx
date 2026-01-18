@@ -4,9 +4,11 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import PrivacyPolicyDrawer from './PrivacyPolicyDrawer';
+import CookiePolicyDrawer from './CookiePolicyDrawer';
 
 const Footer: React.FC = () => {
   const [privacyDrawerOpen, setPrivacyDrawerOpen] = useState(false);
+  const [cookieDrawerOpen, setCookieDrawerOpen] = useState(false);
 
   return (
     <footer className="bg-gray-100 border-t border-gray-300 px-5 pt-12 pb-8 mt-2">
@@ -40,12 +42,12 @@ const Footer: React.FC = () => {
             >
               Terms of Service
             </Link>
-            <Link
-              href="/cookies"
-              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
+            <button
+              onClick={() => setCookieDrawerOpen(true)}
+              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors text-left bg-transparent border-none cursor-pointer p-0"
             >
               Cookie Policy
-            </Link>
+            </button>
           </div>
 
           {/* Support */}
@@ -86,6 +88,12 @@ const Footer: React.FC = () => {
       <PrivacyPolicyDrawer
         open={privacyDrawerOpen}
         onOpenChange={setPrivacyDrawerOpen}
+      />
+
+      {/* Cookie Policy Drawer */}
+      <CookiePolicyDrawer
+        open={cookieDrawerOpen}
+        onOpenChange={setCookieDrawerOpen}
       />
     </footer>
   );
