@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { Drawer } from 'vaul';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import { IoIosArrowBack } from 'react-icons/io';
-import { LuMap, LuX, LuSlidersHorizontal } from 'react-icons/lu';
+import { LuMap, LuX, LuSlidersHorizontal, LuTag, LuUsers, LuClock3, LuArrowUpRight, LuCalendar } from 'react-icons/lu';
+import { HiOutlineLocationMarker } from 'react-icons/hi';
 import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
 import {
@@ -17,6 +18,187 @@ import ClickableCard from './ClickableCard';
 import Loader from './Loader';
 import Footer from './Footer';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { GoogleRating } from '@/components/place-details';
+import type { PlaceOpeningHours } from '@/lib/googlePlaces';
+
+// Helper component for inline open status badge
+const OpenStatusBadge: React.FC<{ openingHours: PlaceOpeningHours }> = ({ openingHours }) => {
+  const { weekdayText } = openingHours;
+
+  const now = new Date();
+  const dayIndex = now.getDay();
+  const googleDayIndex = dayIndex === 0 ? 6 : dayIndex - 1;
+  const todayHours = weekdayText[googleDayIndex];
+
+  let isOpen = false;
+  let statusText = 'Closed';
+
+  if (todayHours && !todayHours.toLowerCase().includes('closed')) {
+    if (todayHours.toLowerCase().includes('24 hours') || todayHours.toLowerCase().includes('open 24')) {
+      isOpen = true;
+      statusText = 'Open 24 hours';
+    } else {
+      const timeMatch = todayHours.match(
+        /(\d{1,2}):?(\d{2})?\s*(AM|PM)\s*[–-]\s*(\d{1,2}):?(\d{2})?\s*(AM|PM)/i
+      );
+
+      if (timeMatch) {
+        const [, openHour, openMin = '00', openPeriod, closeHour, closeMin = '00', closePeriod] = timeMatch;
+
+        const parseTime = (hour: string, min: string, period: string) => {
+          let h = parseInt(hour, 10);
+          if (period.toUpperCase() === 'PM' && h !== 12) h += 12;
+          if (period.toUpperCase() === 'AM' && h === 12) h = 0;
+          return h * 60 + parseInt(min, 10);
+        };
+
+        const openTime = parseTime(openHour, openMin, openPeriod);
+        const closeTime = parseTime(closeHour, closeMin, closePeriod);
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+
+        isOpen = currentTime >= openTime && currentTime < closeTime;
+
+        if (isOpen) {
+          statusText = `Open · Closes ${closeHour}${closeMin !== '00' ? ':' + closeMin : ''} ${closePeriod}`;
+        }
+      }
+    }
+  }
+
+  return isOpen ? (
+    <span className="text-base text-emerald-600">{statusText}</span>
+  ) : (
+    <span className="text-base text-malibu-950/60">{statusText}</span>
+  );
+};
+
+// Preview content component (needs to be separate to use hooks)
+interface ListingPreviewProps {
+  listing: Listing;
+}
+
+const ListingPreview: React.FC<ListingPreviewProps> = ({ listing }) => {
+  // Use cached place details directly from the listing object
+  const placeDetails = listing.google_place_details;
+
+  const fullAddress = listing.street
+    ? `${listing.street}, ${listing.city}, ${listing.state} ${listing.zip}`
+    : null;
+
+  return (
+    <div className="flex-1 overflow-y-auto px-5 pb-6">
+      {/* Image */}
+      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-4">
+        <img
+          src={listing.place_id ? `/api/place-photo?place_id=${listing.place_id}&width=400` : listing.image}
+          alt={listing.title}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            if (target.src !== listing.image) {
+              target.src = listing.image;
+            }
+          }}
+        />
+      </div>
+
+      {/* Title */}
+      <h3 className="text-2xl font-bold text-malibu-950 mb-2">{listing.title}</h3>
+
+      {/* Google Rating */}
+      {placeDetails?.rating && placeDetails?.userRatingsTotal && (
+        <div className="mb-4">
+          <GoogleRating
+            rating={placeDetails.rating}
+            reviewCount={placeDetails.userRatingsTotal}
+          />
+        </div>
+      )}
+
+      {/* Info Grid */}
+      <div className="flex flex-col gap-3 mb-6">
+        {/* Date for Events */}
+        {listing.type === 'Event' && listing.start_date && (
+          <div className="flex items-center gap-3">
+            <LuCalendar size={20} className="text-malibu-950/70 flex-shrink-0" />
+            <span className="text-base text-malibu-950/90">
+              {new Date(listing.start_date).toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+              })}
+            </span>
+          </div>
+        )}
+
+        {/* Time for Events */}
+        {listing.type === 'Event' && listing.start_date && (
+          <div className="flex items-center gap-3">
+            <LuClock3 size={20} className="text-malibu-950/70 flex-shrink-0" />
+            <span className="text-base text-malibu-950/90">
+              {new Date(listing.start_date).toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+              })}
+            </span>
+          </div>
+        )}
+
+        {/* Address */}
+        {fullAddress ? (
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 no-underline hover:opacity-70 transition-opacity"
+          >
+            <HiOutlineLocationMarker size={20} className="text-malibu-950/70 flex-shrink-0" />
+            <span className="text-base text-malibu-950/90 truncate">{fullAddress}</span>
+            <LuArrowUpRight size={16} className="text-malibu-950/70 flex-shrink-0 -ml-2" />
+          </a>
+        ) : listing.city && (
+          <div className="flex items-center gap-3">
+            <HiOutlineLocationMarker size={20} className="text-malibu-950/70 flex-shrink-0" />
+            <span className="text-base text-malibu-950/90">{listing.city}</span>
+          </div>
+        )}
+
+        {/* Open/Closed Status - for Activities only */}
+        {listing.type !== 'Event' && placeDetails?.openingHours && placeDetails.openingHours.weekdayText.length > 0 && (
+          <div className="flex items-center gap-3">
+            <LuClock3 size={20} className="text-malibu-950/70 flex-shrink-0" />
+            <OpenStatusBadge openingHours={placeDetails.openingHours} />
+          </div>
+        )}
+
+        {/* Price */}
+        {listing.price && (
+          <div className="flex items-center gap-3">
+            <LuTag size={20} className="text-emerald-600 flex-shrink-0" />
+            <span className="text-base text-emerald-600 font-semibold">{listing.price}</span>
+          </div>
+        )}
+
+        {/* Age Range */}
+        {listing.age_range && (
+          <div className="flex items-center gap-3">
+            <LuUsers size={20} className="text-malibu-950/70 flex-shrink-0" />
+            <span className="text-base text-malibu-950/90">{listing.age_range}</span>
+          </div>
+        )}
+      </div>
+
+      {/* View Details Button */}
+      <Link
+        href={`/listings/${listing.airtable_id}`}
+        className="block w-full py-3 bg-malibu-950 text-white rounded-lg text-base font-semibold text-center transition-colors hover:bg-malibu-900 no-underline"
+      >
+        View Details
+      </Link>
+    </div>
+  );
+};
 
 interface FilterPageContentProps {
   filterType: string;
@@ -34,6 +216,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
   const [mapDrawerOpen, setMapDrawerOpen] = useState(false);
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const [selectedListingId, setSelectedListingId] = useState<string | null>(null);
+  const [previewDrawerOpen, setPreviewDrawerOpen] = useState(false);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
 
@@ -46,6 +229,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
 
   const isEventsPage = filterType === 'events';
   const isLargeScreen = useMediaQuery('(min-width: 1024px)');
+  const isMediumScreen = useMediaQuery('(min-width: 768px)');
 
   // Check if any filters are active (not at default values)
   const hasActiveFilters =
@@ -394,7 +578,14 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
   // Handle marker click
   const handleMarkerClick = (listingId: string) => {
     setSelectedListingId(listingId);
-    // Scroll carousel to center the selected card
+
+    // On md/lg screens, open the preview drawer
+    if (isMediumScreen) {
+      setPreviewDrawerOpen(true);
+      return;
+    }
+
+    // On mobile, scroll carousel to center the selected card
     if (carouselRef.current) {
       const index = mappableListings.findIndex((l) => l.airtable_id === listingId);
       if (index !== -1) {
@@ -973,6 +1164,42 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                 </button>
               </div>
             </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+
+      {/* Preview Drawer - md and lg only */}
+      <Drawer.Root
+        open={previewDrawerOpen}
+        onOpenChange={setPreviewDrawerOpen}
+        direction="left"
+      >
+        <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" />
+          <Drawer.Content className="bg-white flex flex-col rounded-r-2xl h-full w-[420px] fixed top-0 left-0 z-[70] outline-none overflow-hidden">
+            <Drawer.Title className="sr-only">Listing Preview</Drawer.Title>
+            <Drawer.Description className="sr-only">
+              Preview of the selected listing
+            </Drawer.Description>
+
+            {/* Close Button */}
+            <div className="flex items-center justify-end px-5 pt-4 pb-2">
+              <button
+                onClick={() => setPreviewDrawerOpen(false)}
+                className="flex items-center justify-center transition-colors hover:opacity-70"
+                aria-label="Close preview"
+                type="button"
+              >
+                <LuX size={24} className="text-malibu-950" />
+              </button>
+            </div>
+
+            {/* Preview Content */}
+            {selectedListingId && (() => {
+              const listing = filteredListings.find(l => l.airtable_id === selectedListingId);
+              if (!listing) return null;
+              return <ListingPreview key={listing.airtable_id} listing={listing} />;
+            })()}
           </Drawer.Content>
         </Drawer.Portal>
       </Drawer.Root>
