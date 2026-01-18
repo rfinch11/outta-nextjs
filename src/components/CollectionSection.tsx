@@ -58,6 +58,7 @@ const CollectionSection: React.FC<CollectionSectionProps> = ({
               description={listing.description}
               organizer={listing.organizer}
               rating={listing.rating}
+              price={listing.price}
             />
           </div>
         ))}

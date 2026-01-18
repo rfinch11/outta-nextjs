@@ -537,6 +537,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                         description={listing.description}
                         organizer={listing.organizer}
                         rating={listing.rating}
+                        price={listing.price}
                       />
                     </React.Fragment>
                   );
@@ -702,6 +703,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                       description={listing.description}
                       organizer={listing.organizer}
                       rating={listing.rating}
+                      price={listing.price}
                     />
                   </div>
                 ))}

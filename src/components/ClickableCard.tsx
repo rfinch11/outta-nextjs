@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { LuCalendar, LuMapPin, LuStar, LuStarHalf } from 'react-icons/lu';
+import { LuCalendar, LuMapPin, LuStar, LuStarHalf, LuTag } from 'react-icons/lu';
 import { getPlaceTypeIcon } from '@/lib/placeTypeIcons';
 
 interface ClickableCardProps {
@@ -21,6 +21,7 @@ interface ClickableCardProps {
   description?: string;
   organizer?: string | null;
   rating?: number | null;
+  price?: string | null;
 }
 
 const ClickableCard: React.FC<ClickableCardProps> = ({
@@ -35,6 +36,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
   description,
   organizer,
   rating,
+  price,
 }) => {
   // State to track if we should use the fallback image
   const [imgSrc, setImgSrc] = React.useState<string>(
@@ -98,10 +100,18 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
         {/* Content on the right */}
         <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-          {/* Organizer */}
-          {organizer && (
-            <div className="text-malibu-950/80 text-sm leading-5 overflow-hidden text-ellipsis line-clamp-1">
-              {organizer}
+          {/* Organizer & Price */}
+          {(organizer || (price && !['see website', 'free'].includes(price.toLowerCase()))) && (
+            <div className="text-sm leading-5 flex items-center gap-2 min-w-0">
+              {organizer && (
+                <span className="text-malibu-950/80 truncate">{organizer}</span>
+              )}
+              {price && !['see website', 'free'].includes(price.toLowerCase()) && (
+                <span className="flex items-center gap-1 text-emerald-600 flex-shrink-0">
+                  <LuTag size={14} />
+                  <span className="font-semibold">{price}</span>
+                </span>
+              )}
             </div>
           )}
 
