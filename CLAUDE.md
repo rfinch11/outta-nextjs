@@ -1,6 +1,6 @@
 # CLAUDE.md - Project Context for AI Assistance
 
-**Last Updated:** January 17, 2026
+**Last Updated:** January 18, 2026
 **Project:** Outta - Kid-Friendly Adventures Discovery Platform
 **Production URL:** [outta.events](https://outta.events)
 **Status:** ✅ Live in Production
@@ -264,6 +264,16 @@ CRON_SECRET=[secret-for-cron-authentication]
   - `rating` (DECIMAL 2,1): 1-5 rating
   - `scout_pick` (BOOLEAN): Editor's choice
 
+- **Google Place Details (Cached):**
+  - `place_id`: Google Place ID for the location
+  - `google_place_details` (JSONB): Cached Google Place data including:
+    - `photos`: Array of `{url, width, height}` for place photos
+    - `rating`: Google Places rating (1-5)
+    - `userRatingsTotal`: Number of Google reviews
+    - `reviews`: Array of `{authorName, rating, text, relativeTimeDescription}`
+    - `openingHours`: `{isOpen, weekdayText[]}` for business hours
+  - `place_details_updated_at` (TIMESTAMP): When cache was last refreshed
+
 **Indexes:**
 - Performance: `type`, `start_date`, `city`, `recommended`, `location` (lat/lng)
 - Deduplication: `rss_guid`, `unsplash_photo_id`, `source_name`
@@ -442,6 +452,7 @@ CRON_SECRET=[secret-for-cron-authentication]
 | File | Purpose |
 |------|---------|
 | `src/components/Homepage.tsx` | Main page component with filtering logic |
+| `src/components/EventDetail.tsx` | Listing detail view - **uses cached google_place_details from props** |
 | `src/components/DraggableHero.tsx` | Card stack hero with Framer Motion animations |
 | `src/components/FilterBar.tsx` | Horizontal filter button navigation bar |
 | `src/components/FilterPageContent.tsx` | Filter page with drawer/modal filters |
@@ -487,6 +498,43 @@ CRON_SECRET=[secret-for-cron-authentication]
   - RSS feeds: `rss_guid` unique constraint
   - Images: `unsplash_photo_id` tracking
   - Events: Source-specific unique IDs (e.g., `ebparks_57722`)
+
+### Google Place Details Architecture (CRITICAL)
+**This pattern is critical to understand - getting it wrong breaks listing detail pages.**
+
+Google Place details (photos, ratings, reviews, hours) are **cached in Supabase** to control API costs. They are NOT fetched live from Google Places API on every page load.
+
+**Data Flow:**
+1. `scripts/refresh-place-details.js` fetches data from Google Places API and stores in `google_place_details` column
+2. Listing page (`src/app/listings/[id]/page.tsx`) fetches listing from Supabase including `google_place_details`
+3. Listing page passes `google_place_details` as a prop to `EventDetail` component
+4. `EventDetail` uses the cached data from props, with API hook as fallback only
+
+**Critical Pattern in EventDetail.tsx:**
+```typescript
+// EventDetail receives google_place_details via props (from database cache)
+const { google_place_details } = props;
+
+// Only fetch from API if NOT already cached in props
+const { data: fetchedPlaceDetails } = usePlaceDetails(
+  google_place_details ? null : place_id  // Pass null to skip API call if cached
+);
+
+// Prefer cached data from props, fall back to fetched data
+const placeDetails = google_place_details || fetchedPlaceDetails;
+```
+
+**Common Mistake (DO NOT DO THIS):**
+```typescript
+// WRONG: Always fetching from API, ignoring cached data from props
+const { data: placeDetails } = usePlaceDetails(place_id);
+// This ignores google_place_details prop and makes unnecessary API calls
+```
+
+**Why This Matters:**
+- ~434 listings have cached Google Place data
+- If EventDetail ignores the prop and only uses the API hook, all cached data is wasted
+- The `/api/place-details` endpoint exists for manual refresh, not routine page loads
 
 ### Performance Considerations
 - **Client-side filtering:** Fast but loads all data initially
@@ -578,6 +626,7 @@ node scripts/refresh-place-details.js --all
 - Use design system colors (no arbitrary color values)
 - Write TypeScript interfaces for all props
 - Add comments for complex logic
+- **Use cached data from props before falling back to API hooks** (see Google Place Details Architecture)
 
 ### Don't:
 - **NEVER push to production (`git push`) without explicit user approval** - commit locally and wait for "push to prod" instruction
@@ -588,6 +637,7 @@ node scripts/refresh-place-details.js --all
 - Create arbitrary color values outside design system
 - Ignore ESLint warnings
 - Modify database schema without documentation update
+- **NEVER ignore props data in favor of API hooks** - if a component receives cached data via props, use it first (see Google Place Details Architecture)
 
 ### Ask Before:
 - Making breaking changes to database schema
@@ -600,4 +650,4 @@ node scripts/refresh-place-details.js --all
 
 **Built with ❤️ by Ryan Finch**
 
-*This file was last updated: January 17, 2026*
+*This file was last updated: January 18, 2026*

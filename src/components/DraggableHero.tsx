@@ -9,6 +9,7 @@ interface CardStackHeroProps {
   cityName: string;
   onLocationClick: () => void;
   listingCount?: number;
+  showRequestCTA?: boolean;
 }
 
 const heroImages = [
@@ -194,7 +195,18 @@ const CountDisplay: React.FC<{ count?: number }> = ({ count }) => {
   );
 };
 
-const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick, listingCount }) => {
+const RequestCTA: React.FC = () => (
+  <div className="mt-6">
+    <a
+      href="mailto:rfinch@outta.events?subject=Request%20Outta%20in%20my%20city"
+      className="inline-flex items-center gap-2 px-5 py-3 bg-malibu-950 text-white rounded-lg text-base font-semibold no-underline hover:bg-malibu-900 transition-colors"
+    >
+      Request Outta in your city
+    </a>
+  </div>
+);
+
+const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick, listingCount, showRequestCTA }) => {
   return (
     <section className="w-full py-8 md:py-12">
       {/* Mobile: Stack on top, centered */}
@@ -213,6 +225,7 @@ const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick
               {cityName}
             </span>
           </button>
+          {showRequestCTA && <RequestCTA />}
         </div>
       </div>
 
@@ -232,6 +245,7 @@ const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick
               {cityName}
             </span>
           </button>
+          {showRequestCTA && <RequestCTA />}
         </div>
       </div>
     </section>

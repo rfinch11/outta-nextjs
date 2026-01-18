@@ -295,64 +295,68 @@ const Homepage: React.FC = () => {
       <HeroSection
         cityName={userLocation?.city || userLocation?.zipCode || 'your area'}
         onLocationClick={() => setShowLocationModal(true)}
-        listingCount={heroCount > 0 ? heroCount : undefined}
+        listingCount={loading ? undefined : heroCount}
+        showRequestCTA={!loading && heroCount === 0}
       />
 
-      {/* Filter Bar */}
-      {!loading && allListings.length > 0 && (
+      {/* Filter Bar - only show when there are nearby listings */}
+      {!loading && heroCount > 0 && (
         <FilterBar
           placeTypeCounts={placeTypeCounts}
         />
       )}
 
-      {/* Collections */}
-      <div className="px-5 py-6">
-        <div className="max-w-7xl mx-auto">
-          {loading ? (
-            <div className="py-12">
-              <Loader size={120} />
-            </div>
-          ) : (
-            <>
-              <CollectionSection
-                title="Upcoming events"
-                href="/filter/events"
-                listings={upcomingEvents}
-              />
+      {/* Collections - only show when there are nearby listings */}
+      {!loading && heroCount > 0 && (
+        <div className="px-5 py-6">
+          <div className="max-w-7xl mx-auto">
+            <CollectionSection
+              title="Upcoming events"
+              href="/filter/events"
+              listings={upcomingEvents}
+            />
 
-              <CollectionSection
-                title="Nearby paid events"
-                href="/filter/events"
-                listings={nearbyPaidEvents}
-              />
+            <CollectionSection
+              title="Nearby paid events"
+              href="/filter/events"
+              listings={nearbyPaidEvents}
+            />
 
-              <CollectionSection
-                title="Most loved playgrounds"
-                href="/filter/Playground"
-                listings={playgrounds}
-              />
+            <CollectionSection
+              title="Most loved playgrounds"
+              href="/filter/Playground"
+              listings={playgrounds}
+            />
 
-              <CollectionSection
-                title="Top farmers markets"
-                href="/filter/Farmers%20Market"
-                listings={farmersMarkets}
-              />
+            <CollectionSection
+              title="Top farmers markets"
+              href="/filter/Farmers%20Market"
+              listings={farmersMarkets}
+            />
 
-              <CollectionSection
-                title="Rainy day adventures"
-                href="/filter/Indoor%20Playground"
-                listings={rainyDayAdventures}
-              />
+            <CollectionSection
+              title="Rainy day adventures"
+              href="/filter/Indoor%20Playground"
+              listings={rainyDayAdventures}
+            />
 
-              <CollectionSection
-                title="Favorite parks"
-                href="/filter/Park"
-                listings={parks}
-              />
-            </>
-          )}
+            <CollectionSection
+              title="Favorite parks"
+              href="/filter/Park"
+              listings={parks}
+            />
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* Loading state */}
+      {loading && (
+        <div className="px-5 py-6">
+          <div className="max-w-7xl mx-auto py-12">
+            <Loader size={120} />
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <Footer />

@@ -7,10 +7,11 @@ interface HeroSectionProps {
   cityName: string;
   onLocationClick: () => void;
   listingCount?: number;
+  showRequestCTA?: boolean;
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({ cityName, onLocationClick, listingCount }) => {
-  return <DraggableHero cityName={cityName} onLocationClick={onLocationClick} listingCount={listingCount} />;
+const HeroSection: React.FC<HeroSectionProps> = ({ cityName, onLocationClick, listingCount, showRequestCTA }) => {
+  return <DraggableHero cityName={cityName} onLocationClick={onLocationClick} listingCount={listingCount} showRequestCTA={showRequestCTA} />;
 };
 
 export default HeroSection;
