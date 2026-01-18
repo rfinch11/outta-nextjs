@@ -19,7 +19,7 @@ beforeAll(() => {
 });
 
 describe('Footer', () => {
-  it('renders the footer with all links and buttons', () => {
+  it('renders the footer with all buttons', () => {
     render(<Footer />);
 
     // Check for company name/logo
@@ -28,17 +28,13 @@ describe('Footer', () => {
     // Check for privacy button (opens drawer)
     expect(screen.getByRole('button', { name: /privacy/i })).toBeInTheDocument();
 
-    // Check for terms link
-    expect(screen.getByRole('link', { name: /terms/i })).toBeInTheDocument();
+    // Check for terms button (opens drawer)
+    expect(screen.getByRole('button', { name: /terms/i })).toBeInTheDocument();
+
+    // Check for cookie button (opens drawer)
+    expect(screen.getByRole('button', { name: /cookie/i })).toBeInTheDocument();
 
     // Check for copyright
     expect(screen.getByText(/© \d{4}/i)).toBeInTheDocument();
-  });
-
-  it('has correct href attributes for links', () => {
-    render(<Footer />);
-
-    const termsLink = screen.getByRole('link', { name: /terms/i });
-    expect(termsLink).toHaveAttribute('href', '/terms');
   });
 });
