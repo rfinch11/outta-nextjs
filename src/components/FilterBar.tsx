@@ -38,12 +38,14 @@ const FilterBar: React.FC<FilterBarProps> = ({
       href: '/filter/events',
       icon: LuCalendar,
     },
-    ...placeTypeCounts.map(({ type }) => ({
-      id: type,
-      label: type,
-      href: `/filter/${encodeURIComponent(type)}`,
-      icon: getPlaceTypeIcon(type),
-    })),
+    ...placeTypeCounts
+      .filter(({ type }) => type !== 'Other')
+      .map(({ type }) => ({
+        id: type,
+        label: type,
+        href: `/filter/${encodeURIComponent(type)}`,
+        icon: getPlaceTypeIcon(type),
+      })),
   ];
 
   // Collections is active when no filter is specified (homepage)
