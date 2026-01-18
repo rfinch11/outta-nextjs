@@ -9,6 +9,7 @@ import {
   LuShoppingBag,
   LuBlocks,
   LuBuilding,
+  LuApple,
 } from 'react-icons/lu';
 import { MdOutlineSportsHandball } from 'react-icons/md';
 import { PiPark } from 'react-icons/pi';
@@ -48,6 +49,8 @@ export function getPlaceTypeIcon(placeType: string | null | undefined): IconType
       return LuShoppingBag;
     case 'toys':
       return LuBlocks;
+    case 'farmers market':
+      return LuApple;
     default:
       return LuBuilding;
   }

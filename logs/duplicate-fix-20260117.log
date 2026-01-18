@@ -14335,3 +14335,909 @@ Error updating Airtable record rss-san-mateo-county-library-1767174607269-irrb3:
 ✅ Done!
 Completed at Sat Jan 17 20:48:31 PST 2026
 
+========================================
+Starting duplicate image fix at Sat Jan 17 21:48:31 PST 2026
+========================================
+[dotenv@17.2.3] injecting env (34) from .env.local -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+🔍 Finding duplicate images...
+
+📋 Found 253 unique Unsplash images in database
+
+📊 Found 16 images used by multiple listings:
+
+
+🖼️  Image used by 13 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/12] Musical Storytime
+      📸 New image by Vitaly Gariev
+      🔍 Search: "Musical Storytime Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/12] Closure: Christmas
+      📸 New image by Patrick Pahlke
+      🔍 Search: "Closure: Christmas Library Closures Adults (19+ years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [3/12] Bilingual Storytime / Hora de Cuentos Bilingüe
+      📸 New image by Ferrando Elias
+      🔍 Search: "Bilingual Storytime / Hora de Cuentos Bilingüe Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/12] Drop-In Mahjong
+      📸 New image by Ben Michael
+      🔍 Search: "Drop-In Mahjong 55+ Friendly Games"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [5/12] Family Storytime
+      📸 New image by Vitaly Gariev
+      🔍 Search: "Family Storytime Literacy Music"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [6/12] Tai Chi
+      📸 New image by Marija Zaric
+      🔍 Search: "Tai Chi 55+ Friendly Health"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [7/12] Free Meals at the Library / Comida gratis en la biblioteca
+      📸 New image by Carl Campbell
+      🔍 Search: "Free Meals at the Library / Comida gratis en la biblioteca Community Food"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [8/12] Open Sewing
+      📸 New image by Provincial Archives of Alberta
+      🔍 Search: "Open Sewing 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [9/12] Ukulele Jam Group
+      📸 New image by Vitaly Gariev
+      🔍 Search: "Ukulele Jam Group Music Adults (19+ years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [10/12] Early Closure: Christmas Eve
+      📸 New image by Maxim Shklyaev
+      🔍 Search: "Early Closure: Christmas Eve Library Closures Adults (19+ years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [11/12] Adult Knitting Circle
+      📸 New image by Oksana Zub
+      🔍 Search: "Adult Knitting Circle 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [12/12] Maker Exploration
+      📸 New image by Minh Đức
+      🔍 Search: "Maker Exploration 55+ Friendly Arts"
+      ✅ Updated
+
+🖼️  Image used by 14 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/13] Tai Chi
+      📸 New image by Edwin Chen
+      🔍 Search: "Tai Chi 55+ Friendly Health"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/13] 聖馬刁縣圖書館中文讀書會 | Chinese Book Club
+      ⚠️  No alternative image found
+
+   [3/13] Free Meals at the Library / Comida gratis en la biblioteca
+      📸 New image by Sysoda Chau
+      🔍 Search: "Free Meals at the Library / Comida gratis en la biblioteca Community Food"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/13] 3D Print and Paint
+      📸 New image by Terence Zheng
+      🔍 Search: "3D Print and Paint Power Up Afternoons Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [5/13] Free Meals at the Library / Comida gratis en la biblioteca
+      📸 New image by Muhammad Arifin Nursalim
+      🔍 Search: "Free Meals at the Library / Comida gratis en la biblioteca Community Food"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [6/13] Winter Wonderland Crafts
+      📸 New image by David Trinks
+      🔍 Search: "Winter Wonderland Crafts Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [7/13] Cookbook Book Club
+      📸 New image by Brett Jordan
+      🔍 Search: "Cookbook Book Club 55+ Friendly Book Clubs"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [8/13] Tinker Teens: Electroluminescent Sculptures
+      📸 New image by Frederick Adegoke Snr.
+      🔍 Search: "Tinker Teens: Electroluminescent Sculptures Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [9/13] Maker Exploration
+      📸 New image by Elmer Cañas
+      🔍 Search: "Maker Exploration Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [10/13] Crafternoon
+      📸 New image by Anne Nygård
+      🔍 Search: "Crafternoon Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [11/13] Digital Navigators
+      📸 New image by Bradley Singleton
+      🔍 Search: "Digital Navigators Computers Technology"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [12/13] Drop-In Tech Help
+      📸 New image by Moritz Kindler
+      🔍 Search: "Drop-In Tech Help Computers Technology"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [13/13] Toddler Storytime With Stay and Play
+      📸 New image by Kris Len Lu
+      🔍 Search: "Toddler Storytime With Stay and Play Storytimes Preschoolers (0-5 years old)"
+      ✅ Updated
+
+🖼️  Image used by 8 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/7] Free Computer Classes
+      📸 New image by Fotos
+      🔍 Search: "Free Computer Classes Bilingual Life Skills"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/7] ELPAC Test Student Practice Sessions /  Sesiones de práctica para estudiantes de ELPAC
+      ⚠️  No alternative image found
+
+   [3/7] Cookbook Book Club
+      📸 New image by Brett Jordan
+      🔍 Search: "Cookbook Book Club 55+ Friendly Book Clubs"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/7] Sew & Go: Holiday Stockings
+      📸 New image by Thought Catalog
+      🔍 Search: "Sew & Go: Holiday Stockings Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [5/7] Bookmobile Stop
+      📸 New image by Kacper G
+      🔍 Search: "Bookmobile Stop Bookmobile Schedule Bilingual"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [6/7] Digital Navigators
+      📸 New image by Vishnu Mohanan
+      🔍 Search: "Digital Navigators Computers Technology"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [7/7] Sewing Hangout
+      📸 New image by Ashley Diane Worsham
+      🔍 Search: "Sewing Hangout 55+ Friendly Arts"
+      ✅ Updated
+
+🖼️  Image used by 3 listings:
+   https://images.unsplash.com/photo-1631508766808-3f4c79fd5ffc...
+
+   [1/2] Family Storytime With Stay and Play
+      📸 New image by Helena Lopes
+      🔍 Search: "Family Storytime With Stay and Play Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/2] Spanish Bilingual Storytime | Hora de Cuentos Bilingue
+      📸 New image by Fotos
+      🔍 Search: "Spanish Bilingual Storytime | Hora de Cuentos Bilingue Bilingual Music"
+      ✅ Updated
+
+🖼️  Image used by 18 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/17] Fiesta del Año Nuevo | Noon Year's Eve Celebration with Biscuit the Dog
+      ⚠️  No alternative image found
+
+   [2/17] Baby Bounce Storytime
+      📸 New image by David Veksler
+      🔍 Search: "Baby Bounce Storytime Music Sensory Learning"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [3/17] Spanish Conversation Club
+      📸 New image by Dmitrii E.
+      🔍 Search: "Spanish Conversation Club 55+ Friendly Bilingual"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/17] ESL Book Club (Waitlist Available)
+      📸 New image by atelierbyvineeth ...
+      🔍 Search: "ESL Book Club (Waitlist Available) ESL Adults (19+ years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [5/17] Qigong
+      📸 New image by Markus Winkler
+      🔍 Search: "Qigong 55+ Friendly Health"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [6/17] Tai Chi
+      📸 New image by Johnyvino
+      🔍 Search: "Tai Chi 55+ Friendly Health"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [7/17] Free Meals at the Library / Comida gratis en la biblioteca
+      📸 New image by chiranjeeb mitra
+      🔍 Search: "Free Meals at the Library / Comida gratis en la biblioteca Community Food"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [8/17] Open Sewing
+      📸 New image by Shelby Murphy Figueroa
+      🔍 Search: "Open Sewing Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [9/17] Day for DIY
+      ⚠️  No alternative image found
+
+   [10/17] Engineering Hub
+      📸 New image by Musemind UX Agency
+      🔍 Search: "Engineering Hub Computers Technology"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [11/17] YMCA Community Resource Center at the Library
+      📸 New image by Edwin Petrus
+      🔍 Search: "YMCA Community Resource Center at the Library 55+ Friendly Bilingual"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [12/17] 3D Printing for Families
+      📸 New image by Girl with red hat
+      🔍 Search: "3D Printing for Families Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [13/17] Maker Monday/Lunes de Creadores
+      📸 New image by Michael Pointner
+      🔍 Search: "Maker Monday/Lunes de Creadores 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [14/17] Tai Chi
+      📸 New image by Markus Winkler
+      🔍 Search: "Tai Chi 55+ Friendly Health"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [15/17] Maker Monday: Open Makerspace
+      📸 New image by Renee Mitchell
+      🔍 Search: "Maker Monday: Open Makerspace Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [16/17] Drop-In Tech Help
+      📸 New image by Harbaksh Singh
+      🔍 Search: "Drop-In Tech Help Computers Technology"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [17/17] Drop-In 3D Printing
+      📸 New image by Mario Batres
+      🔍 Search: "Drop-In 3D Printing Arts Crafts"
+      ✅ Updated
+
+🖼️  Image used by 3 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/2] Maker Exploration
+      📸 New image by Minh Đức
+      🔍 Search: "Maker Exploration 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/2] Free Meals at the Library / Comida gratis en la biblioteca
+      📸 New image by Hugo Cornuel
+      🔍 Search: "Free Meals at the Library / Comida gratis en la biblioteca Community Food"
+      ✅ Updated
+
+🖼️  Image used by 16 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/15] Beginner Cantonese Club
+      📸 New image by Ilyuza Mingazova
+      🔍 Search: "Beginner Cantonese Club Bilingual Community"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/15] Musical Storytime
+      📸 New image by Sandra Mosconi
+      🔍 Search: "Musical Storytime Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [3/15] In-Person English Conversation Club
+      ⚠️  Warning: All available images were already in use
+      📸 New image by Mariia Shalabaieva
+      🔍 Search: "In-Person English Conversation Club 55+ Friendly ESL"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/15] Cookbook Book Club
+      📸 New image by reza shayestehpour
+      🔍 Search: "Cookbook Book Club Book Clubs Food"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [5/15] Step Into Wellness: Atherton Library's Walking Club
+      ⚠️  No alternative image found
+
+   [6/15] Appliance Assistance One-on-One Repair Help
+      📸 New image by Олег Мороз
+      🔍 Search: "Appliance Assistance One-on-One Repair Help 55+ Friendly Computers"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [7/15] Tech Tutors Drop-In Sessions
+      📸 New image by Ibrahim Yusuf
+      🔍 Search: "Tech Tutors Drop-In Sessions Computers Technology"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [8/15] Stuffed Animal Sleepover and Pajama Storytime
+      📸 New image by Clarissa Watson
+      🔍 Search: "Stuffed Animal Sleepover and Pajama Storytime Storytimes Children (6-11 years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [9/15] Gem Painting at the Library!
+      📸 New image by Lida R
+      🔍 Search: "Gem Painting at the Library! 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [10/15] Art Studio
+      📸 New image by shraga kopstein
+      🔍 Search: "Art Studio Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [11/15] Mystery Book Club
+      📸 New image by Nguyễn Hiệp
+      🔍 Search: "Mystery Book Club 55+ Friendly Book Clubs"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [12/15] Drop-In Tech Help
+      📸 New image by Austin Hervias
+      🔍 Search: "Drop-In Tech Help Computers Technology"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [13/15] Signs and Storytime
+      📸 New image by Shelby Murphy Figueroa
+      🔍 Search: "Signs and Storytime Storytimes Preschoolers (0-5 years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [14/15] Bilingual Storytime / Hora de Cuentos Bilingüe
+      📸 New image by mana5280
+      🔍 Search: "Bilingual Storytime / Hora de Cuentos Bilingüe Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [15/15] Tai Chi
+      📸 New image by Dragon Pan
+      🔍 Search: "Tai Chi 55+ Friendly Health"
+      ✅ Updated
+
+🖼️  Image used by 37 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/36] Maker Exploration
+      📸 New image by Raghavendra V. Konkathi
+      🔍 Search: "Maker Exploration Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/36] YMCA Community Resource Center at the Library
+      📸 New image by Todd Morris
+      🔍 Search: "YMCA Community Resource Center at the Library 55+ Friendly Bilingual"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [3/36] Bilingual Storytime / Hora de cuentos bilingüe
+      📸 New image by Blaz Photo
+      🔍 Search: "Bilingual Storytime / Hora de cuentos bilingüe Bilingual Music"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/36] Gem Painting
+      📸 New image by Kit (formerly ConvertKit)
+      🔍 Search: "Gem Painting Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [5/36] Digital Navigators
+      📸 New image by SS Hood
+      🔍 Search: "Digital Navigators Computers Technology"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [6/36] Sewing Machine Basics Jr - Winter Break - Fleece Mittens
+      📸 New image by Gabriel Lopez
+      🔍 Search: "Sewing Machine Basics Jr - Winter Break - Fleece Mittens Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [7/36] Tech Tutor Drop-In
+      📸 New image by ZBRA Marketing
+      🔍 Search: "Tech Tutor Drop-In 55+ Friendly Computers"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [8/36] Pine Needle Weaving
+      📸 New image by Sofie D.
+      🔍 Search: "Pine Needle Weaving Native American Heritage Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [9/36] Zumba Party!
+      📸 New image by Hennie Stander
+      🔍 Search: "Zumba Party! 55+ Friendly Health"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [10/36] Open Sewing
+      📸 New image by Ana Vicente
+      🔍 Search: "Open Sewing Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [11/36] Family Storytime
+      📸 New image by Vitaly Gariev
+      🔍 Search: "Family Storytime Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [12/36] Paws for Tales
+      📸 New image by Tatjana Dimovska
+      🔍 Search: "Paws for Tales Literacy Children (6-11 years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [13/36] Crafty Sundays
+      📸 New image by Judy Beth Morris
+      🔍 Search: "Crafty Sundays Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [14/36] Baby Bounce Storytime
+      📸 New image by Arseny Togulev
+      🔍 Search: "Baby Bounce Storytime Music Sensory Learning"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [15/36] Maker Monday: Open Makerspace
+      📸 New image by Jasmin Schreiber
+      🔍 Search: "Maker Monday: Open Makerspace Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [16/36] Maker Exploration
+      📸 New image by Artur Alexander Holmski
+      🔍 Search: "Maker Exploration Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [17/36] Family Storytime With Stay and Play
+      📸 New image by Vitaly Gariev
+      🔍 Search: "Family Storytime With Stay and Play Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [18/36] Toddler Storytime With Stay and Play
+      📸 New image by Michał Parzuchowski
+      🔍 Search: "Toddler Storytime With Stay and Play Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [19/36] Romantasy Book Club
+      📸 New image by Hassan Pasha
+      🔍 Search: "Romantasy Book Club 55+ Friendly Book Clubs"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [20/36] Open Sewing
+      📸 New image by Ksenia
+      🔍 Search: "Open Sewing Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [21/36] ESL Book Club (Waitlist Available)
+      📸 New image by Jon Tyson
+      🔍 Search: "ESL Book Club (Waitlist Available) ESL Adults (19+ years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [22/36] Game Room
+      📸 New image by Vitaly Gariev
+      🔍 Search: "Game Room Games Gaming"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [23/36] Free Meals at the Library / Comida gratis en la biblioteca
+      📸 New image by Mansi Dhariwal
+      🔍 Search: "Free Meals at the Library / Comida gratis en la biblioteca Community Food"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [24/36] Gem Painting at the Library!
+      📸 New image by Donald Crigler
+      🔍 Search: "Gem Painting at the Library! 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [25/36] Maker Hangout
+      📸 New image by Julia Taubitz
+      🔍 Search: "Maker Hangout Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [26/36] Drop-In Tech Help
+      📸 New image by Daniel Di Maria
+      🔍 Search: "Drop-In Tech Help Computers Technology"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [27/36] In-Person English Conversation Club
+      📸 New image by Markus Winkler
+      🔍 Search: "In-Person English Conversation Club ESL Life Skills"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [28/36] Ab-SEW-lute Beginners
+      📸 New image by Nathana Rebouças
+      🔍 Search: "Ab-SEW-lute Beginners Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [29/36] 3D Printing for Families
+      📸 New image by Snapmaker 3D Printer
+      🔍 Search: "3D Printing for Families Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [30/36] Tai Chi
+      📸 New image by Roy Wen
+      🔍 Search: "Tai Chi 55+ Friendly Health"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [31/36] Open Sewing
+      📸 New image by Studio Crevettes
+      🔍 Search: "Open Sewing 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [32/36] San Carlos Friends of the Library Book Sale
+      ⚠️  No alternative image found
+
+   [33/36] Drop-In 3D Printing
+      📸 New image by Lucas George Wendt
+      🔍 Search: "Drop-In 3D Printing Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [34/36] The Natural Presidio
+      ⚠️  No alternative image found
+
+   [35/36] Free Meals at the Library / Comida gratis en la biblioteca
+      📸 New image by Umar Al Farouq
+      🔍 Search: "Free Meals at the Library / Comida gratis en la biblioteca Community Food"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [36/36] Open Sewing
+      📸 New image by Aditya Wardhana
+      🔍 Search: "Open Sewing Arts Crafts"
+      ✅ Updated
+
+🖼️  Image used by 19 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/18] Maker Exploration
+      📸 New image by Shelby Murphy Figueroa
+      🔍 Search: "Maker Exploration Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/18] Baby Bounce Storytime
+      📸 New image by Daria Rudyk
+      🔍 Search: "Baby Bounce Storytime Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [3/18] San Carlos Stitchers
+      ⚠️  Warning: All available images were already in use
+      📸 New image by Alex Bransky
+      🔍 Search: "San Carlos Stitchers 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/18] Family Storytime
+      📸 New image by Elmer Cañas
+      🔍 Search: "Family Storytime Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [5/18] Baby Bounce Storytime With Stay and Play
+      📸 New image by Teo Zac
+      🔍 Search: "Baby Bounce Storytime With Stay and Play Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [6/18] Half Moon Bay Writing Club
+      ⚠️  No alternative image found
+
+   [7/18] U.S. Citizenship Test Class
+      📸 New image by Riccardo Tuninato
+      🔍 Search: "U.S. Citizenship Test Class Bilingual Life Skills"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [8/18] Musical Storytime With Stay and Play at San Pedro Valley Park
+      ⚠️  No alternative image found
+
+   [9/18] ぽぽんた お話会 | Japanese Storytime
+      📸 New image by Vitor Fontes
+      🔍 Search: "ぽぽんた お話会 | Japanese Storytime Storytimes Children (6-11 years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [10/18] ¡Hora de Cuentos Bilingue con Quedar y Jugar! |Spanish Bilingual Storytime With Stay and Play
+      📸 New image by Kris Len Lu
+      🔍 Search: "¡Hora de Cuentos Bilingue con Quedar y Jugar! |Spanish Bilingual Storytime With Stay and Play Bilingual Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [11/18] Crafternoon: Spirograph Art
+      📸 New image by Ashe Walker
+      🔍 Search: "Crafternoon: Spirograph Art Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [12/18] Family Storytime
+      📸 New image by Richard Robbins
+      🔍 Search: "Family Storytime Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [13/18] It's Sew Easy: Dog Bandana
+      📸 New image by Karsten Winegeart
+      🔍 Search: "It's Sew Easy: Dog Bandana 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [14/18] Making Wearables
+      📸 New image by ZMorph All-in-One 3D Printers
+      🔍 Search: "Making Wearables Computers Technology"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [15/18] Drop-In Sewing
+      📸 New image by Ilya lix
+      🔍 Search: "Drop-In Sewing 55+ Friendly Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [16/18] Baby Bounce Storytime with Stay and Play
+      📸 New image by Lloyd Henneman
+      🔍 Search: "Baby Bounce Storytime with Stay and Play Storytimes Preschoolers (0-5 years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [17/18] Free Meals at the Library / Comida gratis en la biblioteca
+      📸 New image by Eunsong Jo
+      🔍 Search: "Free Meals at the Library / Comida gratis en la biblioteca Community Food"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [18/18] Gem Painting at the Library!
+      📸 New image by Ranbir Singh
+      🔍 Search: "Gem Painting at the Library! Arts Crafts"
+      ✅ Updated
+
+🖼️  Image used by 2 listings:
+   https://images.unsplash.com/photo-1631508766808-3f4c79fd5ffc...
+
+   [1/1] ELPAC Test Student Practice Sessions /  Sesiones de práctica para estudiantes de ELPAC
+      ⚠️  No alternative image found
+
+🖼️  Image used by 8 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/7] Maker Exploration
+      📸 New image by Javier Balseiro
+      🔍 Search: "Maker Exploration Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/7] Open Sewing
+      📸 New image by lucas mendes
+      🔍 Search: "Open Sewing Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [3/7] Family Storytime With Stay and Play
+      📸 New image by Josephine Shirley
+      🔍 Search: "Family Storytime With Stay and Play Music Storytimes"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/7] Reading Buddies
+      📸 New image by Sudhakar Chandra
+      🔍 Search: "Reading Buddies Literacy Children (6-11 years old)"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [5/7] Dungeons and Dragons
+      📸 New image by Michael Myers
+      🔍 Search: "Dungeons and Dragons Games Gaming"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [6/7] Maker Exploration for Families
+      📸 New image by Yehor Milohrodskyi
+      🔍 Search: "Maker Exploration for Families Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [7/7] Maker Exploration
+      📸 New image by Devin Berko
+      🔍 Search: "Maker Exploration Power Up Afternoons Arts"
+      ✅ Updated
+
+🖼️  Image used by 5 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/4] Drop-In Sewing
+      📸 New image by reza erfanian
+      🔍 Search: "Drop-In Sewing Arts Crafts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [2/4] Free Meals at the Library / Comida gratis en la biblioteca
+      📸 New image by Ashes Sitoula
+      🔍 Search: "Free Meals at the Library / Comida gratis en la biblioteca Community Food"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [3/4] Maker Exploration
+      📸 New image by Emon Hossain
+      🔍 Search: "Maker Exploration Power Up Afternoons Arts"
+      ✅ Updated
+      ⏳ Waiting 5 seconds...
+
+   [4/4] Parents & Babies Meetup at Coyote Point
+      ⚠️  No alternative image found
+
+🖼️  Image used by 3 listings:
+   https://images.unsplash.com/photo-1611084401135-730a8f8541c2...
+
+   [1/2] Maker Exploration
+      📸 New image by Hayffield L
+      🔍 Search: "Maker Exploration Arts Crafts"
+Error updating Airtable record rss-san-mateo-county-library-1767174607269-irrb3: Could not find what you are looking for
+      ❌ Failed to update
+      ⏳ Waiting 5 seconds...
+
+   [2/2] Crafternoon: KPop Demon Hunters Notebook Decorating
+      📸 New image by COPPERTIST WU
+      🔍 Search: "Crafternoon: KPop Demon Hunters Notebook Decorating Arts Crafts"
+      ✅ Updated
+
+🖼️  Image used by 2 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/1] U.S. Citizenship Test Class
+      📸 New image by Wesley Tingey
+      🔍 Search: "U.S. Citizenship Test Class Bilingual Life Skills"
+      ✅ Updated
+
+🖼️  Image used by 2 listings:
+   https://images.unsplash.com/photo-1607823477653-e2c3980acb86...
+
+   [1/1] Sesiones de práctica para estudiantes de ELPAC | ELPAC Student Practice Sessions
+      📸 New image by Timur Shakerzianov
+      🔍 Search: "Sesiones de práctica para estudiantes de ELPAC | ELPAC Student Practice Sessions Bilingual ESL"
+      ✅ Updated
+
+🖼️  Image used by 2 listings:
+   https://images.unsplash.com/photo-1631508766808-3f4c79fd5ffc...
+
+   [1/1] Boardtime!
+      📸 New image by Alina Belous
+      🔍 Search: "Boardtime! Arts Crafts"
+      ✅ Updated
+
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+━
+✅ Fixed 127 duplicate images
+⚠️  Duplicate warnings: 2
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Done!
+Completed at Sat Jan 17 21:59:06 PST 2026
+

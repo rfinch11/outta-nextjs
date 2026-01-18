@@ -21,6 +21,7 @@ interface ButtonInfo {
 const PLACE_TYPE_ORDER: string[] = [
   'Playground',
   'Park',
+  'Farmers Market',
   'Indoor play',
   'Attraction',
   'Art',
