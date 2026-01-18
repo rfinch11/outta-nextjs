@@ -128,6 +128,11 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   // Fetch Google Place details
   const { data: placeDetails, isLoading: placeDetailsLoading } = usePlaceDetails(place_id);
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // State for unclaimed listing modal
   const [unclaimedModalOpen, setUnclaimedModalOpen] = useState(false);
 
