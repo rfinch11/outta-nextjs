@@ -336,7 +336,7 @@ const Homepage: React.FC = () => {
 
             <CollectionSection
               title="Rainy day adventures"
-              href="/filter/Indoor%20Playground"
+              href="/filter/Indoor%20play"
               listings={rainyDayAdventures}
             />
 
