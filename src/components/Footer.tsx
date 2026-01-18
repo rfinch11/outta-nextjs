@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import PrivacyPolicyDrawer from './PrivacyPolicyDrawer';
 import CookiePolicyDrawer from './CookiePolicyDrawer';
 import TermsOfServiceDrawer from './TermsOfServiceDrawer';
@@ -63,12 +62,6 @@ const Footer: React.FC = () => {
             >
               Contact
             </a>
-            <Link
-              href="/about"
-              className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
-            >
-              About
-            </Link>
             <a
               href="mailto:rfinch@outta.events"
               className="text-sm text-gray-600 no-underline hover:text-flamenco-600 transition-colors"
