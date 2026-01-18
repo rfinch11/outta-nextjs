@@ -85,6 +85,16 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
     }
   };
 
+  // Format price for card display (truncate ranges to min+)
+  const formatCardPrice = (priceStr: string) => {
+    // Check if it's a range (contains " - ")
+    if (priceStr.includes(' - ')) {
+      const minPrice = priceStr.split(' - ')[0];
+      return `${minPrice}+`;
+    }
+    return priceStr;
+  };
+
   return (
     <Link href={`/listings/${airtable_id}`} className="block no-underline">
       <div className="flex w-full p-2 gap-3 rounded-xl relative cursor-pointer transition-all hover:bg-white hover:shadow-sm">
@@ -109,7 +119,7 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
               {price && !['see website', 'free'].includes(price.toLowerCase()) && (
                 <span className="flex items-center gap-1 text-emerald-600 flex-shrink-0">
                   <LuTag size={14} />
-                  <span className="font-semibold">{price}</span>
+                  <span className="font-semibold">{formatCardPrice(price)}</span>
                 </span>
               )}
             </div>
