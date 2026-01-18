@@ -202,7 +202,7 @@ const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick
         <CardStack />
         <div className="text-center">
           <h1 className="text-[28px] font-semibold text-malibu-950 leading-tight mb-4">
-            Discover <CountDisplay count={listingCount} /> family adventures near
+            Discover <CountDisplay count={listingCount} /> kid-friendly activities near
           </h1>
           <button
             onClick={onLocationClick}
@@ -221,7 +221,7 @@ const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick
         <CardStack />
         <div className="text-left">
           <h1 className="text-[36px] lg:text-[40px] font-semibold text-malibu-950 leading-tight mb-4">
-            Discover <CountDisplay count={listingCount} /> family<br />adventures near
+            Discover <CountDisplay count={listingCount} /> kid-friendly<br />activities near
           </h1>
           <button
             onClick={onLocationClick}
