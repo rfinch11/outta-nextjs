@@ -20,8 +20,8 @@ interface ButtonInfo {
 // Custom ordering for place types in the filter bar
 const PLACE_TYPE_ORDER: string[] = [
   'Playground',
-  'Park',
   'Farmers Market',
+  'Park',
   'Indoor play',
   'Attraction',
   'Art',
