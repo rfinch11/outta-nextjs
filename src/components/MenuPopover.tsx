@@ -1,6 +1,7 @@
 'use client';
 
 import React, { forwardRef, useState } from 'react';
+import Link from 'next/link';
 import { LuPlus, LuChevronLeft, LuMessageSquare } from 'react-icons/lu';
 import { BiNavigation } from 'react-icons/bi';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -99,9 +100,6 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
       window.location.href = 'mailto:rfinch@outta.events?subject=Feedback';
     };
 
-    const handlePartner = () => {
-      window.location.href = 'mailto:rfinch@outta.events?subject=Partner with Outta';
-    };
 
     return (
       <div
@@ -115,17 +113,17 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
           <>
             {/* Partner section */}
             <div className="p-3">
-              <button
-                onClick={handlePartner}
-                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border-none bg-transparent cursor-pointer transition-colors hover:bg-malibu-50"
-                type="button"
+              <Link
+                href="/partner"
+                onClick={onClose}
+                className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg no-underline transition-colors hover:bg-malibu-50"
               >
                 <div className="flex flex-col items-start text-left">
                   <span className="text-base font-semibold text-malibu-950">Partner with Outta</span>
                   <span className="text-sm text-black-500">Create new memories for local families</span>
                 </div>
                 <span className="text-5xl ml-3">🤝</span>
-              </button>
+              </Link>
             </div>
 
             {/* Divider */}
