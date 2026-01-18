@@ -5,9 +5,7 @@ import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
 import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe, LuArrowUpRight, LuX } from 'react-icons/lu';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
-import { Drawer } from 'vaul';
 import { supabase } from '@/lib/supabase';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 import type { Listing } from '@/lib/supabase';
 import { calculateDistance } from '@/lib/filterUtils';
 import ClickableCard from './ClickableCard';
@@ -129,9 +127,6 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
 
   // Fetch Google Place details
   const { data: placeDetails, isLoading: placeDetailsLoading } = usePlaceDetails(place_id);
-
-  // Media query for responsive modal
-  const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
   // State for unclaimed listing modal
   const [unclaimedModalOpen, setUnclaimedModalOpen] = useState(false);
@@ -582,21 +577,13 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         )}
 
         {/* Unclaimed Listing Modal */}
-        <Drawer.Root open={unclaimedModalOpen} onOpenChange={setUnclaimedModalOpen}>
-          <Drawer.Portal>
-            <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" />
-            <Drawer.Content
-              className={
-                isLargeScreen
-                  ? 'bg-white flex flex-col rounded-xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] outline-none overflow-hidden w-full max-w-md shadow-xl'
-                  : 'bg-white flex flex-col rounded-t-[20px] fixed bottom-0 left-0 right-0 z-[70] outline-none overflow-hidden'
-              }
-            >
-              <Drawer.Title className="sr-only">This listing is unclaimed</Drawer.Title>
-              <Drawer.Description className="sr-only">
-                Information about claiming this listing
-              </Drawer.Description>
-
+        {unclaimedModalOpen && (
+          <>
+            <div
+              className="fixed inset-0 bg-black/40 z-[60]"
+              onClick={() => setUnclaimedModalOpen(false)}
+            />
+            <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] w-[calc(100%-40px)] max-w-md bg-white rounded-xl shadow-xl">
               {/* Header with Close Button */}
               <div className="flex items-center justify-end px-5 pt-4">
                 <button
@@ -622,9 +609,9 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
                   Contact Outta
                 </a>
               </div>
-            </Drawer.Content>
-          </Drawer.Portal>
-        </Drawer.Root>
+            </div>
+          </>
+        )}
 
         {/* Report Listing */}
         <div className="text-center mt-6 mb-8">
