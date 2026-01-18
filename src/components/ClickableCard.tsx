@@ -110,8 +110,8 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
 
         {/* Content on the right */}
         <div className="flex flex-col gap-1.5 flex-1 min-w-0">
-          {/* Organizer & Price */}
-          {(organizer || (price && !['see website', 'free'].includes(price.toLowerCase()))) && (
+          {/* Organizer & Price for Events only */}
+          {type === 'Event' && (organizer || (price && !['see website', 'free'].includes(price.toLowerCase()))) && (
             <div className="text-sm leading-5 flex items-center gap-2 min-w-0">
               {organizer && (
                 <span className="text-malibu-950/80 truncate">{organizer}</span>
@@ -125,11 +125,28 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
             </div>
           )}
 
-          {/* Star rating above title for Activity and Camp */}
-          {(type === 'Activity' || type === 'Camp') && rating && (
-            <div className="flex items-center gap-0.5">
-              {renderStars(rating)}
-              <span className="ml-1 text-sm text-malibu-950/80">{rating.toFixed(1)}</span>
+          {/* Organizer for Activity and Camp */}
+          {(type === 'Activity' || type === 'Camp') && organizer && (
+            <div className="text-sm leading-5 min-w-0">
+              <span className="text-malibu-950/80 truncate">{organizer}</span>
+            </div>
+          )}
+
+          {/* Star rating + price inline for Activity and Camp */}
+          {(type === 'Activity' || type === 'Camp') && (rating || (price && !['see website', 'free'].includes(price.toLowerCase()))) && (
+            <div className="flex items-center gap-2 min-w-0">
+              {rating && (
+                <div className="flex items-center gap-0.5 flex-shrink-0">
+                  {renderStars(rating)}
+                  <span className="ml-1 text-sm text-malibu-950/80">{rating.toFixed(1)}</span>
+                </div>
+              )}
+              {price && !['see website', 'free'].includes(price.toLowerCase()) && (
+                <span className="flex items-center gap-1 text-emerald-600 truncate">
+                  <LuTag size={14} strokeWidth={2.5} className="flex-shrink-0" />
+                  <span className="font-semibold text-sm truncate">{formatCardPrice(price)}</span>
+                </span>
+              )}
             </div>
           )}
 
