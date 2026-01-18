@@ -291,24 +291,31 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab, fi
           fullscreenControl: true,
         }}
       >
-        {validListings.map((listing) => (
-          <Marker
-            key={listing.airtable_id}
-            position={{
-              lat: listing.latitude!,
-              lng: listing.longitude!,
-            }}
-            onClick={() => setSelectedListing(listing)}
-            icon={{
-              path: window.google.maps.SymbolPath.CIRCLE,
-              scale: 8,
-              fillColor: '#FFF407',
-              fillOpacity: 1,
-              strokeColor: '#000000',
-              strokeWeight: 2,
-            }}
-          />
-        ))}
+        {validListings.map((listing) => {
+          const isSelected = selectedListing?.airtable_id === listing.airtable_id;
+          const size = isSelected ? 24 : 16;
+          const svgIcon = `data:image/svg+xml,${encodeURIComponent(`
+            <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+              <circle cx="${size/2}" cy="${size/2}" r="${size/2 - 2}" fill="#fff407" stroke="#000000" stroke-width="2"/>
+            </svg>
+          `)}`;
+          return (
+            <Marker
+              key={listing.airtable_id}
+              position={{
+                lat: listing.latitude!,
+                lng: listing.longitude!,
+              }}
+              onClick={() => setSelectedListing(listing)}
+              zIndex={isSelected ? 1000 : 1}
+              icon={{
+                url: svgIcon,
+                scaledSize: new window.google.maps.Size(size, size),
+                anchor: new window.google.maps.Point(size/2, size/2),
+              }}
+            />
+          );
+        })}
 
         {selectedListing && selectedListing.latitude && selectedListing.longitude && (
           <InfoWindow

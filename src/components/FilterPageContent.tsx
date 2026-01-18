@@ -598,11 +598,11 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                         onClick={() => handleMarkerClick(listing.airtable_id)}
                         icon={{
                           path: window.google.maps.SymbolPath.CIRCLE,
-                          scale: selectedListingId === listing.airtable_id ? 10 : 6,
-                          fillColor: selectedListingId === listing.airtable_id ? '#efdb03' : '#feff43',
+                          scale: selectedListingId === listing.airtable_id ? 12 : 8,
+                          fillColor: '#fff407',
                           fillOpacity: 1,
-                          strokeColor: '#06304b',
-                          strokeWeight: 1.5,
+                          strokeColor: '#000000',
+                          strokeWeight: 1,
                         }}
                         zIndex={selectedListingId === listing.airtable_id ? 1000 : 1}
                       />
@@ -672,11 +672,11 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
                       onClick={() => handleMarkerClick(listing.airtable_id)}
                       icon={{
                         path: window.google.maps.SymbolPath.CIRCLE,
-                        scale: selectedListingId === listing.airtable_id ? 10 : 6,
-                        fillColor: selectedListingId === listing.airtable_id ? '#efdb03' : '#feff43',
+                        scale: selectedListingId === listing.airtable_id ? 12 : 8,
+                        fillColor: '#fff407',
                         fillOpacity: 1,
-                        strokeColor: '#06304b',
-                        strokeWeight: 1.5,
+                        strokeColor: '#000000',
+                        strokeWeight: 1,
                       }}
                       zIndex={selectedListingId === listing.airtable_id ? 1000 : 1}
                     />
