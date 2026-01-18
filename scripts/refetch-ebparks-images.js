@@ -1,3 +1,20 @@
+/**
+ * Re-fetch Unsplash images for East Bay Regional Park events
+ *
+ * This script:
+ * 1. Finds all EBRP events with duplicate/problematic images
+ * 2. Clears their image field
+ * 3. Re-fetches using the new title-first search strategy
+ *
+ * Usage:
+ *   node scripts/refetch-ebparks-images.js           # Re-fetch all duplicates
+ *   node scripts/refetch-ebparks-images.js --dry-run # Preview only (no changes)
+ *   node scripts/refetch-ebparks-images.js --limit 20 # Process only 20 events
+ *
+ * Note: Unsplash demo API has a rate limit of 50 requests/hour.
+ * Process in batches of 15-20 to avoid hitting limits.
+ */
+
 require('dotenv').config({ path: '.env.local' });
 const { createClient } = require('@supabase/supabase-js');
 
@@ -7,6 +24,13 @@ const supabase = createClient(
 );
 
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY;
+const DRY_RUN = process.argv.includes('--dry-run');
+
+// Parse --limit option
+const limitIndex = process.argv.indexOf('--limit');
+const LIMIT = limitIndex !== -1 && process.argv[limitIndex + 1]
+  ? parseInt(process.argv[limitIndex + 1], 10)
+  : null;
 
 // Tags that don't help with image search specificity
 const UNHELPFUL_TAGS = [
@@ -28,7 +52,6 @@ const UNHELPFUL_TAGS = [
 
 /**
  * Detect event category from title for smart image search
- * Returns a search term optimized for finding relevant images
  */
 function detectEventCategory(listing) {
   const title = listing.title.toLowerCase();
@@ -132,7 +155,6 @@ function detectEventCategory(listing) {
 
 /**
  * Extract meaningful keywords from title
- * Filters stop words and short words, keeps up to 4 keywords
  */
 function extractTitleKeywords(title) {
   const stopWords = [
@@ -167,23 +189,7 @@ function getMeaningfulTags(tags) {
 }
 
 /**
- * Detect if this is a park/nature event based on organizer
- */
-function isParkEvent(listing) {
-  const organizer = (listing.organizer || '').toLowerCase();
-  return organizer.includes('park') ||
-         organizer.includes('regional') ||
-         (listing.airtable_id && listing.airtable_id.startsWith('ebparks'));
-}
-
-/**
  * Build search terms with TITLE as primary priority
- *
- * New priority order:
- * 1. Title keywords + 'children' (most specific to event)
- * 2. Event category (smart detection from title)
- * 3. Meaningful tags + 'kids' (filtered tags only)
- * 4. Source-appropriate fallbacks
  */
 function buildSearchTerms(listing) {
   const searchTerms = [];
@@ -203,30 +209,23 @@ function buildSearchTerms(listing) {
   // PRIORITY 3: Meaningful tags only (filtered)
   const meaningfulTags = getMeaningfulTags(listing.tags);
   if (meaningfulTags.length > 0) {
-    // Use first meaningful tag
     searchTerms.push(meaningfulTags[0] + ' kids');
-
-    // If multiple meaningful tags, combine first two
     if (meaningfulTags.length > 1) {
       searchTerms.push(meaningfulTags.slice(0, 2).join(' ') + ' children');
     }
   }
 
-  // PRIORITY 4: Source-appropriate fallbacks
-  if (isParkEvent(listing)) {
-    searchTerms.push('children nature outdoors');
-    searchTerms.push('family park activities');
-    searchTerms.push('kids outdoor exploration');
-  } else {
-    searchTerms.push('kids activities');
-    searchTerms.push('children playing');
-    searchTerms.push('family events');
-  }
+  // PRIORITY 4: Park-specific fallbacks
+  searchTerms.push('children nature outdoors');
+  searchTerms.push('family park activities');
+  searchTerms.push('kids outdoor exploration');
 
-  // Remove duplicates while preserving order
   return [...new Set(searchTerms)];
 }
 
+/**
+ * Get set of already-used Unsplash photo IDs
+ */
 async function getUsedPhotoIds() {
   const { data, error } = await supabase
     .from('listings')
@@ -242,8 +241,7 @@ async function getUsedPhotoIds() {
 }
 
 /**
- * Search Unsplash API with a specific term
- * Returns up to 30 results for better variety
+ * Search Unsplash API
  */
 async function searchUnsplash(searchTerm) {
   const response = await fetch(
@@ -267,139 +265,145 @@ function randomSelect(array) {
 }
 
 /**
- * Fetch image from Unsplash with title-first search strategy
- * - Prioritizes title-based searches
- * - Randomly selects from unused results for variety
- * - Falls back progressively to broader terms
+ * Fetch image from Unsplash with new strategy
  */
 async function fetchUnsplashImage(listing, usedPhotoIds) {
   const searchTerms = buildSearchTerms(listing);
 
-  console.log(`   Trying ${searchTerms.length} search strategies...`);
+  console.log(`   Search terms: ${searchTerms.slice(0, 3).join(' | ')}`);
 
   for (let i = 0; i < searchTerms.length; i++) {
     const searchTerm = searchTerms[i];
-    console.log(`   [${i + 1}/${searchTerms.length}] Searching: "${searchTerm}"`);
 
     try {
       const results = await searchUnsplash(searchTerm);
 
       if (results.length > 0) {
-        // Filter to unused photos
         const unusedPhotos = results.filter(photo => !usedPhotoIds.has(photo.id));
 
-        let selectedPhoto = null;
-
         if (unusedPhotos.length > 0) {
-          // Randomly select from unused photos for variety
-          selectedPhoto = randomSelect(unusedPhotos);
-          console.log(`   📊 ${unusedPhotos.length}/${results.length} results unused, randomly selecting`);
-        } else {
-          // All photos used, try next search term for better variety
-          console.log(`   ⚠️  All ${results.length} results already used, trying next term...`);
-          continue; // Try next search term instead of reusing
+          const selectedPhoto = randomSelect(unusedPhotos);
+          const imageUrl = selectedPhoto.urls.regular;
+          const photographer = selectedPhoto.user.name;
+          const photoId = selectedPhoto.id;
+
+          console.log(`   ✅ Found: "${searchTerm}" → ${photographer} (${unusedPhotos.length}/${results.length} unused)`);
+
+          if (!DRY_RUN) {
+            const { error } = await supabase
+              .from('listings')
+              .update({
+                image: imageUrl,
+                unsplash_photo_id: photoId
+              })
+              .eq('id', listing.id);
+
+            if (error) {
+              console.error(`   ❌ Error updating: ${error.message}`);
+              return { success: false };
+            }
+          }
+
+          usedPhotoIds.add(photoId);
+          return { success: true, searchTerm, photographer, photoId };
         }
-
-        const imageUrl = selectedPhoto.urls.regular;
-        const photographer = selectedPhoto.user.name;
-        const photoId = selectedPhoto.id;
-
-        console.log(`   ✅ Found image by ${photographer} (ID: ${photoId})`);
-
-        const { error } = await supabase
-          .from('listings')
-          .update({
-            image: imageUrl,
-            unsplash_photo_id: photoId
-          })
-          .eq('id', listing.id);
-
-        if (error) {
-          console.error(`   ❌ Error updating listing: ${error.message}`);
-          return { success: false, error: error.message };
-        }
-
-        usedPhotoIds.add(photoId);
-
-        console.log(`   ✅ Image added to: ${listing.title}`);
-        return {
-          success: true,
-          imageUrl,
-          photographer,
-          photoId,
-          searchTerm,
-          attemptNumber: i + 1
-        };
-      } else {
-        console.log(`   ⚠️  No results, trying next fallback...`);
       }
-
     } catch (error) {
-      console.error(`   ❌ Error searching: ${error.message}`);
-      continue;
+      console.error(`   ❌ Error: ${error.message}`);
     }
 
     await new Promise(resolve => setTimeout(resolve, 100));
   }
 
-  // If all search terms exhausted with no unused photos, pick from last successful search
-  console.log(`   ⚠️  All terms exhausted, doing final fallback search...`);
-  try {
-    const lastResortResults = await searchUnsplash('children outdoor activities');
-    if (lastResortResults.length > 0) {
-      const selectedPhoto = randomSelect(lastResortResults);
-      const imageUrl = selectedPhoto.urls.regular;
-      const photographer = selectedPhoto.user.name;
-      const photoId = selectedPhoto.id;
-
-      const { error } = await supabase
-        .from('listings')
-        .update({
-          image: imageUrl,
-          unsplash_photo_id: photoId
-        })
-        .eq('id', listing.id);
-
-      if (!error) {
-        usedPhotoIds.add(photoId);
-        console.log(`   ✅ Final fallback: image by ${photographer}`);
-        return { success: true, imageUrl, photographer, photoId, searchTerm: 'children outdoor activities (fallback)', attemptNumber: 'fallback' };
-      }
-    }
-  } catch (e) {
-    // Ignore
-  }
-
-  console.log(`   ❌ All ${searchTerms.length} search attempts failed`);
-  return { success: false, error: 'All search attempts failed' };
+  console.log(`   ❌ No unused images found`);
+  return { success: false };
 }
 
-(async () => {
-  console.log('🖼️  Starting manual Unsplash image fetching...\n');
+async function main() {
+  console.log('🖼️  Re-fetching images for East Bay Regional Park events\n');
 
-  const usedPhotoIds = await getUsedPhotoIds();
-  console.log(`   Loaded ${usedPhotoIds.size} already-used photo IDs for deduplication\n`);
+  if (DRY_RUN) {
+    console.log('⚠️  DRY RUN MODE - No changes will be made\n');
+  }
+  if (LIMIT) {
+    console.log(`📊 Processing limit: ${LIMIT} events\n`);
+  }
 
-  const { data: listings, error } = await supabase
+  // Get today's date at midnight for filtering
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayISO = today.toISOString();
+
+  console.log(`📅 Only processing events from ${today.toLocaleDateString()} onwards\n`);
+
+  // Get all EBRP events that are today or in the future, sorted by date
+  const { data: ebparksEvents, error } = await supabase
     .from('listings')
-    .select('id, airtable_id, title, tags, organizer, image, unsplash_photo_id')
-    .is('image', null)
-    .limit(100);
+    .select('id, airtable_id, title, tags, organizer, image, unsplash_photo_id, start_date')
+    .like('airtable_id', 'ebparks%')
+    .gte('start_date', todayISO)
+    .order('start_date', { ascending: true });
 
   if (error) {
-    console.error('❌ Error fetching listings:', error.message);
+    console.error('❌ Error fetching EBRP events:', error.message);
     return;
   }
 
-  console.log(`Found ${listings.length} listings without images\n`);
+  console.log(`Found ${ebparksEvents.length} EBRP events\n`);
+
+  // Find duplicate photo IDs
+  const photoIdCounts = {};
+  ebparksEvents.forEach(event => {
+    if (event.unsplash_photo_id) {
+      photoIdCounts[event.unsplash_photo_id] = (photoIdCounts[event.unsplash_photo_id] || 0) + 1;
+    }
+  });
+
+  const duplicatePhotoIds = new Set(
+    Object.entries(photoIdCounts)
+      .filter(([id, count]) => count > 1)
+      .map(([id]) => id)
+  );
+
+  console.log(`Found ${duplicatePhotoIds.size} duplicate photo IDs\n`);
+
+  // Get events with duplicate images
+  let eventsToRefetch = ebparksEvents.filter(event =>
+    event.unsplash_photo_id && duplicatePhotoIds.has(event.unsplash_photo_id)
+  );
+
+  // Apply limit if specified
+  if (LIMIT && eventsToRefetch.length > LIMIT) {
+    console.log(`Limiting to first ${LIMIT} of ${eventsToRefetch.length} events\n`);
+    eventsToRefetch = eventsToRefetch.slice(0, LIMIT);
+  }
+
+  console.log(`Will re-fetch images for ${eventsToRefetch.length} events\n`);
+  console.log('─'.repeat(60) + '\n');
+
+  // Get used photo IDs (excluding ones we're about to clear)
+  const usedPhotoIds = await getUsedPhotoIds();
+
+  // Remove the duplicate IDs from the used set (we're replacing them)
+  duplicatePhotoIds.forEach(id => usedPhotoIds.delete(id));
 
   let successCount = 0;
   let errorCount = 0;
 
-  for (const listing of listings) {
-    console.log(`🖼️  Processing: ${listing.title}`);
+  for (const event of eventsToRefetch) {
+    const eventDate = event.start_date ? new Date(event.start_date).toLocaleDateString() : 'No date';
+    console.log(`📸 [${eventDate}] ${event.title}`);
+    console.log(`   Old photo: ${event.unsplash_photo_id}`);
 
-    const result = await fetchUnsplashImage(listing, usedPhotoIds);
+    // Clear the old image first (if not dry run)
+    if (!DRY_RUN) {
+      await supabase
+        .from('listings')
+        .update({ image: null, unsplash_photo_id: null })
+        .eq('id', event.id);
+    }
+
+    const result = await fetchUnsplashImage(event, usedPhotoIds);
 
     if (result.success) {
       successCount++;
@@ -407,11 +411,20 @@ async function fetchUnsplashImage(listing, usedPhotoIds) {
       errorCount++;
     }
 
-    // Rate limit: 200ms between requests
-    await new Promise(resolve => setTimeout(resolve, 200));
+    console.log('');
+
+    // Rate limit
+    await new Promise(resolve => setTimeout(resolve, 300));
   }
 
+  console.log('─'.repeat(60));
   console.log(`\n📊 Summary:`);
-  console.log(`   Images fetched: ${successCount}`);
+  console.log(`   Success: ${successCount}`);
   console.log(`   Errors: ${errorCount}`);
-})();
+
+  if (DRY_RUN) {
+    console.log('\n⚠️  This was a dry run. Run without --dry-run to apply changes.');
+  }
+}
+
+main().catch(console.error);

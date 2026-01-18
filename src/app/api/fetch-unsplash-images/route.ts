@@ -8,16 +8,114 @@ const supabase = createClient(
 
 const UNSPLASH_ACCESS_KEY = process.env.UNSPLASH_ACCESS_KEY!;
 
+// Tags that don't help with image search specificity
+const UNHELPFUL_TAGS = [
+  'East Bay Regional Park District',
+  'Outdoor',
+  'Nature',
+  'Drop-in',
+  'Free',
+  'Kids',
+  'Eventbrite',
+  'years old',
+  'Friendly',
+  'English',
+  'Spanish',
+  'Bilingual',
+  'All Ages',
+  'Educational',
+];
+
 /**
- * Detect event category from title and tags for smart fallbacks
+ * Detect event category from title for smart image search
+ * Returns a search term optimized for finding relevant images
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function detectEventCategory(listing: any): string | null {
+  const title = listing.title.toLowerCase();
   const text = `${listing.title} ${listing.tags || ''}`.toLowerCase();
 
-  if (text.includes('storytime') || text.includes('reading') || text.includes('book')) {
-    return 'children reading books';
+  // Animals & Wildlife (check specific animals first)
+  if (title.includes('fish') || title.includes('gills')) {
+    return 'children fish aquarium';
   }
+  if (title.includes('duck') || title.includes('goose') || title.includes('waterfowl')) {
+    return 'ducks pond wildlife';
+  }
+  if (title.includes('bird') || title.includes('wings') || title.includes('wetland')) {
+    return 'children birdwatching nature';
+  }
+  if (title.includes('newt') || title.includes('salamander') || title.includes('amphibian')) {
+    return 'salamander nature pond';
+  }
+  if (title.includes('animal feeding') || title.includes('feed the')) {
+    return 'children feeding farm animals';
+  }
+  if (
+    text.includes('animal') ||
+    text.includes('farm') ||
+    text.includes('chicken') ||
+    text.includes('goat')
+  ) {
+    return 'farm animals children petting';
+  }
+
+  // Nature & Outdoors
+  if (title.includes('hike') || title.includes('walk') || title.includes('trail')) {
+    return 'family hiking nature trail';
+  }
+  if (title.includes('lake') || title.includes('lakeside') || title.includes('pond')) {
+    return 'children lake nature';
+  }
+  if (title.includes('creek') || title.includes('stream') || title.includes('water')) {
+    return 'children creek nature exploration';
+  }
+  if (title.includes('marsh') || title.includes('wetland')) {
+    return 'wetland marsh nature';
+  }
+  if (title.includes('mushroom') || title.includes('fungus') || title.includes('fungi')) {
+    return 'mushroom foraging nature';
+  }
+  if (title.includes('canyon') || title.includes('valley')) {
+    return 'hiking canyon nature family';
+  }
+
+  // Marine & Prehistoric
+  if (title.includes('shark') || title.includes('megalodon')) {
+    return 'shark ocean prehistoric';
+  }
+  if (title.includes('dinosaur') || title.includes('fossil')) {
+    return 'dinosaur fossil children museum';
+  }
+  if (title.includes('delta') || title.includes('discovery')) {
+    return 'nature discovery children outdoors';
+  }
+
+  // Arts & Crafts
+  if (title.includes('puppet')) {
+    return 'puppet show children';
+  }
+  if (title.includes('embroidery') || title.includes('sewing') || title.includes('needle')) {
+    return 'children sewing craft';
+  }
+  if (title.includes('felting') || title.includes('felt')) {
+    return 'felt craft children';
+  }
+  if (text.includes('craft') || text.includes('art')) {
+    return 'kids arts crafts';
+  }
+
+  // Reading & Stories
+  if (
+    text.includes('storytime') ||
+    text.includes('story time') ||
+    text.includes('reading') ||
+    text.includes('book')
+  ) {
+    return 'children reading books storytime';
+  }
+
+  // Activities
   if (text.includes('yoga') || text.includes('tai chi') || text.includes('exercise')) {
     return 'kids yoga exercise';
   }
@@ -29,9 +127,6 @@ function detectEventCategory(listing: any): string | null {
   ) {
     return 'kids science hands-on activities';
   }
-  if (text.includes('sewing') || text.includes('craft') || text.includes('art')) {
-    return 'kids arts crafts';
-  }
   if (text.includes('music') || text.includes('sing') || text.includes('dance')) {
     return 'kids music dance';
   }
@@ -39,10 +134,13 @@ function detectEventCategory(listing: any): string | null {
     return 'kids playing games';
   }
   if (text.includes('food') || text.includes('cooking') || text.includes('meal')) {
-    return 'kids healthy food';
+    return 'kids cooking food';
   }
   if (text.includes('library')) {
     return 'kids library activities';
+  }
+  if (text.includes('tot') || text.includes('toddler') || text.includes('little')) {
+    return 'toddlers outdoor play nature';
   }
 
   return null;
@@ -50,9 +148,9 @@ function detectEventCategory(listing: any): string | null {
 
 /**
  * Extract meaningful keywords from title
+ * Filters stop words and short words, keeps up to 4 keywords
  */
 function extractTitleKeywords(title: string): string {
-  // Remove common words and extract key terms
   const stopWords = [
     'the',
     'a',
@@ -68,66 +166,103 @@ function extractTitleKeywords(title: string): string {
     'of',
     'with',
     'by',
+    'good',
+    'great',
+    'fun',
+    'night',
+    'day',
+    'time',
+    'area',
+    'what',
+    'whats',
   ];
 
   return title
     .toLowerCase()
-    .replace(/[^\w\s]/g, ' ') // Remove punctuation
+    .replace(/[^\w\s]/g, ' ')
     .split(/\s+/)
-    .filter((word) => word.length > 3 && !stopWords.includes(word))
-    .slice(0, 3) // Take first 3 meaningful words
+    .filter((word) => word.length > 2 && !stopWords.includes(word))
+    .slice(0, 4)
     .join(' ');
 }
 
 /**
- * Build progressive search terms with fallbacks
+ * Get meaningful tags (filter out unhelpful generic tags)
+ */
+function getMeaningfulTags(tags: string | null): string[] {
+  if (!tags) return [];
+
+  return tags
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter((tag) => {
+      if (tag.length === 0) return false;
+      return !UNHELPFUL_TAGS.some((unhelpful) =>
+        tag.toLowerCase().includes(unhelpful.toLowerCase())
+      );
+    });
+}
+
+/**
+ * Detect if this is a park/nature event based on organizer
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isParkEvent(listing: any): boolean {
+  const organizer = (listing.organizer || '').toLowerCase();
+  return (
+    organizer.includes('park') ||
+    organizer.includes('regional') ||
+    (listing.airtable_id && listing.airtable_id.startsWith('ebparks'))
+  );
+}
+
+/**
+ * Build search terms with TITLE as primary priority
+ *
+ * New priority order:
+ * 1. Title keywords + 'children' (most specific to event)
+ * 2. Event category (smart detection from title)
+ * 3. Meaningful tags + 'kids' (filtered tags only)
+ * 4. Source-appropriate fallbacks
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function buildSearchTerms(listing: any): string[] {
   const searchTerms: string[] = [];
 
-  // Excluded terms that don't help with image search
-  const excludedTerms = ['years old', 'Friendly', 'English', 'Spanish', 'Bilingual', 'All Ages'];
-
-  // Try 1: All tags + 'kids'
-  if (listing.tags) {
-    const tags = listing.tags
-      .split(',')
-      .map((tag: string) => tag.trim())
-      .filter((tag: string) => {
-        if (tag.length === 0) return false;
-        return !excludedTerms.some((term) => tag.includes(term));
-      });
-
-    if (tags.length > 0) {
-      searchTerms.push(tags.join(' ') + ' kids');
-    }
-  }
-
-  // Try 2: First tag + 'kids'
-  if (listing.tags) {
-    const firstTag = listing.tags.split(',')[0]?.trim();
-    if (firstTag && !excludedTerms.some((term) => firstTag.includes(term))) {
-      searchTerms.push(firstTag + ' kids');
-    }
-  }
-
-  // Try 3: Title keywords + 'kids'
+  // PRIORITY 1: Title keywords (most important!)
   const titleKeywords = extractTitleKeywords(listing.title);
   if (titleKeywords) {
-    searchTerms.push(titleKeywords + ' kids');
+    searchTerms.push(titleKeywords + ' children');
   }
 
-  // Try 4: Event category (smart detection)
+  // PRIORITY 2: Smart category detection from title
   const category = detectEventCategory(listing);
   if (category) {
     searchTerms.push(category);
   }
 
-  // Try 5: Generic fallbacks (guaranteed to find something)
-  searchTerms.push('kids activities');
-  searchTerms.push('children playing');
-  searchTerms.push('family events');
+  // PRIORITY 3: Meaningful tags only (filtered)
+  const meaningfulTags = getMeaningfulTags(listing.tags);
+  if (meaningfulTags.length > 0) {
+    // Use first meaningful tag
+    searchTerms.push(meaningfulTags[0] + ' kids');
+
+    // If multiple meaningful tags, combine first two
+    if (meaningfulTags.length > 1) {
+      searchTerms.push(meaningfulTags.slice(0, 2).join(' ') + ' children');
+    }
+  }
+
+  // PRIORITY 4: Source-appropriate fallbacks
+  if (isParkEvent(listing)) {
+    searchTerms.push('children nature outdoors');
+    searchTerms.push('family park activities');
+    searchTerms.push('kids outdoor exploration');
+  } else {
+    searchTerms.push('kids activities');
+    searchTerms.push('children playing');
+    searchTerms.push('family events');
+  }
 
   // Remove duplicates while preserving order
   return [...new Set(searchTerms)];
@@ -151,12 +286,13 @@ async function getUsedPhotoIds(): Promise<Set<string>> {
 }
 
 /**
- * Search Unsplash with a specific term
+ * Search Unsplash API with a specific term
+ * Returns up to 30 results for better variety
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function searchUnsplash(searchTerm: string): Promise<any[]> {
   const response = await fetch(
-    `https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchTerm)}&per_page=10&orientation=landscape&content_filter=high`,
+    `https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchTerm)}&per_page=30&orientation=landscape&content_filter=high`,
     {
       headers: {
         Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}`,
@@ -169,7 +305,17 @@ async function searchUnsplash(searchTerm: string): Promise<any[]> {
 }
 
 /**
- * Fetch image from Unsplash for a single listing with progressive fallbacks
+ * Randomly select from an array
+ */
+function randomSelect<T>(array: T[]): T {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+/**
+ * Fetch image from Unsplash with title-first search strategy
+ * - Prioritizes title-based searches
+ * - Randomly selects from unused results for variety
+ * - Falls back progressively to broader terms
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function fetchUnsplashImage(listing: any, usedPhotoIds: Set<string>) {
@@ -177,7 +323,6 @@ async function fetchUnsplashImage(listing: any, usedPhotoIds: Set<string>) {
 
   console.log(`   Trying ${searchTerms.length} search strategies...`);
 
-  // Try each search term progressively
   for (let i = 0; i < searchTerms.length; i++) {
     const searchTerm = searchTerms[i];
     console.log(`   [${i + 1}/${searchTerms.length}] Searching: "${searchTerm}"`);
@@ -186,20 +331,21 @@ async function fetchUnsplashImage(listing: any, usedPhotoIds: Set<string>) {
       const results = await searchUnsplash(searchTerm);
 
       if (results.length > 0) {
-        // Find the first photo that hasn't been used yet
+        // Filter to unused photos
+        const unusedPhotos = results.filter((photo) => !usedPhotoIds.has(photo.id));
+
         let selectedPhoto = null;
 
-        for (const photo of results) {
-          if (!usedPhotoIds.has(photo.id)) {
-            selectedPhoto = photo;
-            break;
-          }
-        }
-
-        // If all photos are used, pick the least-used one (first result)
-        if (!selectedPhoto) {
-          console.log(`   ⚠️  All ${results.length} results already used, picking first`);
-          selectedPhoto = results[0];
+        if (unusedPhotos.length > 0) {
+          // Randomly select from unused photos for variety
+          selectedPhoto = randomSelect(unusedPhotos);
+          console.log(
+            `   📊 ${unusedPhotos.length}/${results.length} results unused, randomly selecting`
+          );
+        } else {
+          // All photos used, try next search term for better variety
+          console.log(`   ⚠️  All ${results.length} results already used, trying next term...`);
+          continue; // Try next search term instead of reusing
         }
 
         const imageUrl = selectedPhoto.urls.regular;
@@ -208,7 +354,6 @@ async function fetchUnsplashImage(listing: any, usedPhotoIds: Set<string>) {
 
         console.log(`   ✅ Found image by ${photographer} (ID: ${photoId})`);
 
-        // Update the listing with the image AND photo ID
         const { error } = await supabase
           .from('listings')
           .update({
@@ -222,7 +367,6 @@ async function fetchUnsplashImage(listing: any, usedPhotoIds: Set<string>) {
           return { success: false, error: error.message };
         }
 
-        // Add this photo ID to the used set
         usedPhotoIds.add(photoId);
 
         console.log(`   ✅ Image added to: ${listing.title}`);
@@ -241,14 +385,47 @@ async function fetchUnsplashImage(listing: any, usedPhotoIds: Set<string>) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`   ❌ Error searching: ${error.message}`);
-      continue; // Try next search term
+      continue;
     }
 
-    // Small delay between searches
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
-  // If we get here, all search terms failed (shouldn't happen with generic fallbacks)
+  // If all search terms exhausted with no unused photos, pick from last successful search
+  console.log(`   ⚠️  All terms exhausted, doing final fallback search...`);
+  try {
+    const lastResortResults = await searchUnsplash('children outdoor activities');
+    if (lastResortResults.length > 0) {
+      const selectedPhoto = randomSelect(lastResortResults);
+      const imageUrl = selectedPhoto.urls.regular;
+      const photographer = selectedPhoto.user.name;
+      const photoId = selectedPhoto.id;
+
+      const { error } = await supabase
+        .from('listings')
+        .update({
+          image: imageUrl,
+          unsplash_photo_id: photoId,
+        })
+        .eq('id', listing.id);
+
+      if (!error) {
+        usedPhotoIds.add(photoId);
+        console.log(`   ✅ Final fallback: image by ${photographer}`);
+        return {
+          success: true,
+          imageUrl,
+          photographer,
+          photoId,
+          searchTerm: 'children outdoor activities (fallback)',
+          attemptNumber: 'fallback',
+        };
+      }
+    }
+  } catch {
+    // Ignore fallback errors
+  }
+
   console.log(`   ❌ All ${searchTerms.length} search attempts failed`);
   return { success: false, error: 'All search attempts failed' };
 }
@@ -271,10 +448,10 @@ export async function POST(request: NextRequest) {
     const usedPhotoIds = await getUsedPhotoIds();
     console.log(`   Found ${usedPhotoIds.size} already-used Unsplash photos`);
 
-    // Find all listings without images
+    // Find all listings without images (include organizer for park detection)
     const { data: listings, error } = await supabase
       .from('listings')
-      .select('id, title, place_type, tags, image, unsplash_photo_id')
+      .select('id, airtable_id, title, tags, organizer, image, unsplash_photo_id')
       .is('image', null)
       .limit(50); // Process 50 at a time to avoid rate limits
 
