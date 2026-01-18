@@ -5,6 +5,14 @@ export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+export type GooglePlaceDetails = {
+  photos?: { url: string; width: number; height: number }[];
+  openingHours?: { isOpen: boolean | null; weekdayText: string[] } | null;
+  rating?: number | null;
+  userRatingsTotal?: number | null;
+  reviews?: { authorName: string; rating: number; text: string; relativeTimeDescription: string }[];
+};
+
 export type Listing = {
   airtable_id: string;
   title: string;
@@ -33,6 +41,8 @@ export type Listing = {
   rating?: number;
   reviews?: number;
   distance?: number; // Calculated client-side
+  google_place_details?: GooglePlaceDetails | null;
+  place_details_updated_at?: string | null;
 };
 
 export type Source = {

@@ -193,6 +193,13 @@ export function getAdvancedPlannerEvents(
 }
 
 /**
+ * Get effective rating - prefer Google Places rating, fall back to listing rating
+ */
+function getEffectiveRating(listing: Listing): number {
+  return listing.google_place_details?.rating ?? listing.rating ?? 0;
+}
+
+/**
  * Most loved playgrounds: place_type=Playground, ≤30mi, rating high→low, excludes events
  */
 export function getMostLovedPlaygrounds(
@@ -204,7 +211,7 @@ export function getMostLovedPlaygrounds(
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type?.toLowerCase() === 'playground')
     .filter((l) => (l.distance || 0) <= 30)
-    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    .sort((a, b) => getEffectiveRating(b) - getEffectiveRating(a))
     .slice(0, maxCount);
 }
 
@@ -235,6 +242,6 @@ export function getFavoriteParks(
     .filter((l) => l.latitude && l.longitude)
     .filter((l) => l.place_type?.toLowerCase() === 'park')
     .filter((l) => (l.distance || 0) <= 30)
-    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    .sort((a, b) => getEffectiveRating(b) - getEffectiveRating(a))
     .slice(0, maxCount);
 }
