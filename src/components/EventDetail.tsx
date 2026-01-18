@@ -398,14 +398,14 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 no-underline hover:opacity-70 transition-opacity"
               >
-                <LuTag size={20} className="text-malibu-950/70 flex-shrink-0" />
-                <span className="text-base text-malibu-950/90">{price}</span>
-                <LuArrowUpRight size={16} className="text-malibu-950/70 flex-shrink-0 -ml-2" />
+                <LuTag size={20} className="text-emerald-500 flex-shrink-0" />
+                <span className="text-base text-emerald-500">{price}</span>
+                <LuArrowUpRight size={16} className="text-emerald-500 flex-shrink-0 -ml-2" />
               </a>
             ) : (
               <div className="flex items-center gap-3">
-                <LuTag size={20} className="text-malibu-950/70 flex-shrink-0" />
-                <span className="text-base text-malibu-950/90">{price}</span>
+                <LuTag size={20} className="text-emerald-500 flex-shrink-0" />
+                <span className="text-base text-emerald-500">{price}</span>
               </div>
             )
           )}
