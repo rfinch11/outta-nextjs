@@ -16,9 +16,9 @@ const BusinessHours: React.FC<BusinessHoursProps> = ({ openingHours }) => {
 
   // Calculate if currently open based on weekdayText
   // This is calculated client-side for accuracy regardless of cache age
-  const isOpen = useMemo(() => {
+  const { isOpen, is24Hours } = useMemo(() => {
     if (!weekdayText || weekdayText.length === 0) {
-      return null;
+      return { isOpen: null, is24Hours: false };
     }
 
     const now = new Date();
@@ -28,7 +28,12 @@ const BusinessHours: React.FC<BusinessHoursProps> = ({ openingHours }) => {
     const todayHours = weekdayText[googleDayIndex];
 
     if (!todayHours || todayHours.toLowerCase().includes('closed')) {
-      return false;
+      return { isOpen: false, is24Hours: false };
+    }
+
+    // Check for 24 hours
+    if (todayHours.toLowerCase().includes('24 hours') || todayHours.toLowerCase().includes('open 24')) {
+      return { isOpen: true, is24Hours: true };
     }
 
     // Try to parse hours from the text (e.g., "Monday: 9:00 AM – 6:00 PM")
@@ -38,7 +43,7 @@ const BusinessHours: React.FC<BusinessHoursProps> = ({ openingHours }) => {
 
     if (!timeMatch) {
       // Can't parse, use Google's isOpen if available
-      return openingHours.isOpen;
+      return { isOpen: openingHours.isOpen, is24Hours: false };
     }
 
     const [, openHour, openMin = '00', openPeriod, closeHour, closeMin = '00', closePeriod] =
@@ -55,7 +60,7 @@ const BusinessHours: React.FC<BusinessHoursProps> = ({ openingHours }) => {
     const closeTime = parseTime(closeHour, closeMin, closePeriod);
     const currentTime = now.getHours() * 60 + now.getMinutes();
 
-    return currentTime >= openTime && currentTime < closeTime;
+    return { isOpen: currentTime >= openTime && currentTime < closeTime, is24Hours: false };
   }, [weekdayText, openingHours.isOpen]);
 
   // Get current day index for highlighting
@@ -70,6 +75,10 @@ const BusinessHours: React.FC<BusinessHoursProps> = ({ openingHours }) => {
 
     if (!isOpen) {
       return 'Closed';
+    }
+
+    if (is24Hours) {
+      return 'Open 24 hours';
     }
 
     const now = new Date();
@@ -89,7 +98,7 @@ const BusinessHours: React.FC<BusinessHoursProps> = ({ openingHours }) => {
     }
 
     return 'Open';
-  }, [isOpen, weekdayText]);
+  }, [isOpen, is24Hours, weekdayText]);
 
   if (!weekdayText || weekdayText.length === 0) {
     return null;

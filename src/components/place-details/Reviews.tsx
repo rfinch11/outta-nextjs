@@ -174,8 +174,8 @@ const Reviews: React.FC<ReviewsProps> = ({ reviews, placeId }) => {
               onClick={() => goToIndex(index)}
               className={`h-1.5 rounded-full border-none cursor-pointer transition-all ${
                 index === currentIndex
-                  ? 'bg-malibu-600 w-3'
-                  : 'bg-malibu-300 w-1.5'
+                  ? 'bg-malibu-950 w-3'
+                  : 'bg-malibu-950/20 w-1.5'
               }`}
               aria-label={`Go to review ${index + 1}`}
             />

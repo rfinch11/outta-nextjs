@@ -33,28 +33,34 @@ const OpenStatusBadge: React.FC<{ openingHours: PlaceOpeningHours }> = ({ openin
   let statusText = 'Closed';
 
   if (todayHours && !todayHours.toLowerCase().includes('closed')) {
-    const timeMatch = todayHours.match(
-      /(\d{1,2}):?(\d{2})?\s*(AM|PM)\s*[–-]\s*(\d{1,2}):?(\d{2})?\s*(AM|PM)/i
-    );
+    // Check for 24 hours
+    if (todayHours.toLowerCase().includes('24 hours') || todayHours.toLowerCase().includes('open 24')) {
+      isOpen = true;
+      statusText = 'Open 24 hours';
+    } else {
+      const timeMatch = todayHours.match(
+        /(\d{1,2}):?(\d{2})?\s*(AM|PM)\s*[–-]\s*(\d{1,2}):?(\d{2})?\s*(AM|PM)/i
+      );
 
-    if (timeMatch) {
-      const [, openHour, openMin = '00', openPeriod, closeHour, closeMin = '00', closePeriod] = timeMatch;
+      if (timeMatch) {
+        const [, openHour, openMin = '00', openPeriod, closeHour, closeMin = '00', closePeriod] = timeMatch;
 
-      const parseTime = (hour: string, min: string, period: string) => {
-        let h = parseInt(hour, 10);
-        if (period.toUpperCase() === 'PM' && h !== 12) h += 12;
-        if (period.toUpperCase() === 'AM' && h === 12) h = 0;
-        return h * 60 + parseInt(min, 10);
-      };
+        const parseTime = (hour: string, min: string, period: string) => {
+          let h = parseInt(hour, 10);
+          if (period.toUpperCase() === 'PM' && h !== 12) h += 12;
+          if (period.toUpperCase() === 'AM' && h === 12) h = 0;
+          return h * 60 + parseInt(min, 10);
+        };
 
-      const openTime = parseTime(openHour, openMin, openPeriod);
-      const closeTime = parseTime(closeHour, closeMin, closePeriod);
-      const currentTime = now.getHours() * 60 + now.getMinutes();
+        const openTime = parseTime(openHour, openMin, openPeriod);
+        const closeTime = parseTime(closeHour, closeMin, closePeriod);
+        const currentTime = now.getHours() * 60 + now.getMinutes();
 
-      isOpen = currentTime >= openTime && currentTime < closeTime;
+        isOpen = currentTime >= openTime && currentTime < closeTime;
 
-      if (isOpen) {
-        statusText = `Open · Closes ${closeHour}${closeMin !== '00' ? ':' + closeMin : ''} ${closePeriod}`;
+        if (isOpen) {
+          statusText = `Open · Closes ${closeHour}${closeMin !== '00' ? ':' + closeMin : ''} ${closePeriod}`;
+        }
       }
     }
   }

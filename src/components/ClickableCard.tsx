@@ -61,11 +61,11 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
     for (let i = 0; i < 5; i++) {
       if (i < fullStars || (i === fullStars && roundUp)) {
         stars.push(
-          <LuStar key={i} size={14} className="text-broom-600 fill-broom-600" />
+          <LuStar key={i} size={14} className="text-broom-500 fill-broom-500" />
         );
       } else if (i === fullStars && hasHalfStar) {
         stars.push(
-          <LuStarHalf key={i} size={14} className="text-broom-600 fill-broom-600" />
+          <LuStarHalf key={i} size={14} className="text-broom-500 fill-broom-500" />
         );
       } else {
         stars.push(
