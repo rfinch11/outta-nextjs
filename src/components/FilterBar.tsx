@@ -17,6 +17,22 @@ interface ButtonInfo {
   icon: React.ElementType;
 }
 
+// Custom ordering for place types in the filter bar
+const PLACE_TYPE_ORDER: string[] = [
+  'Playground',
+  'Park',
+  'Indoor play',
+  'Attraction',
+  'Art',
+  'Book store',
+  'Museum',
+  'Library',
+  'Camp',
+  'Theater',
+  'Toys',
+  'Recreation center',
+];
+
 const FilterBar: React.FC<FilterBarProps> = ({
   activeFilter,
   placeTypeCounts,
@@ -24,7 +40,10 @@ const FilterBar: React.FC<FilterBarProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonRefs = useRef<Map<string, HTMLElement>>(new Map());
 
-  // Build button list: Collections (homepage), Events, then place types ordered by count
+  // Build button list: Collections (homepage), Events, then place types in custom order
+  const placeTypeSet = new Set(placeTypeCounts.map(({ type }) => type));
+  const orderedPlaceTypes = PLACE_TYPE_ORDER.filter((type) => placeTypeSet.has(type));
+
   const buttons: ButtonInfo[] = [
     {
       id: 'collections',
@@ -38,14 +57,12 @@ const FilterBar: React.FC<FilterBarProps> = ({
       href: '/filter/events',
       icon: LuCalendar,
     },
-    ...placeTypeCounts
-      .filter(({ type }) => type !== 'Other')
-      .map(({ type }) => ({
-        id: type,
-        label: type,
-        href: `/filter/${encodeURIComponent(type)}`,
-        icon: getPlaceTypeIcon(type),
-      })),
+    ...orderedPlaceTypes.map((type) => ({
+      id: type,
+      label: type,
+      href: `/filter/${encodeURIComponent(type)}`,
+      icon: getPlaceTypeIcon(type),
+    })),
   ];
 
   // Collections is active when no filter is specified (homepage)
