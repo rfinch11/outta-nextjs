@@ -204,6 +204,7 @@ const FilterPageContent: React.FC<FilterPageContentProps> = ({ filterType }) => 
           const { data: pageData, error: pageError } = await supabase
             .from('listings')
             .select('*')
+            .or('hidden.is.null,hidden.eq.false')
             .range(page * pageSize, (page + 1) * pageSize - 1);
 
           if (pageError) {

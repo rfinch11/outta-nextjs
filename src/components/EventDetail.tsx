@@ -155,6 +155,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
       const { data, error } = await supabase
         .from('listings')
         .select('*')
+        .or('hidden.is.null,hidden.eq.false')
         .eq('type', 'Activity')
         .gte('rating', 4)
         .not('latitude', 'is', null)

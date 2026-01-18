@@ -129,6 +129,7 @@ const MapView: React.FC<MapViewProps> = ({ listings, userLocation, activeTab, fi
       let query = supabase
         .from('listings')
         .select('*')
+        .or('hidden.is.null,hidden.eq.false')
         .eq('type', activeTab)
         .not('latitude', 'is', null)
         .not('longitude', 'is', null)

@@ -43,6 +43,7 @@ export type Listing = {
   distance?: number; // Calculated client-side
   google_place_details?: GooglePlaceDetails | null;
   place_details_updated_at?: string | null;
+  hidden?: boolean;
 };
 
 export type Source = {

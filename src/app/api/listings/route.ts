@@ -37,6 +37,9 @@ export async function GET(request: NextRequest) {
     const result = await getCachedData(cacheKey, async () => {
       let dbQuery = supabase.from('listings').select('*', { count: 'exact' });
 
+      // Exclude hidden listings
+      dbQuery = dbQuery.or('hidden.is.null,hidden.eq.false');
+
       // Type filter
       if (type) {
         dbQuery = dbQuery.eq('type', type);

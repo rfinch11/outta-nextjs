@@ -22,6 +22,9 @@ export async function GET(request: NextRequest) {
     const result = await getCachedData(cacheKey, async () => {
       let dbQuery = supabase.from('listings').select('*', { count: 'exact' });
 
+      // Exclude hidden listings
+      dbQuery = dbQuery.or('hidden.is.null,hidden.eq.false');
+
       // Full-text search using the fts column
       // Note: After running migration 001, you can use textSearch
       // For now, we'll use ilike as fallback
