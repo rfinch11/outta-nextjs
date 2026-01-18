@@ -3,9 +3,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
-import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe, LuArrowUpRight } from 'react-icons/lu';
+import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe, LuArrowUpRight, LuX } from 'react-icons/lu';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
+import { Drawer } from 'vaul';
 import { supabase } from '@/lib/supabase';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import type { Listing } from '@/lib/supabase';
 import { calculateDistance } from '@/lib/filterUtils';
 import ClickableCard from './ClickableCard';
@@ -127,6 +129,12 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
 
   // Fetch Google Place details
   const { data: placeDetails, isLoading: placeDetailsLoading } = usePlaceDetails(place_id);
+
+  // Media query for responsive modal
+  const isLargeScreen = useMediaQuery('(min-width: 1024px)');
+
+  // State for unclaimed listing modal
+  const [unclaimedModalOpen, setUnclaimedModalOpen] = useState(false);
 
   // Ref to the reviews section for scroll-to functionality
   const reviewsSectionRef = useRef<HTMLDivElement>(null);
@@ -563,9 +571,60 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         {organizer && (
           <div className="mb-8">
             <h2 className="text-xl font-bold text-malibu-950 mb-3">Event organizer</h2>
-            <p className="text-base text-malibu-950/80">{organizer}</p>
+            <button
+              onClick={() => setUnclaimedModalOpen(true)}
+              className="flex items-center gap-1 text-base text-malibu-950/80 bg-transparent border-none cursor-pointer p-0 hover:opacity-70 transition-opacity"
+            >
+              <span>{organizer}</span>
+              <LuArrowUpRight size={16} className="text-malibu-950/60" />
+            </button>
           </div>
         )}
+
+        {/* Unclaimed Listing Modal */}
+        <Drawer.Root open={unclaimedModalOpen} onOpenChange={setUnclaimedModalOpen}>
+          <Drawer.Portal>
+            <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[60]" />
+            <Drawer.Content
+              className={
+                isLargeScreen
+                  ? 'bg-white flex flex-col rounded-xl fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] outline-none overflow-hidden w-full max-w-md shadow-xl'
+                  : 'bg-white flex flex-col rounded-t-[20px] fixed bottom-0 left-0 right-0 z-[70] outline-none overflow-hidden'
+              }
+            >
+              <Drawer.Title className="sr-only">This listing is unclaimed</Drawer.Title>
+              <Drawer.Description className="sr-only">
+                Information about claiming this listing
+              </Drawer.Description>
+
+              {/* Header with Close Button */}
+              <div className="flex items-center justify-end px-5 pt-4">
+                <button
+                  onClick={() => setUnclaimedModalOpen(false)}
+                  className="flex items-center justify-center transition-colors hover:opacity-70"
+                  aria-label="Close"
+                  type="button"
+                >
+                  <LuX size={24} className="text-malibu-950" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="px-5 pb-6 pt-2 text-center">
+                <h3 className="text-xl font-bold text-malibu-950 mb-2">This listing is unclaimed</h3>
+                <p className="text-base text-black-500 mb-6">
+                  If this is your organization, contact Outta to learn more about partnership opportunities
+                </p>
+                <a
+                  href="mailto:rfinch@outta.events?subject=Partnership Inquiry"
+                  className="inline-block w-full py-3 bg-malibu-950 text-white rounded-lg text-base font-semibold transition-colors hover:bg-malibu-900 no-underline text-center"
+                >
+                  Contact Outta
+                </a>
+              </div>
+            </Drawer.Content>
+          </Drawer.Portal>
+        </Drawer.Root>
 
         {/* Report Listing */}
         <div className="text-center mt-6 mb-8">
