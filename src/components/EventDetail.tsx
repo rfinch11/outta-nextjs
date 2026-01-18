@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { IoIosArrowBack } from 'react-icons/io';
-import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe, LuArrowUpRight, LuX } from 'react-icons/lu';
+import { LuCalendar, LuClock3, LuTag, LuUsers, LuFlag, LuShare, LuGlobe, LuArrowUpRight, LuX, LuLockOpen } from 'react-icons/lu';
 import { HiOutlineLocationMarker } from 'react-icons/hi';
 import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
@@ -598,6 +598,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
 
               {/* Content */}
               <div className="px-5 pb-6 pt-2 text-center">
+                <LuLockOpen size={32} className="text-malibu-950/70 mx-auto mb-3" />
                 <h3 className="text-xl font-bold text-malibu-950 mb-2">This listing is unclaimed</h3>
                 <p className="text-base text-black-500 mb-6">
                   If this is your organization, contact Outta to learn more about partnership opportunities
