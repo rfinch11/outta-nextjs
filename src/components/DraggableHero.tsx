@@ -132,9 +132,69 @@ const CardStack: React.FC<{ onSwipe?: () => void }> = ({ onSwipe }) => {
   );
 };
 
-const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick, listingCount }) => {
-  const countText = listingCount !== undefined ? listingCount.toLocaleString() : 'Hundreds of';
+const SlotDigit: React.FC<{ digit: string; isLoading: boolean; delay: number }> = ({
+  digit,
+  isLoading,
+  delay
+}) => {
+  const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
+  return (
+    <span className="inline-block h-[1.1em] overflow-hidden align-bottom">
+      <motion.span
+        className="flex flex-col"
+        animate={isLoading ? {
+          y: [0, -220], // Cycle through digits
+        } : {
+          y: 0,
+        }}
+        transition={isLoading ? {
+          y: {
+            duration: 1.2,
+            repeat: Infinity,
+            ease: "linear",
+            delay: delay,
+          }
+        } : {
+          duration: 0.3,
+          ease: "easeOut",
+        }}
+      >
+        {isLoading ? (
+          numbers.map((n) => (
+            <span key={n} className="h-[1.1em] leading-[1.1em]">{n}</span>
+          ))
+        ) : (
+          <span className="h-[1.1em] leading-[1.1em]">{digit}</span>
+        )}
+      </motion.span>
+    </span>
+  );
+};
+
+const CountDisplay: React.FC<{ count?: number }> = ({ count }) => {
+  const isLoading = count === undefined;
+  const displayDigits = isLoading ? ['0', '0', '0'] : count.toLocaleString().split('');
+
+  return (
+    <span className="text-malibu-600 inline-flex">
+      {displayDigits.map((char, i) => (
+        char === ',' ? (
+          <span key={i}>,</span>
+        ) : (
+          <SlotDigit
+            key={i}
+            digit={char}
+            isLoading={isLoading}
+            delay={i * 0.1}
+          />
+        )
+      ))}
+    </span>
+  );
+};
+
+const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick, listingCount }) => {
   return (
     <section className="w-full py-8 md:py-12">
       {/* Mobile: Stack on top, centered */}
@@ -142,7 +202,7 @@ const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick
         <CardStack />
         <div className="text-center">
           <h1 className="text-[28px] font-semibold text-malibu-950 leading-tight mb-4">
-            Discover <span className="text-malibu-600">{countText}</span> family adventures near
+            Discover <CountDisplay count={listingCount} /> family adventures near
           </h1>
           <button
             onClick={onLocationClick}
@@ -161,7 +221,7 @@ const CardStackHero: React.FC<CardStackHeroProps> = ({ cityName, onLocationClick
         <CardStack />
         <div className="text-left">
           <h1 className="text-[36px] lg:text-[40px] font-semibold text-malibu-950 leading-tight mb-4">
-            Discover <span className="text-malibu-600">{countText}</span> family<br />adventures near
+            Discover <CountDisplay count={listingCount} /> family<br />adventures near
           </h1>
           <button
             onClick={onLocationClick}
