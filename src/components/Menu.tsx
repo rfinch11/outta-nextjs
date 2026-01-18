@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import MenuPopover from './MenuPopover';
+import SubmitActivityDrawer from './SubmitActivityDrawer';
 
 interface MenuProps {
   onLocationSet: (lat: number, lng: number, zipCode: string) => void;
@@ -10,6 +11,7 @@ interface MenuProps {
 
 const Menu: React.FC<MenuProps> = ({ onLocationSet, className = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [submitDrawerOpen, setSubmitDrawerOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -61,6 +63,11 @@ const Menu: React.FC<MenuProps> = ({ onLocationSet, className = '' }) => {
     // Popover closes itself after location is set
   };
 
+  const handleSubmitActivity = () => {
+    setIsOpen(false);
+    setSubmitDrawerOpen(true);
+  };
+
   return (
     <div className={`relative ${className}`}>
       {/* Menu trigger button */}
@@ -95,8 +102,15 @@ const Menu: React.FC<MenuProps> = ({ onLocationSet, className = '' }) => {
           ref={menuRef}
           onLocationSet={handleLocationSet}
           onClose={() => setIsOpen(false)}
+          onSubmitActivity={handleSubmitActivity}
         />
       )}
+
+      {/* Submit Activity Drawer */}
+      <SubmitActivityDrawer
+        open={submitDrawerOpen}
+        onOpenChange={setSubmitDrawerOpen}
+      />
     </div>
   );
 };

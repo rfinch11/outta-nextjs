@@ -8,12 +8,13 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 interface MenuPopoverProps {
   onLocationSet: (lat: number, lng: number, zipCode: string) => void;
   onClose: () => void;
+  onSubmitActivity: () => void;
 }
 
 type MenuMode = 'main' | 'location';
 
 const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
-  ({ onLocationSet, onClose }, ref) => {
+  ({ onLocationSet, onClose, onSubmitActivity }, ref) => {
     const [mode, setMode] = useState<MenuMode>('main');
     const [zipCodeInput, setZipCodeInput] = useState('');
     const [loading, setLoading] = useState(false);
@@ -132,13 +133,13 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
 
             {/* Main menu items */}
             <div className="p-3">
-              {/* Submit an activity - disabled */}
+              {/* Submit an activity */}
               <button
-                disabled
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-base text-black-400 border-none bg-transparent cursor-not-allowed"
+                onClick={onSubmitActivity}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-base text-malibu-950 border-none bg-transparent cursor-pointer transition-colors hover:bg-malibu-50"
                 type="button"
               >
-                <LuPlus size={18} className="text-black-400" />
+                <LuPlus size={18} className="text-malibu-950" />
                 <span>Submit an activity</span>
               </button>
 
@@ -258,6 +259,7 @@ const MenuPopover = forwardRef<HTMLDivElement, MenuPopoverProps>(
             </div>
           </>
         )}
+
       </div>
     );
   }
