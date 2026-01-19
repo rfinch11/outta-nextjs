@@ -137,6 +137,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     longitude,
     google_place_details,
     instagram_posts,
+    place_type,
   } = props;
 
   // Use cached Google Place details from props (database) - NO live API calls
@@ -505,8 +506,8 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
           </div>
         )}
 
-        {/* Tags */}
-        {tagArray.length > 0 && (
+        {/* Tags - hidden for Farmers Market */}
+        {tagArray.length > 0 && place_type !== 'Farmers Market' && (
           <div className="flex flex-wrap gap-2 mb-8">
             {tagArray.map((tag, index) => (
               <span
