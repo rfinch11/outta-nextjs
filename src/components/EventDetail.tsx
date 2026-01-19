@@ -155,11 +155,8 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   // Ref to the reviews section for scroll-to functionality
   const reviewsSectionRef = useRef<HTMLDivElement>(null);
 
-  // State to track if we should use the fallback image (only for non-gallery fallback)
-  // Use cached Google photo from database, fall back to Unsplash image
-  const [imgSrc, setImgSrc] = useState<string>(
-    google_place_details?.photos?.[0]?.url || image
-  );
+  // Use the image column directly (no Google API calls)
+  const [imgSrc, setImgSrc] = useState<string>(image);
 
   // State to track current page URL
   const [currentUrl, setCurrentUrl] = useState<string>(() => {
@@ -343,10 +340,10 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
         </div>
       </header>
 
-      {/* Photo Gallery or Hero Image */}
-      {placeDetails && placeDetails.photos && placeDetails.photos.length > 0 ? (
+      {/* Hero Image - using image column only (no Google API photos) */}
+      {false ? (
         <PhotoGallery
-          photos={placeDetails.photos}
+          photos={[]}
           fallbackImage={imgSrc}
           title={title}
         />

@@ -90,7 +90,7 @@ const ListingPreview: React.FC<ListingPreviewProps> = ({ listing }) => {
       {/* Image */}
       <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-4">
         <img
-          src={listing.google_place_details?.photos?.[0]?.url || listing.image}
+          src={listing.image}
           alt={listing.title}
           className="w-full h-full object-cover"
           onError={(e) => {

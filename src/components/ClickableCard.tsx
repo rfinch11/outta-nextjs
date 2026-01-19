@@ -42,16 +42,8 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
   price,
   google_place_details,
 }) => {
-  // Determine initial image: prefer cached Google photo, fall back to Unsplash
-  const getCachedPhotoUrl = () => {
-    if (google_place_details?.photos?.[0]?.url) {
-      return google_place_details.photos[0].url;
-    }
-    return image;
-  };
-
-  // State to track image source with fallback
-  const [imgSrc, setImgSrc] = React.useState<string>(getCachedPhotoUrl());
+  // Use the image column directly (no Google API calls)
+  const [imgSrc, setImgSrc] = React.useState<string>(image);
 
   // Format date for events (date only, no time)
   const formatDate = (dateString: string) => {
