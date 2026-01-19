@@ -21,6 +21,9 @@ interface FeaturedCardProps {
   scout_pick?: boolean;
   deal?: boolean;
   promoted?: boolean;
+  google_place_details?: {
+    photos?: { url: string; width: number; height: number }[];
+  } | null;
 }
 
 /**
@@ -71,11 +74,18 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
   scout_pick,
   deal,
   promoted,
+  google_place_details,
 }) => {
-  // State to track if we should use the fallback image
-  const [imgSrc, setImgSrc] = React.useState<string>(
-    place_id ? `/api/place-photo?place_id=${place_id}&width=600` : image || ''
-  );
+  // Determine initial image: prefer cached Google photo, fall back to Unsplash
+  const getCachedPhotoUrl = () => {
+    if (google_place_details?.photos?.[0]?.url) {
+      return google_place_details.photos[0].url;
+    }
+    return image || '';
+  };
+
+  // State to track image source with fallback
+  const [imgSrc, setImgSrc] = React.useState<string>(getCachedPhotoUrl());
 
   // Format location string (city only for cleaner look)
   const locationText = city;

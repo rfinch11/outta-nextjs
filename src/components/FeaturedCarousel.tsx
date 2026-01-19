@@ -132,6 +132,7 @@ const FeaturedCarousel: React.FC<FeaturedCarouselProps> = ({ listings }) => {
               scout_pick={listing.scout_pick ?? undefined}
               deal={listing.deal ?? undefined}
               promoted={listing.promoted ?? undefined}
+              google_place_details={listing.google_place_details}
             />
           </div>
         ))}

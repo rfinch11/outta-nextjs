@@ -549,6 +549,7 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
                   organizer={activity.organizer}
                   rating={activity.rating}
                   price={activity.price}
+                  google_place_details={activity.google_place_details}
                 />
               ))}
             </div>

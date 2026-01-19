@@ -22,6 +22,9 @@ interface ClickableCardProps {
   organizer?: string | null;
   rating?: number | null;
   price?: string | null;
+  google_place_details?: {
+    photos?: { url: string; width: number; height: number }[];
+  } | null;
 }
 
 const ClickableCard: React.FC<ClickableCardProps> = ({
@@ -37,11 +40,18 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
   organizer,
   rating,
   price,
+  google_place_details,
 }) => {
-  // State to track if we should use the fallback image
-  const [imgSrc, setImgSrc] = React.useState<string>(
-    place_id ? `/api/place-photo?place_id=${place_id}&width=400` : image
-  );
+  // Determine initial image: prefer cached Google photo, fall back to Unsplash
+  const getCachedPhotoUrl = () => {
+    if (google_place_details?.photos?.[0]?.url) {
+      return google_place_details.photos[0].url;
+    }
+    return image;
+  };
+
+  // State to track image source with fallback
+  const [imgSrc, setImgSrc] = React.useState<string>(getCachedPhotoUrl());
 
   // Format date for events (date only, no time)
   const formatDate = (dateString: string) => {
