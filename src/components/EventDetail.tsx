@@ -9,7 +9,6 @@ import { supabase } from '@/lib/supabase';
 import type { Listing } from '@/lib/supabase';
 import { calculateDistance } from '@/lib/filterUtils';
 import ClickableCard from './ClickableCard';
-import { usePlaceDetails } from '@/hooks/usePlaceDetails';
 import {
   GoogleRating,
   BusinessHours,
@@ -140,13 +139,10 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
     instagram_posts,
   } = props;
 
-  // Use cached Google Place details from props (database), fall back to API hook if not available
-  const { data: fetchedPlaceDetails, isLoading: placeDetailsLoading } = usePlaceDetails(
-    google_place_details ? null : place_id // Only fetch if not already cached
-  );
-
-  // Prefer cached data from props, fall back to fetched data
-  const placeDetails = google_place_details || fetchedPlaceDetails;
+  // Use cached Google Place details from props (database) - NO live API calls
+  // To refresh data, run: node scripts/refresh-place-details.js
+  const placeDetails = google_place_details || null;
+  const placeDetailsLoading = false;
 
   // Scroll to top on mount
   useEffect(() => {
@@ -160,8 +156,9 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   const reviewsSectionRef = useRef<HTMLDivElement>(null);
 
   // State to track if we should use the fallback image (only for non-gallery fallback)
+  // Use cached Google photo from database, fall back to Unsplash image
   const [imgSrc, setImgSrc] = useState<string>(
-    place_id ? `/api/place-photo?place_id=${place_id}&width=800` : image
+    google_place_details?.photos?.[0]?.url || image
   );
 
   // State to track current page URL

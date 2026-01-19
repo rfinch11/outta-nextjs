@@ -1,41 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getPlacePhotoUrlByPlaceId } from '@/lib/googlePlaces';
 
 /**
  * API Route: /api/place-photo
  *
- * Fetches Google Places photos using place_id
- * This proxies the request to hide the API key from the client
+ * DISABLED - This route has been disabled to prevent costly Google API calls.
+ * Photos are now served from cached URLs in google_place_details column.
  *
- * Query params:
- * - place_id: Google Place ID
- * - width: Image width (default: 800, max: 1600)
+ * To refresh photos, run: node scripts/refresh-place-details.js
  */
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const placeId = searchParams.get('place_id');
-  const width = parseInt(searchParams.get('width') || '800');
-
-  if (!placeId) {
-    return NextResponse.json({ error: 'place_id is required' }, { status: 400 });
-  }
-
-  if (width > 1600) {
-    return NextResponse.json({ error: 'Max width is 1600' }, { status: 400 });
-  }
-
-  try {
-    const photoUrl = await getPlacePhotoUrlByPlaceId(placeId, width);
-
-    if (!photoUrl) {
-      return NextResponse.json({ error: 'No photo found for this place' }, { status: 404 });
-    }
-
-    // Redirect to the Google Places photo URL
-    // This way the browser loads the image directly from Google
-    return NextResponse.redirect(photoUrl);
-  } catch (error) {
-    console.error('Error fetching place photo:', error);
-    return NextResponse.json({ error: 'Failed to fetch photo' }, { status: 500 });
-  }
+  // Route disabled - all photos should come from cached google_place_details
+  return NextResponse.json(
+    {
+      error: 'This endpoint is disabled. Photos are served from cached data.',
+      hint: 'Run scripts/refresh-place-details.js to update cached photos'
+    },
+    { status: 410 } // 410 Gone
+  );
 }
