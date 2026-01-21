@@ -433,7 +433,7 @@ async function fetchUnsplashImage(listing: any, usedPhotoIds: Set<string>) {
 /**
  * API Route Handler for Unsplash image fetching cron job
  */
-export async function POST(request: NextRequest) {
+async function handleRequest(request: NextRequest) {
   // Security: Check for cron secret
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -509,4 +509,13 @@ export async function POST(request: NextRequest) {
     console.error('❌ Unexpected error:', error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
+
+// Vercel crons use GET requests
+export async function GET(request: NextRequest) {
+  return handleRequest(request);
+}
+
+export async function POST(request: NextRequest) {
+  return handleRequest(request);
 }

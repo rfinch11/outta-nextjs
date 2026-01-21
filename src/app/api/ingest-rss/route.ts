@@ -229,7 +229,7 @@ async function processFeed(feedConfig: any) {
 /**
  * API Route Handler for RSS ingestion cron job
  */
-export async function POST(request: NextRequest) {
+async function handleRequest(request: NextRequest) {
   // Security: Check for cron secret
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -268,4 +268,13 @@ export async function POST(request: NextRequest) {
     feeds: results,
     totals,
   });
+}
+
+// Vercel crons use GET requests
+export async function GET(request: NextRequest) {
+  return handleRequest(request);
+}
+
+export async function POST(request: NextRequest) {
+  return handleRequest(request);
 }

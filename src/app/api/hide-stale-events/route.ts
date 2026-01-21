@@ -10,7 +10,7 @@ const supabase = createClient(
  * API Route to hide stale events (events that have already passed)
  * Runs daily via Vercel cron to keep the listings clean
  */
-export async function POST(request: NextRequest) {
+async function handleRequest(request: NextRequest) {
   // Security: Check for cron secret
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -20,12 +20,11 @@ export async function POST(request: NextRequest) {
   console.log('\n🙈 Starting hide stale events job...');
 
   try {
-    // Get today's date at midnight
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayISO = today.toISOString();
+    // Use current time - any event that has already started should be hidden
+    const now = new Date();
+    const nowISO = now.toISOString();
 
-    console.log(`📅 Finding events that started before ${today.toLocaleDateString()}`);
+    console.log(`📅 Finding events that started before ${now.toISOString()}`);
 
     // Find all events that are past and not already hidden
     // Use pagination to get all records
@@ -37,7 +36,7 @@ export async function POST(request: NextRequest) {
       const { data: batch, error: batchError } = await supabase
         .from('listings')
         .select('id')
-        .lt('start_date', todayISO)
+        .lt('start_date', nowISO)
         .or('hidden.is.null,hidden.eq.false')
         .range(page * pageSize, (page + 1) * pageSize - 1);
 
@@ -99,4 +98,13 @@ export async function POST(request: NextRequest) {
     console.error('❌ Unexpected error:', message);
     return NextResponse.json({ error: message }, { status: 500 });
   }
+}
+
+// Vercel crons use GET requests
+export async function GET(request: NextRequest) {
+  return handleRequest(request);
+}
+
+export async function POST(request: NextRequest) {
+  return handleRequest(request);
 }
