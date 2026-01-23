@@ -93,10 +93,13 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
     return date.toLocaleDateString('en-US', options);
   };
 
-  // Handle image load error by falling back to the original image
+  // Fallback image for when the primary image fails to load
+  const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800&q=80';
+
+  // Handle image load error by using fallback
   const handleImageError = () => {
-    if (image && imgSrc !== image) {
-      setImgSrc(image);
+    if (imgSrc !== FALLBACK_IMAGE) {
+      setImgSrc(FALLBACK_IMAGE);
     }
   };
 

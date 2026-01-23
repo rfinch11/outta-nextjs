@@ -300,6 +300,19 @@ async function searchUnsplash(searchTerm: string): Promise<any[]> {
     }
   );
 
+  // Check for HTTP errors (rate limiting, auth issues, etc.)
+  if (!response.ok) {
+    const remainingRequests = response.headers.get('X-Ratelimit-Remaining');
+    console.error(`   ⚠️  Unsplash API error: ${response.status} ${response.statusText}`);
+    if (remainingRequests) {
+      console.log(`   Rate limit remaining: ${remainingRequests}`);
+    }
+    if (response.status === 403 || response.status === 429) {
+      throw new Error(`Rate limited by Unsplash (${response.status})`);
+    }
+    return [];
+  }
+
   const data = await response.json();
   return data.results || [];
 }
@@ -448,11 +461,13 @@ async function handleRequest(request: NextRequest) {
     const usedPhotoIds = await getUsedPhotoIds();
     console.log(`   Found ${usedPhotoIds.size} already-used Unsplash photos`);
 
-    // Find all listings without images (include organizer for park detection)
+    // Find all listings without images or with broken Google URLs
+    // Check for: NULL, empty string, or expired Google Street View/User Content URLs
     const { data: listings, error } = await supabase
       .from('listings')
       .select('id, airtable_id, title, tags, organizer, image, unsplash_photo_id')
-      .is('image', null)
+      .or('image.is.null,image.eq.,image.ilike.%streetviewpixels%,image.ilike.%lh3.googleusercontent%')
+      .or('hidden.is.null,hidden.eq.false')
       .limit(50); // Process 50 at a time to avoid rate limits
 
     if (error) {

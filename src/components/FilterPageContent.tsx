@@ -90,14 +90,12 @@ const ListingPreview: React.FC<ListingPreviewProps> = ({ listing }) => {
       {/* Image */}
       <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-4">
         <img
-          src={listing.image}
+          src={listing.image || 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800&q=80'}
           alt={listing.title}
           className="w-full h-full object-cover"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            if (target.src !== listing.image) {
-              target.src = listing.image;
-            }
+            target.src = 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800&q=80';
           }}
         />
       </div>
