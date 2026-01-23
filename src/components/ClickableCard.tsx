@@ -42,8 +42,11 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
   price,
   google_place_details,
 }) => {
-  // Use the image column directly (no Google API calls)
-  const [imgSrc, setImgSrc] = React.useState<string>(image);
+  // Fallback image for when the primary image fails to load or is missing
+  const FALLBACK_IMAGE = '/fallback-img.png';
+
+  // Use the image column directly, fallback if null/empty
+  const [imgSrc, setImgSrc] = React.useState<string>(image || FALLBACK_IMAGE);
 
   // Format date for events (date only, no time)
   const formatDate = (dateString: string) => {
@@ -79,9 +82,6 @@ const ClickableCard: React.FC<ClickableCardProps> = ({
     }
     return stars;
   };
-
-  // Fallback image for when the primary image fails to load
-  const FALLBACK_IMAGE = '/fallback-img.png';
 
   // Handle image load error by using fallback
   const handleImageError = () => {

@@ -156,8 +156,11 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
   // Ref to the reviews section for scroll-to functionality
   const reviewsSectionRef = useRef<HTMLDivElement>(null);
 
-  // Use the image column directly (no Google API calls)
-  const [imgSrc, setImgSrc] = useState<string>(image);
+  // Fallback image for when the primary image fails to load or is missing
+  const FALLBACK_IMAGE = '/fallback-img.png';
+
+  // Use the image column directly, fallback if null/empty
+  const [imgSrc, setImgSrc] = useState<string>(image || FALLBACK_IMAGE);
 
   // State to track current page URL
   const [currentUrl, setCurrentUrl] = useState<string>(() => {
@@ -232,9 +235,6 @@ const EventDetail: React.FC<EventDetailProps> = (props) => {
       hour12: true,
     });
   };
-
-  // Fallback image for when the primary image fails to load
-  const FALLBACK_IMAGE = '/fallback-img.png';
 
   // Handle image load error by using fallback
   const handleImageError = () => {

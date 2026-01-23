@@ -76,8 +76,11 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
   promoted,
   google_place_details,
 }) => {
-  // Use the image column directly (no Google API calls)
-  const [imgSrc, setImgSrc] = React.useState<string>(image || '');
+  // Fallback image for when the primary image fails to load or is missing
+  const FALLBACK_IMAGE = '/fallback-img.png';
+
+  // Use the image column directly, fallback if null/empty
+  const [imgSrc, setImgSrc] = React.useState<string>(image || FALLBACK_IMAGE);
 
   // Format location string (city only for cleaner look)
   const locationText = city;
@@ -92,9 +95,6 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
     };
     return date.toLocaleDateString('en-US', options);
   };
-
-  // Fallback image for when the primary image fails to load
-  const FALLBACK_IMAGE = '/fallback-img.png';
 
   // Handle image load error by using fallback
   const handleImageError = () => {
