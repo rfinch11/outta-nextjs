@@ -94,7 +94,7 @@ const FeaturedCard: React.FC<FeaturedCardProps> = ({
   };
 
   // Fallback image for when the primary image fails to load
-  const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800&q=80';
+  const FALLBACK_IMAGE = '/fallback-img.png';
 
   // Handle image load error by using fallback
   const handleImageError = () => {
